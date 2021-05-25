@@ -71,32 +71,43 @@ node(nodeName)
     }  
     try
     {
-        stage("Compile")
+        stage("Set Version")
         {   
             script
             {
                 dir("workdir")
                 {
-                    // sh """mvn -B -DskipTests clean package"""
-                    // echo "------------------------------------------"
-                    // sh "mvn dependency:tree"
-                    sh "ls -la"
-                    // sh "ls -la target/"
+                    def version = sh(script: '''cat pom.xml | grep -o "<version>.*</version>" | head -n 1 | sed -e 's/<version>\\(.*\\)<\\/version>/\\1/' ''', returnStdout: true).trim()
+                    
+                    if ("$REPOSITORY" == "releases")
+                    {
+                        println ("$version")
+
+                        sh "mvn versions:set -DnewVersion=${version}"
+                    }
+                    else if ("$REPOSITORY" == "snapshot")
+                    {
+                        version = "$version-SNAPSHOT"
+                        println ("$version")
+
+                        sh "mvn versions:set -DnewVersion=${version}"
+                    }
                 }
             }
         }
+        stage('Compile')
+        {
+            // sh """mvn -B -DskipTests clean package"""
+            // echo "------------------------------------------"
+            // sh "mvn dependency:tree"
+            println "Hello"
+            // sh "ls -la target/"
+        }
         stage('Push to Nexus')
         {
-            script{
-                if ("$REPOSITORY" == "releases")
-                {
-                    println "*********$REPOSITORY*************"
-                }
-                else if ("$REPOSITORY" == "snapshot")
-                {
-                    println "Foooooo"
-                }
-
+            script
+            {
+                sh "echo 'Push new version to nexus' "
             }
         }
         stage ('Sending status')
