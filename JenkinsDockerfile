@@ -1,9 +1,29 @@
 FROM jenkins/jenkins
 
-LABEL "owner"="Vitalii Klymov"
+LABEL   "name"="jenkins maven image on Debian" \
+        "maintainer"="Vitalii Klymov" \ 
+        "summary"="A Jenkins maven image on Debian"
+
+# Set version of maven
+ARG MAVEN_VERSION=3.6.3
 
 USER root
- 
-RUN apt-get update && apt-get install -y maven
+
+# install sudo  
+RUN apt-get update && \
+    apt-get install -y sudo && \
+    apt clean all
+
+# Install Maven
+RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share \
+    && mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven \
+    && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+# Set environment veriables for maven      
+ENV MAVEN_VERSION=${MAVEN_VERSION}
+ENV M2_HOME /usr/share/maven
+ENV maven.home $M2_HOME
+ENV M2 $M2_HOME/bin
+ENV PATH $M2:$PATH
 
 USER jenkins

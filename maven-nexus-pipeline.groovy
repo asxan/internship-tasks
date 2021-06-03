@@ -48,7 +48,7 @@ String nodeName = "${NODE}"
 node(nodeName) 
 {   try
     {
-        stage("Git clone") ///home/asxan_devops/jenkins
+        stage("Git clone")
         {   
             sh 'echo "Executing..." '
             dir("workdir")
@@ -79,14 +79,12 @@ node(nodeName)
                 {
                     def version = sh(script: '''cat pom.xml | grep -o "<version>.*</version>" | head -n 1 | sed -e 's/<version>\\(.*\\)<\\/version>/\\1/' ''', returnStdout: true).trim()
                     
-                    if ("$REPOSITORY" == "releases")
-                    {
+                    if ("$REPOSITORY" == "releases"){
                         println ("$version")
 
                         sh "mvn versions:set -DnewVersion=${version}"
                     }
-                    else if ("$REPOSITORY" == "snapshot")
-                    {
+                    else if ("$REPOSITORY" == "snapshot"){
                         version = "$version-SNAPSHOT"
                         println ("$version")
 
@@ -97,17 +95,31 @@ node(nodeName)
         }
         stage('Compile')
         {
-            // sh """mvn -B -DskipTests clean package"""
-            // echo "------------------------------------------"
-            // sh "mvn dependency:tree"
-            println "Hello"
-            // sh "ls -la target/"
+            dir("workdir")
+            {
+                withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
+                    //sh 'echo "`cat $settings > /var/jenkins_home/.m2/wrapper/dists/apache-maven-3.6.3-bin/1iopthnavndlasol9gbrbg6bf2/apache-maven-3.6.3/conf/settings.xml`"'
+                    sh 'echo "`cat $settings > /var/jenkins_home/.m2/settings.xml`"'
+                }
+                // sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
+                // echo "------------------------------------------"
+                // sh "mvn dependency:tree"
+                // sh "ls -la target/"
+                // withCredentials([usernamePassword(credentialsId: 'nexus_admin_creds', passwordVariable: 'password', usernameVariable: 'username')]) {
+                //     sh 'echo " `echo $password > ~/password.txt`"'
+                // } 
+            }
         }
         stage('Push to Nexus')
         {
-            script
+            dir("workdir")
             {
-                sh "echo 'Push new version to nexus' "
+                script
+                {
+                    sh "mvn clean deploy -Dmaven.test.skip=true -Dcheckstyle.skip"
+                    sh "mvn dependency:tree"
+                    // sh "echo "${maven.home}""
+                }
             }
         }
         stage ('Sending status')
