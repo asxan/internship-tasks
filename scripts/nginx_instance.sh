@@ -32,84 +32,85 @@ OWNER="vitalii-klymov"
 BOOT_DISK_NAME="boot-asxan-disk"
 BOOT_DISK_SIZE="32GB"
 BOOT_DISK_TYPE="pd-ssd"
-IMAGE_TYPE="centos-7"
-
-LIST_OF_KEYS=["/Users/vklymov/.ssh/gcloud_key.pub"]
-
-# gcloud compute networks create $NETWORK_NAME \
-# --bgp-routing-mode=regional --mtu=$MTU --subnet-mode=custom \
-# --description="This network is for hosting all infrastruction"
+IMAGE_TYPE="centos-7-v20200403"
+IMAGE_PROJECT="centos-cloud"
 
 
-# gcloud compute networks subnets create $PUBLIC_SUBNET_NAME \ 
-# --network=$NETWORK_NAME \
-# --range=$PUBLIC_RANGE \
-# --region=$CLOUDSDK_COMPUTE_REGION \
-# --description="It is  public subnet" 
+SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
+
+gcloud compute networks create $NETWORK_NAME \
+--bgp-routing-mode=regional --mtu=$MTU --subnet-mode=custom \
+--description="This network is for hosting all infrastruction"
 
 
-# gcloud compute networks subnets create $PRIVATE_SUBNET_NAME \
-# --network=$NETWORK_NAME \
-# --range=$PRIVATE_RANGE \
-# --region=$CLOUDSDK_COMPUTE_REGION \
-# --enable-private-ip-google-access \
-# --description="It is private subnet"
+gcloud compute networks subnets create $PUBLIC_SUBNET_NAME \ 
+--network=$NETWORK_NAME \
+--range=$PUBLIC_RANGE \
+--region=$CLOUDSDK_COMPUTE_REGION \
+--description="It is  public subnet" 
 
 
-# gcloud compute routers create $ROUTER_NAME \
-# --network=$NETWORK_NAME \
-# --region=$CLOUDSDK_COMPUTE_REGION \
-# --description="It is cloud router which connected to custom network"
+gcloud compute networks subnets create $PRIVATE_SUBNET_NAME \
+--network=$NETWORK_NAME \
+--range=$PRIVATE_RANGE \
+--region=$CLOUDSDK_COMPUTE_REGION \
+--enable-private-ip-google-access \
+--description="It is private subnet"
 
 
-# gcloud compute routers nats create $NAT_GATEWAY_NAME \
-# --router=$ROUTER_NAME \
-# --region=$CLOUDSDK_COMPUTE_REGION \
-# --nat-custom-subnet-ip-ranges="$PRIVATE_SUBNET_NAME" \
-# --auto-allocate-nat-external-ips
+gcloud compute routers create $ROUTER_NAME \
+--network=$NETWORK_NAME \
+--region=$CLOUDSDK_COMPUTE_REGION \
+--description="It is cloud router which connected to custom network"
 
 
-# gcloud compute firewall-rules create  $FIREWALL_RULE_SSH_HTTP \
-# --network=$NETWORK_NAME \
-# --action=ALLOW \
-# --rules $FIREWALL_RULE_SSH_HTTP_PORTS \
-# --source-ranges=$ALL_RANGE \
-# --description="It is firewall rule which allow ssh (22) connection from anywhere"
+gcloud compute routers nats create $NAT_GATEWAY_NAME \
+--router=$ROUTER_NAME \
+--region=$CLOUDSDK_COMPUTE_REGION \
+--nat-custom-subnet-ip-ranges="$PRIVATE_SUBNET_NAME" \
+--auto-allocate-nat-external-ips
 
 
-# gcloud compute firewall-rules create $FIREWALL_RULE_FROM_NETWORK \
-# --network=$NETWORK_NAME \
-# --allow="tcp,udp" \
-# --source-ranges=$PUBLIC_RANGE \
-# --description="It is firewall rule which allow all ports connections from anywhere in the network"
+gcloud compute firewall-rules create  $FIREWALL_RULE_SSH_HTTP \
+--network=$NETWORK_NAME \
+--action=ALLOW \
+--rules $FIREWALL_RULE_SSH_HTTP_PORTS \
+--source-ranges=$ALL_RANGE \
+--description="It is firewall rule which allow ssh (22) connection from anywhere"
+
+
+gcloud compute firewall-rules create $FIREWALL_RULE_FROM_NETWORK \
+--network=$NETWORK_NAME \
+--allow="tcp,udp" \
+--source-ranges=$PUBLIC_RANGE \
+--description="It is firewall rule which allow all ports connections from anywhere in the network"
 
 
 gcloud compute project-info add-metadata \
 --metadata-from-file \
-ssh-keys=$LIST_OF_KEYS
+ssh-keys=$SSH_KEY
 
 gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME \
 --description="It is external ip address for nginx instance" \
---global \
---ip-version=IPV4
+--region=$CLOUDSDK_COMPUTE_REGION 
+
 
 gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME \
---description="It is internak ip address for nginx instance"
+--description="It is internak ip address for nginx instance" \
 --region=$CLOUDSDK_COMPUTE_REGION \
---network=$NETWORK_NAME \
 --subnet=$PUBLIC_SUBNET_NAME 
+
 
 gcloud compute instances create $INSTANCE_NAME1 \
 --hostname=$HOSTNAME \
---labels=[name=$INSTANCE_NAME1,owner=$OWNER,subnet=$PUBLIC_SUBNET_NAME] \
+--labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
 --machine-type=$MACHINE_TYPE \
---count=1=$COUNT \
 --boot-disk-device-name=$BOOT_DISK_NAME \
 --boot-disk-type=$BOOT_DISK_TYPE  \
 --boot-disk-size=$BOOT_DISK_SIZE \
---image-family=$IMAGE_TYPE \
---network=$NETWORK_NAME \
---subnet=$PUBLIC_SUBNET_NAME \
+--image-project=$IMAGE_PROJECT \
+--image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---network-interface=[address=$RESERVE_EXTERNAL_IP_NAME,network=$NETWORK_NAME,subnet=$PUBLIC_SUBNET_NAME,private-network-ip=$RESERVE_INTERNAL_IP_NAME] \
---metadata-from-file=[nginx_provision="/Users/vklymov/Codes/internship-tasks/provision/nginx_provision.sh"]
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
+--network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME  \
+--metadata-from-file ^:^nginx_provision="/Users/vklymov/Codes/internship-tasks/provision/nginx_provision.sh"
