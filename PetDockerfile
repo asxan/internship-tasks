@@ -3,5 +3,11 @@ FROM openjdk:alpine
 LABEL maintainer="Vitalii Klymov" \
     name="Petclinic"
 
+WORKDIR /tmp/petclinic
+
+ADD petclinic.jar petclinic.jar
+
 EXPOSE 8080/tcp
 EXPOSE 3306/tcp
+
+ENTRYPOINT ["java", "-jar", "*.jar"]
