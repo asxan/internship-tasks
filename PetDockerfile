@@ -1,0 +1,7 @@
+FROM openjdk:alpine
+
+LABEL maintainer="Vitalii Klymov" \
+    name="Petclinic"
+
+EXPOSE 8080/tcp
+EXPOSE 3306/tcp
