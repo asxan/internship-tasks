@@ -24,7 +24,7 @@ FIREWALL_RULE_SSH_HTTP_PORTS="tcp:22,tcp:80,tcp:443,icmp"
 FIREWALL_RULE_FROM_NETWORK="rule-anywhere"
 
 INSTANCE_NAME1="nginx-instance"
-MACHINE_TYPE="e2-medium"
+MACHINE_TYPE=e2-medium
 HOSTNAME="nginx.asxan.ml"
 COUNT=1
 OWNER="vitalii-klymov"
@@ -38,67 +38,67 @@ IMAGE_PROJECT="centos-cloud"
 
 SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
 
-gcloud compute networks create $NETWORK_NAME \
---bgp-routing-mode=regional --mtu=$MTU --subnet-mode=custom \
---description="This network is for hosting all infrastruction"
+# gcloud compute networks create $NETWORK_NAME \
+# --bgp-routing-mode=regional --mtu=$MTU --subnet-mode=custom \
+# --description="This network is for hosting all infrastruction"
 
 
-gcloud compute networks subnets create $PUBLIC_SUBNET_NAME \ 
---network=$NETWORK_NAME \
---range=$PUBLIC_RANGE \
---region=$CLOUDSDK_COMPUTE_REGION \
---description="It is  public subnet" 
+# gcloud compute networks subnets create $PUBLIC_SUBNET_NAME \ 
+# --network=$NETWORK_NAME \
+# --range=$PUBLIC_RANGE \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --description="It is  public subnet" 
 
 
-gcloud compute networks subnets create $PRIVATE_SUBNET_NAME \
---network=$NETWORK_NAME \
---range=$PRIVATE_RANGE \
---region=$CLOUDSDK_COMPUTE_REGION \
---enable-private-ip-google-access \
---description="It is private subnet"
+# gcloud compute networks subnets create $PRIVATE_SUBNET_NAME \
+# --network=$NETWORK_NAME \
+# --range=$PRIVATE_RANGE \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --enable-private-ip-google-access \
+# --description="It is private subnet"
 
 
-gcloud compute routers create $ROUTER_NAME \
---network=$NETWORK_NAME \
---region=$CLOUDSDK_COMPUTE_REGION \
---description="It is cloud router which connected to custom network"
+# gcloud compute routers create $ROUTER_NAME \
+# --network=$NETWORK_NAME \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --description="It is cloud router which connected to custom network"
 
 
-gcloud compute routers nats create $NAT_GATEWAY_NAME \
---router=$ROUTER_NAME \
---region=$CLOUDSDK_COMPUTE_REGION \
---nat-custom-subnet-ip-ranges="$PRIVATE_SUBNET_NAME" \
---auto-allocate-nat-external-ips
+# gcloud compute routers nats create $NAT_GATEWAY_NAME \
+# --router=$ROUTER_NAME \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --nat-custom-subnet-ip-ranges="$PRIVATE_SUBNET_NAME" \
+# --auto-allocate-nat-external-ips
 
 
-gcloud compute firewall-rules create  $FIREWALL_RULE_SSH_HTTP \
---network=$NETWORK_NAME \
---action=ALLOW \
---rules $FIREWALL_RULE_SSH_HTTP_PORTS \
---source-ranges=$ALL_RANGE \
---description="It is firewall rule which allow ssh (22) connection from anywhere"
+# gcloud compute firewall-rules create  $FIREWALL_RULE_SSH_HTTP \
+# --network=$NETWORK_NAME \
+# --action=ALLOW \
+# --rules $FIREWALL_RULE_SSH_HTTP_PORTS \
+# --source-ranges=$ALL_RANGE \
+# --description="It is firewall rule which allow ssh (22) connection from anywhere"
 
 
-gcloud compute firewall-rules create $FIREWALL_RULE_FROM_NETWORK \
---network=$NETWORK_NAME \
---allow="tcp,udp" \
---source-ranges=$PUBLIC_RANGE \
---description="It is firewall rule which allow all ports connections from anywhere in the network"
+# gcloud compute firewall-rules create $FIREWALL_RULE_FROM_NETWORK \
+# --network=$NETWORK_NAME \
+# --allow="tcp,udp" \
+# --source-ranges=$PUBLIC_RANGE \
+# --description="It is firewall rule which allow all ports connections from anywhere in the network"
 
 
-gcloud compute project-info add-metadata \
---metadata-from-file \
-ssh-keys=$SSH_KEY
+# gcloud compute project-info add-metadata \
+# --metadata-from-file \
+# ssh-keys=$SSH_KEY
 
-gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME \
---description="It is external ip address for nginx instance" \
---region=$CLOUDSDK_COMPUTE_REGION 
+# gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME \
+# --description="It is external ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION 
 
 
-gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME \
---description="It is internak ip address for nginx instance" \
---region=$CLOUDSDK_COMPUTE_REGION \
---subnet=$PUBLIC_SUBNET_NAME 
+# gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME \
+# --description="It is internak ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --subnet=$PUBLIC_SUBNET_NAME 
 
 
 gcloud compute instances create $INSTANCE_NAME1 \
@@ -112,5 +112,5 @@ gcloud compute instances create $INSTANCE_NAME1 \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
 --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME  \
---metadata-from-file ^:^nginx_provision="/Users/vklymov/Codes/internship-tasks/provision/nginx_provision.sh"
+--network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME \
+--metadata-from-file=startup-script=/Users/vklymov/Codes/internship-tasks/provision/nginx_provision.sh

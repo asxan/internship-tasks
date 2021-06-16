@@ -1,9 +1,15 @@
-#!/bin/bash
-sudo yum install -y epel-release nginx
-sudo systemctl start nginx
+#! /bin/bash
 
-sudo firewall-cmd --permanent --zone=public --add-service=http
-sudo firewall-cmd --permanent --zone=public --add-service=https
-sudo firewall-cmd --reload
+yum -y install epel-release 
 
-sudo systemctl enable nginxs
+yum -y install nginx
+
+systemctl start nginx
+systemctl status nginx
+systemctl enable nginx
+
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
+
+systemctl reload nginx
