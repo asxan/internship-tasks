@@ -1,5 +1,5 @@
 #!/bin/bash
-#Created by Vitali Klymov
+# Created by Vitali Klymov
 
 CLOUDSDK_COMPUTE_REGION="us-central1" 
 AVAILABILITY_ZONE_A="$CLOUDSDK_COMPUTE_REGION-a"
@@ -16,16 +16,19 @@ PRIVATE_RANGE="10.10.30.0/24"
 ALL_RANGE="0.0.0.0/0"
 MTU="1500"
 
-RESERVE_EXTERNAL_IP_NAME="external-ip-nginx"
-RESERVE_INTERNAL_IP_NAME="internal-ip-nginx"
+RESERVE_EXTERNAL_IP_NAME1="external-ip-nginx"
+RESERVE_INTERNAL_IP_NAME1="internal-ip-nginx"
 
 FIREWALL_RULE_SSH_HTTP="ssh-http-rule"
 FIREWALL_RULE_SSH_HTTP_PORTS="tcp:22,tcp:80,tcp:443,icmp"
 FIREWALL_RULE_FROM_NETWORK="rule-anywhere"
+FIREWALL_RULE_FOR_JENKINS="jenkins-master-ports"
 
-INSTANCE_NAME1="nginx-instance"
+INSTANCE_NAME1="jenkins-nginx-instance"
+INSTANCE_NAME2="nexus-instance"
 MACHINE_TYPE=e2-medium
-HOSTNAME="nginx.asxan.ml"
+HOSTNAME1="jenkins-nginx.asxan.ml"
+HOSTNAME2="je"
 COUNT=1
 OWNER="vitalii-klymov"
 
@@ -90,6 +93,7 @@ SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
 # --metadata-from-file \
 # ssh-keys=$SSH_KEY
 
+
 # gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME \
 # --description="It is external ip address for nginx instance" \
 # --region=$CLOUDSDK_COMPUTE_REGION 
@@ -102,7 +106,7 @@ SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
 
 
 gcloud compute instances create $INSTANCE_NAME1 \
---hostname=$HOSTNAME \
+--hostname=$HOSTNAME1 \
 --labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
 --machine-type=$MACHINE_TYPE \
 --boot-disk-device-name=$BOOT_DISK_NAME \
@@ -111,6 +115,6 @@ gcloud compute instances create $INSTANCE_NAME1 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS \
+--network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1 \
 --metadata-from-file=startup-script=/Users/vklymov/Codes/internship-tasks/provision/nginx_provision.sh
