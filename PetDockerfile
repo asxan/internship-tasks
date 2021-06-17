@@ -3,11 +3,14 @@ FROM openjdk:alpine
 LABEL maintainer="Vitalii Klymov" \
     name="Petclinic"
 
+VOLUME /tmp
+
 WORKDIR /tmp/petclinic
 
-ADD petclinic.jar petclinic.jar
+COPY *.jar petclinic.jar
 
 EXPOSE 8080/tcp
+
 EXPOSE 3306/tcp
 
-ENTRYPOINT ["java", "-jar", "*.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/tmp/petclinic/petclinic.jar"]
