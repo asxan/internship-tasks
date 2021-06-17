@@ -117,4 +117,4 @@ gcloud compute instances create $INSTANCE_NAME1 \
 --zone=$AVAILABILITY_ZONE_A \
 --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS \
 --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1 \
---metadata-from-file=startup-script=/Users/vklymov/Codes/internship-tasks/provision/nginx_provision.sh
+--metadata-from-file=startup-script=/Users/vklymov/Codes/internship-tasks/provision/jenkins_nginx_provision.sh
