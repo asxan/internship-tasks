@@ -17,9 +17,15 @@ ALL_RANGE="0.0.0.0/0"
 MTU="1500"
 
 RESERVE_EXTERNAL_IP_NAME1="external-ip-nginx"
-RESERVE_INTERNAL_IP_NAME1="internal-ip-nginx"
 RESERVE_EXTERNAL_IP_NAME2="external-ip-nexus"
+RESERVE_EXTERNAL_IP_NAME3="external-ip-slave"
+RESERVE_EXTERNAL_IP_NAME4="external-ip-prod"
+
+
+RESERVE_INTERNAL_IP_NAME1="internal-ip-nginx"
 RESERVE_INTERNAL_IP_NAME2="internal-ip-nexus"
+RESERVE_INTERNAL_IP_NAME3="internal-ip-slave"
+RESERVE_INTERNAL_IP_NAME4="internal-ip-prod"
 
 
 FIREWALL_RULE_SSH_HTTP="ssh-http-rule"
@@ -31,10 +37,15 @@ FIREWALL_RULE_FOR_JENKINS="jenkins-master-ports"
 
 INSTANCE_NAME1="jenkins-nginx-instance"
 INSTANCE_NAME2="nexus-instance"
+INSTANCE_NAME3="slave-instance"
+INSTANCE_NAME4="prod-instance"
 
-MACHINE_TYPE=e2-medium
 HOSTNAME1="jenkins-nginx.asxan.ml"
 HOSTNAME2="nexus.asxan.ml"
+HOSTNAME3="slave.asxan.ml"
+HOSTNAME4="pet-clinick.asxan.ml"
+
+MACHINE_TYPE=e2-medium
 COUNT=1
 OWNER="vitalii-klymov"
 
@@ -46,6 +57,17 @@ IMAGE_PROJECT="centos-cloud"
 
 
 SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
+
+
+MANAGED_ZONE="asxan"
+TTL=300
+RECORD_TYPE="A"
+DNS_NAME_1=$HOSTNAME1
+DNS_NAME_2=$HOSTNAME2
+DNS_NAME_3=$HOSTNAME3
+DNS_NAME_4=$HOSTNAME4
+
+#-------------------------------------------------------------#
 
 # gcloud compute networks create $NETWORK_NAME \
 # --bgp-routing-mode=regional --mtu=$MTU --subnet-mode=custom \
@@ -79,6 +101,7 @@ SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
 # --nat-custom-subnet-ip-ranges="$PRIVATE_SUBNET_NAME" \
 # --auto-allocate-nat-external-ips
 
+#-------------------------------------------------------------#
 
 # gcloud compute firewall-rules create  $FIREWALL_RULE_SSH_HTTP \
 # --network=$NETWORK_NAME \
@@ -95,17 +118,20 @@ SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
 # --description="It is firewall rule which allow all ports connections from anywhere in the network"
 
 
-gcloud compute firewall-rules create  $FIREWALL_RULE_NEXUS \
---network=$NETWORK_NAME \
---action=ALLOW \
---rules $FIREWALL_RULE_NEXUS_PORTS \
---source-ranges=$ALL_RANGE \
---description="The firewall rule for nexus (8081,443)"
+# gcloud compute firewall-rules create  $FIREWALL_RULE_NEXUS \
+# --network=$NETWORK_NAME \
+# --action=ALLOW \
+# --rules $FIREWALL_RULE_NEXUS_PORTS \
+# --source-ranges=$ALL_RANGE \
+# --description="The firewall rule for nexus (8081,443)"
+
+
 
 # gcloud compute project-info add-metadata \
 # --metadata-from-file \
 # ssh-keys=$SSH_KEY
 
+#-------------------------------------------------------------#
 
 # gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME1 \
 # --description="It is external ip address for nginx instance" \
@@ -117,20 +143,71 @@ gcloud compute firewall-rules create  $FIREWALL_RULE_NEXUS \
 # --region=$CLOUDSDK_COMPUTE_REGION \
 # --subnet=$PUBLIC_SUBNET_NAME 
 
-gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME2 \
+# gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME2 \
+# --description="It is external ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION 
+
+
+# gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME2 \
+# --description="It is internak ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --subnet=$PUBLIC_SUBNET_NAME 
+
+
+gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME3 \
 --description="It is external ip address for nginx instance" \
 --region=$CLOUDSDK_COMPUTE_REGION 
 
 
-gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME2 \
+gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME3 \
 --description="It is internak ip address for nginx instance" \
 --region=$CLOUDSDK_COMPUTE_REGION \
---subnet=$PUBLIC_SUBNET_NAME 
+--subnet=$PUBLIC_SUBNET_NAME
 
 
-gcloud compute instances create $INSTANCE_NAME1 \
---hostname=$HOSTNAME1 \
---labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME4 \
+--description="It is external ip address for nginx instance" \
+--region=$CLOUDSDK_COMPUTE_REGION 
+
+
+gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME4 \
+--description="It is internak ip address for nginx instance" \
+--region=$CLOUDSDK_COMPUTE_REGION \
+--subnet=$PUBLIC_SUBNET_NAME
+
+#-------------------------------------------------------------#
+
+# gcloud compute instances create $INSTANCE_NAME1 \
+# --hostname=$HOSTNAME1 \
+# --labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
+
+
+# gcloud compute instances create $INSTANCE_NAME2 \
+# --hostname=$HOSTNAME2 \
+# --labels ^:^name=$INSTANCE_NAME2:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
+
+
+gcloud compute instances create $INSTANCE_NAME3 \
+--hostname=$HOSTNAME3 \
+--labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
 --machine-type=$MACHINE_TYPE \
 --boot-disk-device-name=$BOOT_DISK_NAME \
 --boot-disk-type=$BOOT_DISK_TYPE  \
@@ -138,14 +215,13 @@ gcloud compute instances create $INSTANCE_NAME1 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK \
+--network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
 
 
-
-gcloud compute instances create $INSTANCE_NAME2 \
---hostname=$HOSTNAME2 \
---labels ^:^name=$INSTANCE_NAME2:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+gcloud compute instances create $INSTANCE_NAME4 \
+--hostname=$HOSTNAME4 \
+--labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
 --machine-type=$MACHINE_TYPE \
 --boot-disk-device-name=$BOOT_DISK_NAME \
 --boot-disk-type=$BOOT_DISK_TYPE  \
@@ -153,5 +229,40 @@ gcloud compute instances create $INSTANCE_NAME2 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
+--network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
+
+#-------------------------------------------------------------#
+
+gcloud dns record-sets transaction start \
+--zone=$MANAGED_ZONE
+
+
+gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME1
+--name=$DNS_NAME_1
+--ttl=$TTL
+--type=$RECORD_TYPE
+--zone=$MANAGED_ZONE
+
+
+gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME2
+--name=$DNS_NAME_2
+--ttl=$TTL
+--type=$RECORD_TYPE
+--zone=$MANAGED_ZONE
+
+
+gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME3
+--name=$DNS_NAME_3
+--ttl=$TTL
+--type=$RECORD_TYPE
+--zone=$MANAGED_ZONE
+
+
+gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME4
+--name=$DNS_NAME_4
+--ttl=$TTL
+--type=$RECORD_TYPE
+--zone=$MANAGED_ZONE
+
+#-------------------------------------------------------------#

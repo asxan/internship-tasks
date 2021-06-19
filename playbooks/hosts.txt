@@ -1,0 +1,8 @@
+[jenkins_nginx]
+Jenkins_Nginx ansible_host=34.136.156.234  ansible_user=asxan_devops ansible_ssh_private_key_file=/Users/vklymov/.ssh/gcloud_key
+
+[nexus_server]
+Nexus_Server ansible_host=  ansible_user=asxan_devops ansible_ssh_private_key_file=/Users/vklymov/.ssh/gcloud_key
+
+[slave_server]
+Slave_Server ansible_host= ansible_user=asxan_devops ansible_ssh_private_key_file=/Users/vklymov/.ssh/gcloud_key
