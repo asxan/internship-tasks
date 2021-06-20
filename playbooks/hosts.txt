@@ -1,8 +1,18 @@
 [jenkins_nginx]
-Jenkins_Nginx ansible_host=34.136.156.234  ansible_user=asxan_devops ansible_ssh_private_key_file=/Users/vklymov/.ssh/gcloud_key
+Jenkins_Nginx ansible_host=jenkins-nginx.asxan.ml.
 
 [nexus_server]
-Nexus_Server ansible_host=  ansible_user=asxan_devops ansible_ssh_private_key_file=/Users/vklymov/.ssh/gcloud_key
+Nexus_Server ansible_host=nexus.asxan.ml.
 
 [slave_server]
-Slave_Server ansible_host= ansible_user=asxan_devops ansible_ssh_private_key_file=/Users/vklymov/.ssh/gcloud_key
+Slave_Server ansible_host=slave.asxan.ml.
+
+[prod_server]
+Prod_Server ansible_host=pet-clinick.asxan.ml.
+
+
+[servers_ALL:children]
+jenkins_nginx
+nexus_server
+slave_server
+prod_server

@@ -59,13 +59,13 @@ IMAGE_PROJECT="centos-cloud"
 SSH_KEY="/Users/vklymov/.ssh/gcloud_key.pub"
 
 
-MANAGED_ZONE="asxan"
+MANAGED_ZONE="asxan.ml."
 TTL=300
-RECORD_TYPE="A"
-DNS_NAME_1=$HOSTNAME1
-DNS_NAME_2=$HOSTNAME2
-DNS_NAME_3=$HOSTNAME3
-DNS_NAME_4=$HOSTNAME4
+RECORD_TYPE_A="A"
+DNS_NAME_1="$HOSTNAME1."
+DNS_NAME_2="$HOSTNAME2."
+DNS_NAME_3="$HOSTNAME3."
+DNS_NAME_4="$HOSTNAME4."
 
 #-------------------------------------------------------------#
 
@@ -154,26 +154,26 @@ DNS_NAME_4=$HOSTNAME4
 # --subnet=$PUBLIC_SUBNET_NAME 
 
 
-gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME3 \
---description="It is external ip address for nginx instance" \
---region=$CLOUDSDK_COMPUTE_REGION 
+# gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME3 \
+# --description="It is external ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION 
 
 
-gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME3 \
---description="It is internak ip address for nginx instance" \
---region=$CLOUDSDK_COMPUTE_REGION \
---subnet=$PUBLIC_SUBNET_NAME
+# gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME3 \
+# --description="It is internak ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --subnet=$PUBLIC_SUBNET_NAME
 
 
-gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME4 \
---description="It is external ip address for nginx instance" \
---region=$CLOUDSDK_COMPUTE_REGION 
+# gcloud compute addresses create $RESERVE_EXTERNAL_IP_NAME4 \
+# --description="It is external ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION 
 
 
-gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME4 \
---description="It is internak ip address for nginx instance" \
---region=$CLOUDSDK_COMPUTE_REGION \
---subnet=$PUBLIC_SUBNET_NAME
+# gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME4 \
+# --description="It is internak ip address for nginx instance" \
+# --region=$CLOUDSDK_COMPUTE_REGION \
+# --subnet=$PUBLIC_SUBNET_NAME
 
 #-------------------------------------------------------------#
 
@@ -205,64 +205,64 @@ gcloud compute addresses create $RESERVE_INTERNAL_IP_NAME4 \
 # --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
 
 
-gcloud compute instances create $INSTANCE_NAME3 \
---hostname=$HOSTNAME3 \
---labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
---machine-type=$MACHINE_TYPE \
---boot-disk-device-name=$BOOT_DISK_NAME \
---boot-disk-type=$BOOT_DISK_TYPE  \
---boot-disk-size=$BOOT_DISK_SIZE \
---image-project=$IMAGE_PROJECT \
---image=$IMAGE_TYPE \
---zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
+# gcloud compute instances create $INSTANCE_NAME3 \
+# --hostname=$HOSTNAME3 \
+# --labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
 
 
-gcloud compute instances create $INSTANCE_NAME4 \
---hostname=$HOSTNAME4 \
---labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
---machine-type=$MACHINE_TYPE \
---boot-disk-device-name=$BOOT_DISK_NAME \
---boot-disk-type=$BOOT_DISK_TYPE  \
---boot-disk-size=$BOOT_DISK_SIZE \
---image-project=$IMAGE_PROJECT \
---image=$IMAGE_TYPE \
---zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
+# gcloud compute instances create $INSTANCE_NAME4 \
+# --hostname=$HOSTNAME4 \
+# --labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
 
 #-------------------------------------------------------------#
 
-gcloud dns record-sets transaction start \
---zone=$MANAGED_ZONE
+# gcloud dns record-sets transaction start \
+# --zone=$MANAGED_ZONE
 
 
-gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME1
---name=$DNS_NAME_1
---ttl=$TTL
---type=$RECORD_TYPE
---zone=$MANAGED_ZONE
+# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME1 \
+# --name=$DNS_NAME_1 \
+# --ttl=$TTL \
+# --type=$RECORD_TYPE_A \
+# --zone=$MANAGED_ZONE
 
 
-gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME2
---name=$DNS_NAME_2
---ttl=$TTL
---type=$RECORD_TYPE
---zone=$MANAGED_ZONE
+# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME2 \
+# --name=$DNS_NAME_2 \
+# --ttl=$TTL \
+# --type=$RECORD_TYPE_A \
+# --zone=$MANAGED_ZONE
 
 
-gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME3
---name=$DNS_NAME_3
---ttl=$TTL
---type=$RECORD_TYPE
---zone=$MANAGED_ZONE
+# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME3 \
+# --name=$DNS_NAME_3 \
+# --ttl=$TTL \
+# --type=$RECORD_TYPE_A \
+# --zone=$MANAGED_ZONE
 
 
-gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME4
---name=$DNS_NAME_4
---ttl=$TTL
---type=$RECORD_TYPE
---zone=$MANAGED_ZONE
+# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME4 \
+# --name=$DNS_NAME_4 \
+# --ttl=$TTL \
+# --type=$RECORD_TYPE_A \
+# --zone=$MANAGED_ZONE
 
 #-------------------------------------------------------------#
