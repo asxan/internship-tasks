@@ -1,0 +1,70 @@
+---
+- name: "Install docker and docker-compose in all servers"
+  hosts: slave_server
+  become: yes
+  gather_facts: yes
+
+  tasks:
+  - name: "Yum upgrade all packages"
+    yum:
+      name: '*'
+      state: latest
+      update_cache: yes
+
+  - name: "Check if Docker is installed"
+    command: systemctl status docker
+    register: docker_check
+    ignore_errors: yes
+
+  - name: "Install docker packages"
+    yum:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - yum-utils
+    when: docker_check.stderr.find('service could not be found') != -1
+
+  - name: "Download the Docker Installer"
+    get_url:
+      url: https://get.docker.com
+      dest: /root/get-docker.sh
+      mode: 0700
+    when: docker_check.stderr.find('service could not be found') != -1
+
+  - name: "Install Docker"
+    shell: /root/get-docker.sh
+    when: docker_check.stderr.find('service could not be found') != -1
+  
+  - name: "Remove the Docker installer file."
+    file: 
+      state: absent
+      path: /root/get-docker.sh
+
+  - name: "Enable the Docker daemond in systemd"
+    systemd:
+      name: docker
+      enabled: yes
+      masked: no
+  
+  - name: "Start Docker"
+    service:
+      name: docker
+      state: started
+      enabled: yes
+      masked: no
+
+  - name: "Check if Docker Compose is installed"
+    command: docker-compose --version
+    register: docker_compose_check
+    ignore_errors: yes
+
+  - name: "Install Docker Compose"
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 0755
+    when:
+      - docker_compose_check.msg is defined
+      - docker_compose_check.msg.find("No such file or directory") != -1
+  
