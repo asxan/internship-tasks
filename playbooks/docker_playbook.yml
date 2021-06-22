@@ -1,6 +1,6 @@
 ---
 - name: "Install docker and docker-compose in all servers"
-  hosts: slave_server
+  hosts: all
   become: yes
   gather_facts: yes
 
@@ -9,6 +9,12 @@
     yum:
       name: '*'
       state: latest
+      update_cache: yes
+
+  - name: "Install git"
+    yum:
+      name: git
+      state: present
       update_cache: yes
 
   - name: "Check if Docker is installed"
@@ -20,7 +26,6 @@
     yum:
       name: "{{ item }}"
       state: present
-      update_cache: yes
     with_items:
       - yum-utils
     when: docker_check.stderr.find('service could not be found') != -1

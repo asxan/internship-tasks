@@ -1,0 +1,41 @@
+---
+- name: "Install Jenkins"
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+  - name: "install wget"
+    yum:
+      name: wget
+      state: present
+  
+  - name: "install openjdk"
+    yum:
+      name: java-11-openjdk-devel
+      state: present
+
+  - name: "Download Jenkins repo"
+    get_url:
+      url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+      dest: etc/yum.repos.d/jenkins.repo
+  
+  - name: "import jenkins key"
+    rpm_key:
+      state: present
+      key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+  - name: "Install Jenkins"
+    yum:
+      name: jenkins
+      state: present
+
+  - name: "Start Jenkins"
+    systemd:
+      name: jenkins
+      state: started
+
+  - name: "Enable Jenkins"
+    systemd:
+      name: jenkins
+      enabled: true
