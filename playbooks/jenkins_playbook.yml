@@ -1,6 +1,6 @@
 ---
 - name: "Install Jenkins"
-  hosts: all
+  hosts: jenkins_nginx
   become: yes
   gather_facts: yes
 

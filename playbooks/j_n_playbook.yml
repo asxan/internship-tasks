@@ -1,0 +1,9 @@
+---
+- name: "Run jenkins in docker container"
+  hosts: jenkins_nginx
+  become: yes
+  gather_facts: no
+
+  tasks:
+  - name: "Pull image"
+    shell: docker pull asxan/jenkins_cus:0.0.4
