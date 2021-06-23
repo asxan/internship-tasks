@@ -205,18 +205,18 @@ DNS_NAME_4="$HOSTNAME4."
 # --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
 
 
-# gcloud compute instances create $INSTANCE_NAME3 \
-# --hostname=$HOSTNAME3 \
-# --labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
-# --machine-type=$MACHINE_TYPE \
-# --boot-disk-device-name=$BOOT_DISK_NAME \
-# --boot-disk-type=$BOOT_DISK_TYPE  \
-# --boot-disk-size=$BOOT_DISK_SIZE \
-# --image-project=$IMAGE_PROJECT \
-# --image=$IMAGE_TYPE \
-# --zone=$AVAILABILITY_ZONE_A \
-# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK \
-# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
+gcloud compute instances create $INSTANCE_NAME3 \
+--hostname=$HOSTNAME3 \
+--labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+--machine-type=$MACHINE_TYPE \
+--boot-disk-device-name=$BOOT_DISK_NAME \
+--boot-disk-type=$BOOT_DISK_TYPE  \
+--boot-disk-size=$BOOT_DISK_SIZE \
+--image-project=$IMAGE_PROJECT \
+--image=$IMAGE_TYPE \
+--zone=$AVAILABILITY_ZONE_A \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK \
+--network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
 
 
 # gcloud compute instances create $INSTANCE_NAME4 \
