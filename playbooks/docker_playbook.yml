@@ -5,30 +5,6 @@
   gather_facts: yes
 
   tasks:
-  # - name: "Yum upgrade all packages"
-  #   yum:
-  #     name: '*'
-  #     state: latest
-  #     update_cache: yes
-
-  # - name: "Enable Epel Repository"
-  #   yum:
-  #     name: epel-release
-  #     state: latest
-  #   when: ansible_facts['os_family'] == 'RedHat' and ansible_facts
-  #     ['distribution_major_version'] == '7'
-
-  # - name: "Install git"
-  #   yum:
-  #     name: git
-  #     state: present
-  #     update_cache: yes
-
-  # - name: "Install pip"
-  #   yum: 
-  #     name: python-pip
-  #     state: present
-
   # - name: "Check if Docker is installed"
   #   command: systemctl status docker
   #   register: docker_check
@@ -58,34 +34,24 @@
   #     state: absent
   #     path: /root/get-docker.sh
 
-  # - name: install certain python modules for docker
-  #   pip:
-  #     name: "{{ item.name }}"
-  #     version: "{{ item.version }}"
-  #     state: present
-  #   with_items:
-  #   - { name: docker-py, version: 1.10.6 }
+  # - name: "Start Docker"
+  #   service:
+  #     name: docker
+  #     state: started
+  #     enabled: yes
+  #     masked: no
 
+  # - name: "Enable the Docker daemond in systemd"
+  #   systemd:
+  #     name: docker
+  #     enabled: yes
+  #     masked: no
 
-  - name: "Start Docker"
-    service:
-      name: docker
-      state: started
-      enabled: yes
-      masked: no
-
-  - name: "Enable the Docker daemond in systemd"
-    systemd:
-      name: docker
-      enabled: yes
-      masked: no
-
-  - name: "Add user to docker group"
-    user:
-      name: asxan_devops
-      groups: docker
-      append: yes
-      
+  # - name: "Add user to docker group"
+  #   user:
+  #     name: asxan_devops
+  #     groups: docker
+  #     append: yes
 
   # - name: "Check if Docker Compose is installed"
   #   command: docker-compose --version

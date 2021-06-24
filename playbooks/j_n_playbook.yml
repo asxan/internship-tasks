@@ -5,5 +5,43 @@
   gather_facts: no
 
   tasks:
-  - name: "Pull image"
-    shell: docker pull asxan/jenkins_cus:0.0.4
+  # - name: "Pull image"
+  #   shell: docker pull asxan/jenkins_cus:0.0.4
+
+  # - name: "Create jenkins_nginx folder"
+  #   file:
+  #     path: '/home/asxan_devops/jenkins_nginx'
+  #     state: directory
+
+  # - name: "Create jenkins_home & nginx_home"
+  #   file:
+  #     path: '/home/asxan_devops/jenkins_nginx/{{ item.dir }}'
+  #     state: directory
+  #     mode: '0777'
+  #   loop:
+  #     - { dir: jenkins_home }
+  #     - { dir: nginx_home }
+
+  # - name: "Create Compose dir"
+  #   file:
+  #     path: "/home/asxan_devops/jenkins_nginx/docker_compose"
+  #     state: directory
+  
+  # - name: "Copy docker-compose jenkins_nginx yml file"
+  #   copy:
+  #     src: ./docker-compose-jenkins-nginx.yaml
+  #     dest: /home/asxan_devops/jenkins_nginx/docker_compose
+
+  - name: "Copy plugins.txt"
+    copy:
+      src: ./plugins.txt
+      dest: /home/asxan_devops/jenkins_nginx/jenkins_home
+  
+  - name: "Start compose"
+    docker_compose:
+      project_name: jenkins_nginx
+      project_src: /home/asxan_devops/jenkins_nginx/docker_compose
+    register: output
+  
+  - ansible.builtin.debug:
+      var: output
