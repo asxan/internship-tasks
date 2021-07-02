@@ -1,0 +1,13 @@
+---
+# handlers file for nginx
+  - name: "Hard link for root user"
+    file:
+      src:  /usr/local/bin/docker-compose
+      dest: /usr/bin/docker-compose
+      state: link
+
+  - name: "Remove the Docker installer file"
+      file: 
+        state: absent
+        path: /root/get-docker.sh
+      when: docker_check.stderr.find('service could not be found') != -1

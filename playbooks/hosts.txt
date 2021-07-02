@@ -1,14 +1,18 @@
 [jenkins_nginx]
-Jenkins_Nginx ansible_host=jenkins-nginx.asxan.ml.
+Jenkins_Nginx ansible_host=35.223.255.116
+#jenkins-nginx.asxan.ml.
 
 [nexus_server]
-Nexus_Server ansible_host=nexus.asxan.ml.
+Nexus_Server ansible_host=34.121.65.36
+#nexus.asxan.ml.
 
 [slave_server]
-Slave_Server ansible_host=slave.asxan.ml.
+Slave_Server ansible_host=35.232.97.192
+#slave.asxan.ml.
 
 [prod_server]
-Prod_Server ansible_host=pet-clinick.asxan.ml.
+Prod_Server ansible_host=34.136.135.174
+#pet-clinick.asxan.ml.
 
 
 [servers_ALL:children]

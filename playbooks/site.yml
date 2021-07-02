@@ -1,0 +1,17 @@
+---
+- name: "Install packages, docker and docker-compose in all servers"
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - packages
+    - docker_install
+
+- name:
+  hosts: jenkins_nginx
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - jenkins
