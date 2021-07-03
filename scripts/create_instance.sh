@@ -126,14 +126,14 @@ DNS_NAME_4="$HOSTNAME4."
 # --source-ranges=$ALL_RANGE \
 # --description="The firewall rule for nexus (8081,443)"
 
-gcloud compute firewall-rules create $FIREWALL_RULE_FOR_JENKINS \
---network=$NETWORK_NAME \
---action=ALLOW  \
---direction=INGRESS \
---rules=$FIREWALL_RULE_FOR_JENKINS_PORTS \
---source-ranges=$ALL_RANGE  \
---target-tags=$FIREWALL_RULE_FOR_JENKINS \
---description="The firewall rule for jenkins(8080,8081,50000,465)"
+# gcloud compute firewall-rules create $FIREWALL_RULE_FOR_JENKINS \
+# --network=$NETWORK_NAME \
+# --action=ALLOW  \
+# --direction=INGRESS \
+# --rules=$FIREWALL_RULE_FOR_JENKINS_PORTS \
+# --source-ranges=$ALL_RANGE  \
+# --target-tags=$FIREWALL_RULE_FOR_JENKINS \
+# --description="The firewall rule for jenkins(8080,8081,50000,465)"
 
 # gcloud compute project-info add-metadata \
 # --metadata-from-file \

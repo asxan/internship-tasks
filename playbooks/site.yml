@@ -15,9 +15,9 @@
   roles:
     - jenkins
 
-- name: "Provision slave"
-  hosts: slave_server
-  gather_facts: yes
+# - name: "Provision slave"
+#   hosts: slave_server
+#   gather_facts: yes
 
-  roles:
-    - slave
+#   roles:
+#     - slave

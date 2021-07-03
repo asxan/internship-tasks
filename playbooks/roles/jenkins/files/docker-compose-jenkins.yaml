@@ -13,10 +13,10 @@ services:
             - "50000:50000"
         volumes:
             - "$HOME/jenkins_nginx/jenkins_home:/var/jenkins_home"
-        # env_file:
-        #     -  ./jenkins.env
-        # environment:
-        #     - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
+        env_file:
+            -  ./jenkins.env
+        environment:
+            - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
         networks:
             - task-net
 networks:
