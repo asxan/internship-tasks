@@ -1,10 +1,5 @@
 ---
 # tasks file for docker_install
-- name: "Install docker and docker-compose in all servers"
-  hosts: all
-  become: yes
-  gather_facts: yes
-
   - name: "Check if Docker is installed"
     command: systemctl status docker
     register: docker_check

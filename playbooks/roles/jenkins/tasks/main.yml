@@ -33,6 +33,11 @@
       state: directory
       mode: '0776'
 
+  - name: "Create casc_configs folder"
+    file:
+      path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+      state: directory
+
   - name: Delete compose file if exist
     file:
       path: /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins.yaml
@@ -56,16 +61,21 @@
       src: ../files/plugins.txt
       dest: /home/vklymov/jenkins_nginx/jenkins_home
       mode: preserve
-    notify: "Install plugins"
-
-  # - name: "Copy casc.yaml"
-  #   copy:
-  #     src: ../file/casc.yaml
-  #     dest: /home/vklymov/jenkins_nginx/jenkins_home
-  #     mode: preserve
-  #   notify: "Restart Jenkins"
   
   - name: "Start compose"
     shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins.yaml up -d
     args:
       executable: /bin/bash
+
+  - name: "Install plugins"
+    shell: docker container exec jenkins /bin/bash -c "jenkins-plugin-cli  -f /var/jenkins_home/plugins.txt"
+
+  - name: "Restart Jenkins"
+    shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins.yaml restart -t 20 jenkins
+
+  - name: "Copy casc.yaml"
+    copy:
+      src: ../file/casc.yaml
+      dest: /home/vklymov/jenkins_nginx/jenkins_home
+      mode: preserve
+    notify: "Restart Jenkins"
