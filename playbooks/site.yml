@@ -4,14 +4,20 @@
   become: yes
   gather_facts: yes
 
-  roles:
-    - packages
-    - docker_install
+  # roles:
+  #   - packages
+  #   - docker_install
 
-- name:
+- name: "Provision Jenkins"
   hosts: jenkins_nginx
-  become: yes
   gather_facts: yes
 
   roles:
     - jenkins
+
+- name: "Provision slave"
+  hosts: slave_server
+  gather_facts: yes
+
+  roles:
+    - slave

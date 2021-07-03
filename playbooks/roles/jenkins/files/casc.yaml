@@ -1,12 +1,23 @@
 jenkins:
+  systemMessage: "Jenkins Configured automaticaly by Jenkins Configuration as Code plugin"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global: 
+          - name: "${JENKINS_ADMIN_ID}"
+            description: "Jenkins administrator"
+            permissions:
+              - "Overall/Administer:admin"
+              - "Overall/Read:authenticated"
+            assignments:
+              - "${JENKINS_ADMIN_ID}"
   securityRealm:
     local:
       allowSignup: false
       users:
         - id: ${JENKINS_ADMIN_ID}
           password: ${JENKINS_ADMIN_PASSWORD}
-    authorizationStrategy:
-      globalMatrix:
-        permissions:
-          - "Overall/Administer:admin"
-          - "Overall/Read:authenticated"
+
+# unclassified:
+#   local:
+#     url: https://

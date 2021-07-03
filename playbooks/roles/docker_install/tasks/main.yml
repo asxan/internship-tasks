@@ -5,6 +5,10 @@
     register: docker_check
     ignore_errors: yes
 
+  - name: "Clean yum cache"
+    shell: yum clean all
+    become: yes
+
   - name: "Install docker packages"
     yum:
       name: "{{ item }}"
@@ -12,6 +16,7 @@
     with_items:
       - yum-utils
     when: docker_check.stderr.find('service could not be found') != -1
+
 
   - name: "Download the Docker Installer"
     get_url:
@@ -47,9 +52,10 @@
       - { user: vklymov }
       - { user: root  }
 
+
   - name: "Check if Docker Compose is installed"
     command: docker-compose --version
-    register: docker_compose_check
+    register: compose_check
     ignore_errors: yes
 
   - name: "Install Docker Compose"
@@ -58,6 +64,5 @@
       dest: /usr/local/bin/docker-compose
       mode: 0777
     when:
-      - docker_compose_check.msg is defined
-      - docker_compose_check.msg.find("No such file or directory") != -1
+      - compose_check.msg.find("No such file or directory") != -1
     notify: "Hard link for root user"
