@@ -13,7 +13,7 @@
   gather_facts: yes
 
   roles:
-    - jenkins
+    - jenkins_nginx
 
 # - name: "Provision slave"
 #   hosts: slave_server

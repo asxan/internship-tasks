@@ -1,0 +1,103 @@
+---
+# tasks file for jenkins
+
+  # - name: "Set env jenkins admin  id"
+  #   shell: echo "export JENKINS_A_ID=${JENKINS_ID}" >> ~/.bash_profile
+
+  # - name: "Set env jenkins admin password"
+  #   shell: echo "export JENKINS_PASSWORD=${JENKINS_PASSWORD}" >> ~/.bash_profile
+
+  # - name: "Source .bash_profile"
+  #   shell: source ~/.bash_profile
+
+  - block: #Block for All
+
+    - name: "Create jenkins_nginx folder"
+      file:
+        path: '/home/vklymov/jenkins_nginx'
+        state: directory
+
+    - name: "Create Compose dir"
+      file:
+        path: "/home/vklymov/jenkins_nginx/docker_compose"
+        state: directory
+        mode: '0776'
+
+    # - name: Delete compose file if exist
+    #   file:
+    #     path: /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml
+    #     state: absent
+    #   ignore_errors: yes
+
+    - name: "Copy docker-compose jenkins yml file"
+      copy:
+        src: ../files/docker-compose-jenkins-nginx.yaml
+        dest: /home/vklymov/jenkins_nginx/docker_compose
+        mode: preserve
+
+
+
+  - block:  # Block for Jenkins
+
+    - name: "Pull image"
+      shell: docker pull asxan/jenkins_cus:0.0.4
+
+    - name: "Create jenkins_home"
+      file:
+        path: '/home/vklymov/jenkins_nginx/{{ item.dir }}'
+        state: directory
+        mode: '0777'
+      loop:
+        - { dir: jenkins_home }
+    
+    - name: "Create casc_configs folder"
+      file:
+        path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+        state: directory
+
+    # - name: Delete jenkins.env file if exist
+    #   file:
+    #     path: /home/vklymov/jenkins_nginx/docker_compose/jenkins.env
+    #     state: absent
+    #   ignore_errors: yes
+
+    - name: "Copy jenkins.env jenkins yml file"
+      copy:
+        src: ../files/jenkins.env
+        dest: /home/vklymov/jenkins_nginx/docker_compose
+        mode: preserve
+
+    - name: "Copy plugins.txt"
+      copy:
+        src: ../files/plugins.txt
+        dest: /home/vklymov/jenkins_nginx/jenkins_home
+        mode: preserve
+  
+    - name: "Start compose"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d
+      args:
+        executable: /bin/bash
+
+    - name: "Install plugins"
+      shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
+
+    - name: "Restart Jenkins"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+
+    # - name: "Copy casc.yaml"
+    #   copy:
+    #     src: ../files/casc.yaml
+    #     dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs
+    #     mode: preserve
+    #   notify: "Restart Jenkins"
+
+
+  - block:
+
+    - name: "Create nginx_home"
+      file:
+        path: '/home/vklymov/jenkins_nginx/{{ item.dir }}'
+        state: directory
+        mode: '0777'
+      loop:
+        - { dir: nginx_home }

@@ -1,9 +1,0 @@
----
-# tasks file for nginx
-  - name: "Create jenkins_home & nginx_home"
-    file:
-      path: '/home/vklymov/jenkins_nginx/{{ item.dir }}'
-      state: directory
-      mode: '0777'
-    loop:
-      - { dir: nginx_home }

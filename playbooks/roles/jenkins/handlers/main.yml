@@ -1,5 +1,0 @@
----
-# handlers file for jenkins
-
-  - name: "Restart Jenkins"
-    shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins.yaml restart -t 20 jenkins
