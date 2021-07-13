@@ -1,5 +1,23 @@
-FROM nginx:latest
-
+FROM centos:7
+ENV user=asxan
 LABEL mainteiner="Vitalii Klymov"
 
-USER ROOT
+SHELL ["/bin/bash", "-c"]
+
+USER root
+
+RUN set -x && \
+	yum -y update && \
+	yum install -y epel-release && \
+	yum install -y nginx && \
+	yum -y clean all
+
+#RUN set -x && \
+#	groupadd --system --gid 1001 $user  && \
+#	adduser --system -g $user --disabled-password --no-create-home --shell /bin/bash --uid 1001 $user
+ 
+
+EXPOSE 80 443 8080 8081
+
+CMD ["nginx", "-g", "daemon off;"]
+
