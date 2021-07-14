@@ -1,23 +1,24 @@
 ---
-- name: "Install packages, docker and docker-compose in all servers"
-  hosts: all
-  become: yes
-  gather_facts: yes
-
-  # roles:
-  #   - packages
-  #   - docker_install
-
-- name: "Provision Jenkins"
-  hosts: jenkins_nginx
-  gather_facts: yes
-
-  roles:
-    - jenkins_nginx
-
-# - name: "Provision slave"
-#   hosts: slave_server
+# - name: "Install packages, docker and docker-compose in all servers"
+#   hosts: all
+#   become: yes
 #   gather_facts: yes
 
 #   roles:
-#     - slave
+#     - packages
+#     - docker_install
+
+# - name: "Provision Jenkins"
+#   hosts: jenkins_nginx
+#   gather_facts: yes
+
+#   roles:
+#     - jenkins_nginx
+
+- name: "Provision slave"
+  hosts: slave_server
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - slave

@@ -1,20 +1,62 @@
 ---
 # tasks file for slave
 
-  - name: Install java
-    yum:
-      - name: java-11-openjdk-devel
-        state: latest
+- name: "Copy daemon.json"
+  copy:
+    src: ../files/daemon.json
+    dest: /etc/docker
+
+- name: "Make dir for override.conf"
+  file:
+    path: '/etc/systemd/system/docker.service.d'
+    state: directory
+
+- name: "Copy override.conf"
+  copy:
+    src: ../files/override.conf
+    dest: /etc/systemd/system/docker.service.d
 
 
-  - name: Install Ansible
-    yum:
-      - name: ansible
-        state: latest
+- name: "Reload docker daemon"
+  shell: systemctl daemon-reload
 
 
-  - name: Copy ssh key 
-    copy:
-      src: ~/.ssh/jenkins_task_key.pub
-      dest: ~/.ssh
-      mode: preserve
+- name: "Restart Docker service"
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+    masked: no
+
+- name: "Check if java is installed" 
+  command:  java -version
+  register: java_check
+  ignore_errors: yes
+
+
+- name: "Install java"
+  yum:
+    name: java-11-openjdk-devel
+    state: latest
+  when:
+    - java_check.msg.find('command not found') != -1
+
+
+- name: "Check if ansible is installed" 
+  command:  ansible --version
+  register: ansible_check
+  ignore_errors: yes
+
+- name: "Install Ansible"
+  yum:
+    name: ansible
+    state: latest
+  when:
+    - ansible_check.msg.find('command not found') != -1
+
+
+- name: "Copy ssh key"
+  copy:
+    src: ~/.ssh/jenkins_task_key.pub
+    dest: ~/.ssh
+    mode: preserve
