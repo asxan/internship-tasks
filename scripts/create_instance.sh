@@ -137,14 +137,14 @@ DNS_NAME_4="$HOSTNAME4."
 # --target-tags=$FIREWALL_RULE_FOR_JENKINS \
 # --description="The firewall rule for jenkins(8080,8081,50000,465)"
 
-gcloud compute firewall-rules create $FIREWALL_RULE_FOR_DOCKER \
---network=$NETWORK_NAME \
---action=ALLOW \
---direction=INGRESS \
---rules=$FIREWALL_RULE_FOR_DOCKER_PORTS \
---source-ranges=$ALL_RANGE \
---target-tags=$FIREWALL_RULE_FOR_DOCKER \
---description="The firewall rule for docker external connection"
+# gcloud compute firewall-rules create $FIREWALL_RULE_FOR_DOCKER \
+# --network=$NETWORK_NAME \
+# --action=ALLOW \
+# --direction=INGRESS \
+# --rules=$FIREWALL_RULE_FOR_DOCKER_PORTS \
+# --source-ranges=$ALL_RANGE \
+# --target-tags=$FIREWALL_RULE_FOR_DOCKER \
+# --description="The firewall rule for docker external connection"
 
 
 # gcloud compute project-info add-metadata \
@@ -197,32 +197,32 @@ gcloud compute firewall-rules create $FIREWALL_RULE_FOR_DOCKER \
 
 #-------------------------------------------------------------#
 
-gcloud compute instances create $INSTANCE_NAME1 \
---hostname=$HOSTNAME1 \
---labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
---machine-type=$MACHINE_TYPE \
---boot-disk-device-name=$BOOT_DISK_NAME \
---boot-disk-type=$BOOT_DISK_TYPE  \
---boot-disk-size=$BOOT_DISK_SIZE \
---image-project=$IMAGE_PROJECT \
---image=$IMAGE_TYPE \
---zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS,$FIREWALL_RULE_FOR_DOCKER \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
+# gcloud compute instances create $INSTANCE_NAME1 \
+# --hostname=$HOSTNAME1 \
+# --labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS,$FIREWALL_RULE_FOR_DOCKER \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
 
 
-gcloud compute instances create $INSTANCE_NAME2 \
---hostname=$HOSTNAME2 \
---labels ^:^name=$INSTANCE_NAME2:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
---machine-type=$MACHINE_TYPE \
---boot-disk-device-name=$BOOT_DISK_NAME \
---boot-disk-type=$BOOT_DISK_TYPE  \
---boot-disk-size=$BOOT_DISK_SIZE \
---image-project=$IMAGE_PROJECT \
---image=$IMAGE_TYPE \
---zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FOR_DOCKER \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
+# gcloud compute instances create $INSTANCE_NAME2 \
+# --hostname=$HOSTNAME2 \
+# --labels ^:^name=$INSTANCE_NAME2:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FOR_DOCKER \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
 
 
 gcloud compute instances create $INSTANCE_NAME3 \
@@ -235,24 +235,24 @@ gcloud compute instances create $INSTANCE_NAME3 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER,$FIREWALL_RULE_FOR_JENKINS \
 --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
 
 
-gcloud compute instances create $INSTANCE_NAME4 \
---hostname=$HOSTNAME4 \
---labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
---machine-type=$MACHINE_TYPE \
---boot-disk-device-name=$BOOT_DISK_NAME \
---boot-disk-type=$BOOT_DISK_TYPE  \
---boot-disk-size=$BOOT_DISK_SIZE \
---image-project=$IMAGE_PROJECT \
---image=$IMAGE_TYPE \
---zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER \
---network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
+# gcloud compute instances create $INSTANCE_NAME4 \
+# --hostname=$HOSTNAME4 \
+# --labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+# --machine-type=$MACHINE_TYPE \
+# --boot-disk-device-name=$BOOT_DISK_NAME \
+# --boot-disk-type=$BOOT_DISK_TYPE  \
+# --boot-disk-size=$BOOT_DISK_SIZE \
+# --image-project=$IMAGE_PROJECT \
+# --image=$IMAGE_TYPE \
+# --zone=$AVAILABILITY_ZONE_A \
+# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER \
+# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
 
-#-------------------------------------------------------------#
+# #-------------------------------------------------------------#
 
 # gcloud dns record-sets transaction start \
 # --zone=$MANAGED_ZONE
