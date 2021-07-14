@@ -1,0 +1,33 @@
+FROM jenkins/jnlp-slave
+
+LABEL   "name"="jenkins jnlp slave image for building petclinic with maven docker and ansible on Debian" \
+        "maintainer"="Vitalii Klymov" \ 
+        "summary"="A Jenkins maven image on Debian"
+
+ARG MAVEN_VERSION=3.6.3
+
+USER root
+
+# Install ansible and docker
+
+RUN apt-get -y update && \
+    apt-get install -y ansible wget git && \
+    curl -fsSL https://get.docker.com -o get-docker.sh && \
+    DRY_RUN=1 sh ./get-docker.sh  && \
+    apt clean all && rm -f get-docker.sh
+
+# Install Maven
+RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar xzf - -C /usr/share \
+    && mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven \
+    && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+# Set environment veriables for maven      
+ENV MAVEN_VERSION=${MAVEN_VERSION}
+ENV M2_HOME /usr/share/maven
+ENV maven.home $M2_HOME
+ENV M2 $M2_HOME/bin
+ENV PATH $M2:$PATH
+
+EXPOSE 80 443 8080 8081 465 22 50000
+    
+USER jenkins
