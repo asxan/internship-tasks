@@ -9,32 +9,26 @@ services:
             - "8080:8080"
             - "22"
             - "465:465"
-            - "443:443"
             - "50000:50000"
         volumes:
             - "$HOME/jenkins_nginx/jenkins_home:/var/jenkins_home"
         env_file:
             -  ./jenkins.env
-        # environment:
-        #     - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
+        environment:
+            - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
         networks:
             - task-net
-    # nginx:
-    #     container_name: nginx
-    #     image: ##
-    #     restart: always
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #         - "8080:8080"
-    #         - "8081:8081"
-    #     volumes:
-    #         - "$HOME/jenkins_nginx/nginx_home:/var/jenkins_home"
-    #     env_file:
-    #         - ./nginx.env
-    #     environment:
-    #         - VAR1="Hello world"
-    #     networks:
-    #         - task-net
+    nginx:
+        container_name: nginx
+        image: asxan/nginx_ssl:0.7
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080"
+        # volumes:
+        #     - "$HOME/jenkins_nginx/nginx_home:/etc/nginx"
+        networks:
+            - task-net
 networks:
     task-net:

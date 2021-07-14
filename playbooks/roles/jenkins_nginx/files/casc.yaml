@@ -1,23 +1,131 @@
 jenkins:
-  systemMessage: "Jenkins Configured automaticaly by Jenkins Configuration as Code plugin"
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
   authorizationStrategy:
-    roleBased:
-      roles:
-        global: 
-          - name: "${JENKINS_ADMIN_ID}"
-            description: "Jenkins administrator"
-            permissions:
-              - "Overall/Administer:admin"
-              - "Overall/Read:authenticated"
-            assignments:
-              - "${JENKINS_ADMIN_ID}"
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  labelAtoms:
+  - name: "master"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
   securityRealm:
     local:
-      allowSignup: false
+      allowsSignup: false
+      enableCaptcha: false
       users:
-        - id: ${JENKINS_ADMIN_ID}
-          password: ${JENKINS_ADMIN_PASSWORD}
+      - id: ${JENKINS_ADMIN_ID}
+        password: ${JENKINS_ADMIN_PASSWORD}
+        name: "Vitalii Klymov"
+        properties:
+        - preferredProvider:
+            providerId: "default"
+        - "timezone"
+        - mailer:
+            emailAddress: "klimov09032000@gmail.com"
+        - "apiToken"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  sSHD:
+    port: -1
+unclassified:
+  appInsightsGlobalConfig:
+    appInsightsEnabled: true
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody: |-
+      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
 
-# unclassified:
-#   local:
-#     url: https://
+      Check console output at $BUILD_URL to view the results.
+    defaultContentType: "text/plain"
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultTriggerIds:
+    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+    mailAccount:
+      smtpPassword: "${JENKINS_SMTP_PASSWORD}"
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: -1
+    precedenceBulk: false
+    watchingEnabled: false
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    hookUrl: "https://petclinic.asxan.ml/github-webhook/"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "https://petclinic.asxan.ml/"
+  mailer:
+    authentication:
+      password: "${JENKINS_SMTP_PASSWORD}"
+      username: "klimov09032000@gmail.com"
+    charset: "UTF-8"
+    defaultSuffix: "@gmail.com"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+  sshPublisher:
+    commonConfig:
+      disableAllExec: false
+      encryptedPassphrase: "{AQAAABAAAAAQalwCp+xRcK3fdFG5eNdIHiGsKYoN+xKl2gfTPwqEIY4=}"
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+tool:
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
