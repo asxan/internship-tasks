@@ -35,6 +35,8 @@ FIREWALL_RULE_NEXUS_PORTS="tcp:8081"
 FIREWALL_RULE_FROM_NETWORK="rule-anywhere"
 FIREWALL_RULE_FOR_JENKINS="jenkins-master-ports"
 FIREWALL_RULE_FOR_JENKINS_PORTS="tcp:8080,tcp:8081,tcp:465,tcp:50000"
+FIREWALL_RULE_FOR_DOCKER="docker-port"
+FIREWALL_RULE_FOR_DOCKER_PORTS="tcp:2375"
 
 INSTANCE_NAME1="jenkins-nginx-instance"
 INSTANCE_NAME2="nexus-instance"
@@ -135,6 +137,16 @@ DNS_NAME_4="$HOSTNAME4."
 # --target-tags=$FIREWALL_RULE_FOR_JENKINS \
 # --description="The firewall rule for jenkins(8080,8081,50000,465)"
 
+gcloud compute firewall-rules create $FIREWALL_RULE_FOR_DOCKER \
+--network=$NETWORK_NAME \
+--action=ALLOW \
+--direction=INGRESS \
+--rules=$FIREWALL_RULE_FOR_DOCKER_PORTS \
+--source-ranges=$ALL_RANGE \
+--target-tags=$FIREWALL_RULE_FOR_DOCKER \
+--description="The firewall rule for docker external connection"
+
+
 # gcloud compute project-info add-metadata \
 # --metadata-from-file \
 # ssh-keys=$SSH_KEY
@@ -195,7 +207,7 @@ gcloud compute instances create $INSTANCE_NAME1 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS,$FIREWALL_RULE_FOR_DOCKER \
 --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
 
 
@@ -209,7 +221,7 @@ gcloud compute instances create $INSTANCE_NAME2 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FOR_DOCKER \
 --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
 
 
@@ -223,7 +235,7 @@ gcloud compute instances create $INSTANCE_NAME3 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER \
 --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
 
 
@@ -237,7 +249,7 @@ gcloud compute instances create $INSTANCE_NAME4 \
 --image-project=$IMAGE_PROJECT \
 --image=$IMAGE_TYPE \
 --zone=$AVAILABILITY_ZONE_A \
---tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK \
+--tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER \
 --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
 
 #-------------------------------------------------------------#
