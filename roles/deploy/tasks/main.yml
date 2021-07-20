@@ -1,0 +1,38 @@
+---
+# tasks file for deploy
+- block: # Create dirs
+    
+    - name: "Create dir for app"
+      file:
+        path: "/home/vklymov/{{ item.dir }}"
+        state: directory
+      loop:
+        - { dir: petclinic }
+    
+    - name: "Create pet home dir"
+      file:
+        path: "/home/vklymov/petclinic/pet_home"
+        state: directory
+        mode: "077"
+
+    - name: "Create compose dir"
+      file:
+        path: "/home/vklymov/petclinic/docker_compose"
+        state: directory
+
+- block: # Copy files
+    
+    - name: "Copy docker compose and env files"
+      copy:
+        src: "{{ item.path_to_file }}"
+        dest: /home/vklymov/petclinic/docker_compose
+        mode: preserve
+      loop:
+        - "{ path_to_file: ../files/petclinic-docker-compose.yaml }"
+        - "{ path_to_file: ../files/mysql.env }"
+        - "{ path_to_file: ../files/pet.env }"
+
+- block: #Compose up stack
+
+    - name: "Start pet compose"
+      shell: docker-compose -f /home/vklymov/petclinic/docker_compose/petclinic-docker-compose.yaml up -d
