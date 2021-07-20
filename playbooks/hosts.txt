@@ -1,6 +1,6 @@
 [jenkins_nginx]
 Jenkins_Nginx ansible_host=35.223.255.116
-#jenkins-nginx.asxan.ml.
+#jenkins-nginx.asxan.ml.  ###
 
 [nexus_server]
 Nexus_Server ansible_host=34.121.65.36
