@@ -66,7 +66,7 @@ IMAGE_PROJECT="centos-cloud"
 
 SSH_KEY="/Users/vklymov/.ssh/gcloud_gridkey.pub"
 
-
+ZONE_NAME="asxan"
 MANAGED_ZONE="asxan.ml."
 TTL=300
 RECORD_TYPE_A="A"
@@ -79,7 +79,7 @@ DNS_NAME_4="$HOSTNAME4."
 # #-------------------------------------------------------------#
 
 ALERT_VAR=$(gcloud compute networks list | grep -o $NETWORK_NAME)
-if [ "$ALERT_VAR1" == "$NETWORK_NAME" ]; then
+if [ "$ALERT_VAR" == "$NETWORK_NAME" ]; then
 
     echo """Network with name $NETWORK_NAME has already been existed! 
         Please change network name and other configuration of this resource if you need it"""
@@ -97,7 +97,7 @@ ALERT_VAR=$(gcloud compute networks subnets list | grep -o $PUBLIC_SUBNET_NAME)
 if [ "$ALERT_VAR" == "$PUBLIC_SUBNET_NAME" ]; then
 
     echo """Subnet with name $PUBLIC_SUBNET_NAME has already been existed! 
-    Please change subnet name and other configuration of this resource if you need it"""
+    Please change subnet name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -113,8 +113,8 @@ fi
 ALERT_VAR=$(gcloud compute networks subnets list | grep -o $PRIVATE_SUBNET_NAME)
 if [ "$ALERT_VAR" == "$PRIVATE_SUBNET_NAME" ]; then
 
-    echo """Subnet with name $PRIVATE_SUBNET_NAME has already been existed! 
-    Please change subner name and other configuration of this resource if you need it"""
+    echo """Subnet with name $PRIVATE_SUBNET_NAME has already been existed!
+    Please change subner name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -132,7 +132,7 @@ ALERT_VAR=$(gcloud compute routers list | grep -o $ROUTER_NAME)
 if [ "$ALERT_VAR" == "$ROUTER_NAME" ]; then
 
     echo """Router with name $ROUTER_NAME has already been existed! 
-    Please change router name and other configuration of this resource if you need it"""
+    Please change router name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -147,7 +147,7 @@ ALERT_VAR=$(gcloud compute routers nats list --router=$ROUTER_NAME --router-regi
 if [ "$ALERT_VAR" == "$NAT_GATEWAY_NAME" ]; then
 
     echo """Nat gateway with name $NAT_GATEWAY_NAME has already been existed! 
-    Please change nat gateway name and other configuration of this resource if you need it"""
+    Please change nat gateway name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -166,7 +166,7 @@ ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_SSH_HTT
 if [ "$ALERT_VAR" == "$FIREWALL_RULE_SSH_HTTP" ]; then
 
     echo """Firewall rule with name $FIREWALL_RULE_SSH_HTTP has already been existed! 
-    Please change Firewall rule name and other configuration of this resource if you need it"""
+    Please change Firewall rule name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -180,28 +180,28 @@ else
 fi
 
 
-# ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_FROM_NETWORK)
-# if [ "$ALERT_VAR" == "$FIREWALL_RULE_FROM_NETWORK" ]; then
+ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_FROM_NETWORK)
+if [ "$ALERT_VAR" == "$FIREWALL_RULE_FROM_NETWORK" ]; then
 
-#     echo """Firewall rule with name $FIREWALL_RULE_FROM_NETWORK has already been existed! 
-#     Please change Firewall rule name and other configuration of this resource if you need it"""
+    echo """Firewall rule with name $FIREWALL_RULE_FROM_NETWORK has already been existed! 
+    Please change Firewall rule name and other configuration of this resource if you need it\n"""
 
-# else
+else
 
-#     gcloud compute firewall-rules create $FIREWALL_RULE_FROM_NETWORK \
-#     --network=$NETWORK_NAME \
-#     --allow="tcp,udp" \
-#     --source-ranges=$PUBLIC_RANGE \
-#     --description="It is firewall rule which allow all ports connections from anywhere in the network"
+    gcloud compute firewall-rules create $FIREWALL_RULE_FROM_NETWORK \
+    --network=$NETWORK_NAME \
+    --allow="tcp,udp" \
+    --source-ranges=$PUBLIC_RANGE \
+    --description="It is firewall rule which allow all ports connections from anywhere in the network"
 
-# fi
+fi
 
 
 ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_NEXUS)
 if [ "$ALERT_VAR" == "$FIREWALL_RULE_NEXUS" ]; then
 
     echo """Firewall rule with name $FIREWALL_RULE_NEXUS has already been existed! 
-    Please change Firewall rule name and other configuration of this resource if you need it"""
+    Please change Firewall rule name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -220,7 +220,7 @@ ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_FOR_JEN
 if [ "$ALERT_VAR" == "$FIREWALL_RULE_FOR_JENKINS" ]; then
 
     echo """Firewall rule with name $FIREWALL_RULE_FOR_JENKINS has already been existed! 
-    Please change Firewall rule name and other configuration of this resource if you need it"""
+    Please change Firewall rule name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -237,11 +237,11 @@ fi
 
 
 
-ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_FOR_JENKINS)
-if [ "$ALERT_VAR" == "$FIREWALL_RULE_FOR_JENKINS" ]; then
+ALERT_VAR=$(gcloud compute firewall-rules list | grep  -o $FIREWALL_RULE_FOR_DOCKER)
+if [ "$ALERT_VAR" == "$FIREWALL_RULE_FOR_DOCKER" ]; then
 
-    echo """Firewall rule with name $FIREWALL_RULE_FOR_JENKINS has already been existed! 
-    Please change Firewall rule name and other configuration of this resource if you need it"""
+    echo """Firewall rule with name $FIREWALL_RULE_FOR_DOCKER has already been existed! 
+    Please change Firewall rule name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -267,7 +267,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_EXTERNAL_IP_NAME1)
 if [ "$ALERT_VAR" == "$RESERVE_EXTERNAL_IP_NAME1" ]; then
 
     echo """External ip with name $RESERVE_EXTERNAL_IP_NAME1 has already been existed! 
-    Please change exteranal ip name and other configuration of this resource if you need it"""
+    Please change exteranal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -282,7 +282,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_INTERNAL_IP_NAME1)
 if [ "$ALERT_VAR" == "$RESERVE_INTERNAL_IP_NAME1" ]; then
 
     echo """Internal ip with name $RESERVE_INTERNAL_IP_NAME1 has already been existed! 
-    Please change internal ip name and other configuration of this resource if you need it"""
+    Please change internal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -298,7 +298,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_EXTERNAL_IP_NAME2)
 if [ "$ALERT_VAR" == "$RESERVE_EXTERNAL_IP_NAME2" ]; then
 
     echo """External ip with name $RESERVE_EXTERNAL_IP_NAME2 has already been existed! 
-    Please change exteranal ip name and other configuration of this resource if you need it"""
+    Please change exteranal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -313,7 +313,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_INTERNAL_IP_NAME2)
 if [ "$ALERT_VAR" == "$RESERVE_INTERNAL_IP_NAME2" ]; then
 
     echo """Internal ip with name $RESERVE_INTERNAL_IP_NAME2 has already been existed! 
-    Please change internal ip name and other configuration of this resource if you need it"""
+    Please change internal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -329,7 +329,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_EXTERNAL_IP_NAME3)
 if [ "$ALERT_VAR" == "$RESERVE_EXTERNAL_IP_NAME3" ]; then
 
     echo """External ip with name $RESERVE_EXTERNAL_IP_NAME3 has already been existed! 
-    Please change exteranal ip name and other configuration of this resource if you need it"""
+    Please change exteranal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -344,7 +344,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_INTERNAL_IP_NAME3)
 if [ "$ALERT_VAR" == "$RESERVE_INTERNAL_IP_NAME3" ]; then
 
     echo """Internal ip with name $RESERVE_INTERNAL_IP_NAME3 has already been existed! 
-    Please change internal ip name and other configuration of this resource if you need it"""
+    Please change internal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -360,7 +360,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_EXTERNAL_IP_NAME4)
 if [ "$ALERT_VAR" == "$RESERVE_EXTERNAL_IP_NAME4" ]; then
 
     echo """External ip with name $RESERVE_EXTERNAL_IP_NAME4 has already been existed! 
-    Please change exteranal ip name and other configuration of this resource if you need it"""
+    Please change exteranal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -375,7 +375,7 @@ ALERT_VAR=$(gcloud compute addresses list | grep  -o $RESERVE_INTERNAL_IP_NAME4)
 if [ "$ALERT_VAR" == "$RESERVE_INTERNAL_IP_NAME4" ]; then
 
     echo """Internal ip with name $RESERVE_INTERNAL_IP_NAME4 has already been existed! 
-    Please change internal ip name and other configuration of this resource if you need it"""
+    Please change internal ip name and other configuration of this resource if you need it\n"""
 
 else
 
@@ -388,92 +388,188 @@ fi
 
 #-------------------------------------------------------------#
 
-# gcloud compute instances create $INSTANCE_NAME1 \
-# --hostname=$HOSTNAME1 \
-# --labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
-# --machine-type=$MACHINE_TYPE \
-# --boot-disk-device-name=$BOOT_DISK_NAME \
-# --boot-disk-type=$BOOT_DISK_TYPE  \
-# --boot-disk-size=$BOOT_DISK_SIZE \
-# --image-project=$IMAGE_PROJECT \
-# --image=$IMAGE_TYPE \
-# --zone=$AVAILABILITY_ZONE_A \
-# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_JENKINS,$FIREWALL_RULE_FOR_DOCKER \
-# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
+
+ALERT_VAR=$(gcloud compute instances list | grep  -o $INSTANCE_NAME1)
+if [ "$ALERT_VAR" == "$INSTANCE_NAME1" ]; then
+
+    echo """Instance with name $INSTANCE_NAME1 has already been existed! 
+    Please change instance's name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud compute instances create $INSTANCE_NAME1 \
+    --hostname=$HOSTNAME1 \
+    --labels ^:^name=$INSTANCE_NAME1:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+    --machine-type=$MACHINE_TYPE \
+    --boot-disk-device-name=$BOOT_DISK_NAME \
+    --boot-disk-type=$BOOT_DISK_TYPE  \
+    --boot-disk-size=$BOOT_DISK_SIZE \
+    --image-project=$IMAGE_PROJECT \
+    --image=$IMAGE_TYPE \
+    --zone=$AVAILABILITY_ZONE_A \
+    --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FOR_JENKINS,$FIREWALL_RULE_FOR_DOCKER \
+    --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME1:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME1
+fi
 
 
-# gcloud compute instances create $INSTANCE_NAME2 \
-# --hostname=$HOSTNAME2 \
-# --labels ^:^name=$INSTANCE_NAME2:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
-# --machine-type=$MACHINE_TYPE \
-# --boot-disk-device-name=$BOOT_DISK_NAME \
-# --boot-disk-type=$BOOT_DISK_TYPE  \
-# --boot-disk-size=$BOOT_DISK_SIZE \
-# --image-project=$IMAGE_PROJECT \
-# --image=$IMAGE_TYPE \
-# --zone=$AVAILABILITY_ZONE_A \
-# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FOR_DOCKER \
-# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
+
+ALERT_VAR=$(gcloud compute instances list | grep  -o $INSTANCE_NAME2)
+if [ "$ALERT_VAR" == "$INSTANCE_NAME2" ]; then
+
+    echo """Instance with name $INSTANCE_NAME2 has already been existed! 
+    Please change instance's name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud compute instances create $INSTANCE_NAME2 \
+    --hostname=$HOSTNAME2 \
+    --labels ^:^name=$INSTANCE_NAME2:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+    --machine-type=$MACHINE_TYPE \
+    --boot-disk-device-name=$BOOT_DISK_NAME \
+    --boot-disk-type=$BOOT_DISK_TYPE  \
+    --boot-disk-size=$BOOT_DISK_SIZE \
+    --image-project=$IMAGE_PROJECT \
+    --image=$IMAGE_TYPE \
+    --zone=$AVAILABILITY_ZONE_A \
+    --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FOR_DOCKER \
+    --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME2:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME2
+
+fi
 
 
-# gcloud compute instances create $INSTANCE_NAME3 \
-# --hostname=$HOSTNAME3 \
-# --labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
-# --machine-type=$MACHINE_TYPE \
-# --boot-disk-device-name=$BOOT_DISK_NAME \
-# --boot-disk-type=$BOOT_DISK_TYPE  \
-# --boot-disk-size=$BOOT_DISK_SIZE \
-# --image-project=$IMAGE_PROJECT \
-# --image=$IMAGE_TYPE \
-# --zone=$AVAILABILITY_ZONE_A \
-# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER,$FIREWALL_RULE_FOR_JENKINS \
-# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
+ALERT_VAR=$(gcloud compute instances list | grep  -o $INSTANCE_NAME3)
+if [ "$ALERT_VAR" == "$INSTANCE_NAME3" ]; then
+
+    echo """Instance with name $INSTANCE_NAME3 has already been existed! 
+    Please change instance's name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud compute instances create $INSTANCE_NAME3 \
+    --hostname=$HOSTNAME3 \
+    --labels ^:^name=$INSTANCE_NAME3:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+    --machine-type=$MACHINE_TYPE \
+    --boot-disk-device-name=$BOOT_DISK_NAME \
+    --boot-disk-type=$BOOT_DISK_TYPE  \
+    --boot-disk-size=$BOOT_DISK_SIZE \
+    --image-project=$IMAGE_PROJECT \
+    --image=$IMAGE_TYPE \
+    --zone=$AVAILABILITY_ZONE_A \
+    --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_NEXUS,$FIREWALL_RULE_FOR_DOCKER,$FIREWALL_RULE_FOR_JENKINS \
+    --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME3:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME3
+
+fi
 
 
-# gcloud compute instances create $INSTANCE_NAME4 \
-# --hostname=$HOSTNAME4 \
-# --labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
-# --machine-type=$MACHINE_TYPE \
-# --boot-disk-device-name=$BOOT_DISK_NAME \
-# --boot-disk-type=$BOOT_DISK_TYPE  \
-# --boot-disk-size=$BOOT_DISK_SIZE \
-# --image-project=$IMAGE_PROJECT \
-# --image=$IMAGE_TYPE \
-# --zone=$AVAILABILITY_ZONE_A \
-# --tags=$FIREWALL_RULE_SSH_HTTP,$FIREWALL_RULE_FROM_NETWORK,$FIREWALL_RULE_FOR_DOCKER \
-# --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
+ALERT_VAR=$(gcloud compute instances list | grep  -o $INSTANCE_NAME4)
+if [ "$ALERT_VAR" == "$INSTANCE_NAME4" ]; then
+
+    echo """Instance with name $INSTANCE_NAME4 has already been existed! 
+    Please change instance's name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud compute instances create $INSTANCE_NAME4 \
+    --hostname=$HOSTNAME4 \
+    --labels ^:^name=$INSTANCE_NAME4:owner=$OWNER:subnet=$PUBLIC_SUBNET_NAME \
+    --machine-type=$MACHINE_TYPE \
+    --boot-disk-device-name=$BOOT_DISK_NAME \
+    --boot-disk-type=$BOOT_DISK_TYPE  \
+    --boot-disk-size=$BOOT_DISK_SIZE \
+    --image-project=$IMAGE_PROJECT \
+    --image=$IMAGE_TYPE \
+    --zone=$AVAILABILITY_ZONE_A \
+    --tags=$FIREWALL_RULE_SSH_HTTP \
+    --network-interface ^:^address=$RESERVE_EXTERNAL_IP_NAME4:network=$NETWORK_NAME:subnet=$PUBLIC_SUBNET_NAME:private-network-ip=$RESERVE_INTERNAL_IP_NAME4
+
+fi
 
 # #-------------------------------------------------------------#
+
+
+ALERT_VAR=$(gcloud dns managed-zones list | grep -o "$ZONE_NAME" | head -n 1 )
+if [ "$ALERT_VAR" == "$ZONE_NAME" ]; then
+
+    echo """Dns zone  with the same name $ZONE_NAME has already been existed! 
+    Please change internal ip name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud dns managed-zones create $ZONE_NAME \
+    --dns-name=$MANAGED_ZONE \
+    --description="This dns zone for tasks  public"
+
+fi
+
 
 # gcloud dns record-sets transaction start \
 # --zone=$MANAGED_ZONE
 
+ALERT_VAR=$(gcloud dns record-sets list --zone="$ZONE_NAME"| grep -o "$DNS_NAME_1")
+if [ "$ALERT_VAR" == "$DNS_NAME_1" ]; then
 
-# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME1 \
-# --name=$DNS_NAME_1 \
-# --ttl=$TTL \
-# --type=$RECORD_TYPE_A \
-# --zone=$MANAGED_ZONE
+    echo """Dns name  with the same name: $DNS_NAME_1 has already been existed! 
+    Please change dns record name and other configuration of this resource if you need it\n"""
 
+else
 
-# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME2 \
-# --name=$DNS_NAME_2 \
-# --ttl=$TTL \
-# --type=$RECORD_TYPE_A \
-# --zone=$MANAGED_ZONE
+    gcloud dns record-sets create $DNS_NAME_1 \
+    --rrdatas=$(gcloud compute addresses list | grep "$RESERVE_EXTERNAL_IP_NAME1" | awk '{ print $2; }' ) \
+    --ttl=$TTL \
+    --type=$RECORD_TYPE_A \
+    --zone=$ZONE_NAME
 
-
-# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME3 \
-# --name=$DNS_NAME_3 \
-# --ttl=$TTL \
-# --type=$RECORD_TYPE_A \
-# --zone=$MANAGED_ZONE
+fi
 
 
-# gcloud dns record-sets transaction add $RESERVE_EXTERNAL_IP_NAME4 \
-# --name=$DNS_NAME_4 \
-# --ttl=$TTL \
-# --type=$RECORD_TYPE_A \
-# --zone=$MANAGED_ZONE
+ALERT_VAR=$(gcloud dns record-sets list --zone="$ZONE_NAME"| grep -o "$DNS_NAME_2")
+if [ "$ALERT_VAR" == "$DNS_NAME_2" ]; then
+
+    echo """Dns name  with the same name: $DNS_NAME_2 has already been existed! 
+    Please change dns record name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud dns record-sets create $DNS_NAME_2 \
+    --rrdatas=$(gcloud compute addresses list | grep "$RESERVE_EXTERNAL_IP_NAME2" | awk '{ print $2; }' ) \
+    --ttl=$TTL \
+    --type=$RECORD_TYPE_A \
+    --zone=$ZONE_NAME
+
+fi
+
+
+ALERT_VAR=$(gcloud dns record-sets list --zone="$ZONE_NAME"| grep -o "$DNS_NAME_3")
+if [ "$ALERT_VAR" == "$DNS_NAME_3" ]; then
+
+    echo """Dns name  with the same name: $DNS_NAME_3 has already been existed! 
+    Please change dns record name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud dns record-sets create $DNS_NAME_3 \
+    --rrdatas=$(gcloud compute addresses list | grep "$RESERVE_EXTERNAL_IP_NAME3" | awk '{ print $2; }' ) \
+    --ttl=$TTL \
+    --type=$RECORD_TYPE_A \
+    --zone=$ZONE_NAME
+
+fi
+
+
+ALERT_VAR=$(gcloud dns record-sets list --zone="$ZONE_NAME"| grep -o "$DNS_NAME_4")
+if [ "$ALERT_VAR" == "$DNS_NAME_4" ]; then
+
+    echo """Dns name  with the same name: $DNS_NAME_4 has already been existed! 
+    Please change dns record name and other configuration of this resource if you need it\n"""
+
+else
+
+    gcloud dns record-sets create $DNS_NAME_4 \
+    --rrdatas=$(gcloud compute addresses list | grep "$RESERVE_EXTERNAL_IP_NAME4" | awk '{ print $2; }' ) \
+    --ttl=$TTL \
+    --type=$RECORD_TYPE_A \
+    --zone=$ZONE_NAME
+
+fi
 
 #-------------------------------------------------------------#
