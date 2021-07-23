@@ -2,17 +2,34 @@
 #tasks file for jenkins
   - block: #Block for All
 
-    - name: "Create jenkins_nginx folder"
+    - name: "Create jenkins_nginx dir"
       file:
-        path: '/home/vklymov/jenkins_nginx'
+        path: "/home/vklymov/jenkins_nginx"
         state: directory
+        mode: 0776
+        recurse: yes
 
-    - name: "Create Compose dir"
+    - name: "Create compose dir"
       file:
         path: "/home/vklymov/jenkins_nginx/docker_compose"
         state: directory
-        mode: '0776'
+        mode: 0776
+        recurse: yes
 
+    - name: "Create jenkins_home dir"
+      file:
+        path: "/home/vklymov/jenkins_nginx/jenkins_home"
+        state: directory
+        mode: 0777
+        recurse: yes
+    
+    - name: "Create nginx_home dir"
+      file:
+        path: "/home/vklymov/jenkins_nginx/nginx_home"
+        state: directory
+        mode: 0777
+        recurse: yes
+  
     # - name: Delete compose file if exist
     #   file:
     #     path: /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml
@@ -25,20 +42,15 @@
         dest: /home/vklymov/jenkins_nginx/docker_compose
         mode: preserve
 
+    - name: "Pull image Jenkins and nexus"
+      shell: docker pull "asxan/jenkins_cus:0.0.5"
+
+    - name: "Pull image Jenkins and nexus"
+      shell: docker pull "asxan/nginx_ssl:0.8"
+
 
   - block:  # Block for Jenkins
 
-    - name: "Pull image Jenkins"
-      shell: docker pull asxan/jenkins_cus:0.0.4
-
-    - name: "Create jenkins_home"
-      file:
-        path: '/home/vklymov/jenkins_nginx/{{ item.dir }}'
-        state: directory
-        mode: '0777'
-      loop:
-        - { dir: jenkins_home }
-    
     - name: "Create casc_configs folder"
       file:
         path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
@@ -75,27 +87,16 @@
       notify: "Restart Jenkins"
 
 
-  # - block:
+  - block: # For nginx
 
-  #   - name: "Create nginx_home"
-  #     file:
-  #       path: '/home/vklymov/jenkins_nginx/{{ item.dir }}'
-  #       state: directory
-  #       mode: '0777'
-  #     loop:
-  #       - { dir: nginx_home }
+    - name: "Copy jenkins-nexus-petclinic  conf file"
+      copy:
+        src: ../files/jenkins-nexus-petclinic.conf
+        dest: /home/vklymov/jenkins_nginx/nginx_home
+        mode: preserve
 
-  #   - name: "Pull image nginx"
-  #     shell: docker pull asxan/nginx_ssl:0.7
-
-    # - name: "Copy jenkins-nexus-petclinic  conf file"
-    #   copy:
-    #     src: ../files/jenkins-nexus-petclinic.conf
-    #     dest: /home/vklymov/jenkins_nginx/nginx_home
-    #     mode: preserve
-
-    # - name: "Start compose Nginx"
-    #   shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
-    #   args:
-    #     executable: /bin/bash
+    - name: "Start compose Nginx"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
+      args:
+        executable: /bin/bash
   

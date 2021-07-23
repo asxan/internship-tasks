@@ -2,7 +2,7 @@ version: "3.9"
 services:
     jenkins:
         container_name: jenkins
-        image: asxan/jenkins_cus:0.0.4
+        image: asxan/jenkins_cus:0.0.5
         restart: always 
         ports:
             - "8081:8081"
@@ -20,7 +20,7 @@ services:
             - task-net
     nginx:
         container_name: nginx
-        image: asxan/nginx_ssl:0.7
+        image: asxan/nginx_ssl:0.8
         restart: always
         ports:
             - "80:80"

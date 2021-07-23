@@ -1,68 +1,65 @@
 ---
 # tasks file for docker_install
-  - name: "Check if Docker is installed"
-    command: systemctl status docker
-    register: docker_check
-    ignore_errors: yes
 
-  - name: "Clean yum cache"
-    shell: yum clean all
-    become: yes
+  - block: # Check if docker and docker-compose are installed
 
-  - name: "Install docker packages"
-    yum:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - yum-utils
-    when: docker_check.stderr.find('service could not be found') != -1
+      - name: "Check if Docker is installed"
+        command:  systemctl status docker
+        register: docker_check
+        ignore_errors: yes
+
+      - name: "Check if docker-compose is installed"
+        command:  docker-compose --version
+        register: compose_check
+        ignore_errors: yes
 
 
-  - name: "Download the Docker Installer"
-    get_url:
-      url: https://get.docker.com
-      dest: /root/get-docker.sh
-      mode: 0700
-    when: docker_check.stderr.find('service could not be found') != -1
+  - block: 
 
-  - name: "Install Docker"
-    shell: /root/get-docker.sh
-    when: docker_check.stderr.find('service could not be found') != -1
-    notify: "Remove the Docker installer file"
-  
-  - name: "Start Docker"
-    service:
-      name: docker
-      state: started
-      enabled: yes
-      masked: no
+    - name: "Clean yum cache"
+      shell: yum clean all
+      become: yes
 
-  - name: "Enable the Docker daemond in systemd"
-    systemd:
-      name: docker
-      enabled: yes
-      masked: no
+    - name: "Download the Docker Installer"
+      get_url:
+        url: https://get.docker.com
+        dest: /root/get-docker.sh
+        mode: 0700
+      when: docker_check.stderr.find('service could not be found') != -1
 
-  - name: "Add user to docker group"
-    user:
-      name: "{{ item.user }}"
-      groups: docker
-      append: yes
-    loop:
-      - { user: vklymov }
-      - { user: root  }
+    - name: "Install Docker"
+      shell: /root/get-docker.sh
+      when: docker_check.stderr.find('service could not be found') != -1
+      notify: "Remove the Docker installer file"
+    
+    - name: "Start Docker"
+      service:
+        name: docker
+        state: started
+        enabled: yes
+        masked: no
+
+    - name: "Enable the Docker daemond in systemd"
+      systemd:
+        name: docker
+        enabled: yes
+        masked: no
+
+    - name: "Add user to docker group"
+      user:
+        name: "{{ item.user }}"
+        groups: docker
+        append: yes
+      loop:
+        - { user: vklymov }
+        - { user: root  }
 
 
-  - name: "Check if Docker Compose is installed"
-    command: docker-compose --version
-    register: compose_check
-    ignore_errors: yes
-
-  - name: "Install Docker Compose"
-    get_url:
-      url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-      dest: /usr/local/bin/docker-compose
-      mode: 0777
-    when:
-      - compose_check.msg.find("No such file or directory") != -1
-    notify: "Hard link for root user"
+    - name: "Install Docker Compose"
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: 0777
+      when:
+        - compose_check.msg.find("No such file or directory") != -1
+      notify: "Hard link for root user"

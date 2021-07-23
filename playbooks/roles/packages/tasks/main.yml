@@ -1,46 +1,47 @@
 ---
 # tasks file for packages
-  - name: "Yum upgrade all packages"
-    yum:
-      name: '*'
-      state: latest
-      update_cache: yes
 
-  - name: "Enable Epel Repository"
-    yum:
-      name: epel-release
-      state: latest
-    when: ansible_facts['os_family'] == 'RedHat' and ansible_facts
-      ['distribution_major_version'] == '7'
+  - name: "Check if Docker is installed"
+    command: systemctl status docker
+    register: docker_check
+    ignore_errors: yes
 
-  - name: "Install git"
-    yum:
-      name: git
-      state: present
-      update_cache: yes
+  - block:
 
-  - name: "Install pip"
-    yum:
-      name: python-pip
-      state: latest
+      # - name: "Yum upgrade all packages"
+      #   yum:
+      #     name: '*'
+      #     state: latest
+      #     update_cache: yes
 
 
-  - name: install PyYAML
-    pip:
-      name: "{{ item.name }}"
-      version: "{{ item.version }}"
-    with_items:
-      - { name: PyYAML, version: 5.4.1 }
+      - name: "Enable Epel Repository"
+        yum:
+          name: epel-release
+          state: latest
+        when: ansible_facts['os_family'] == 'RedHat' and ansible_facts
+          ['distribution_major_version'] == '7'
 
 
-  - name: "Install python-docker"
-    yum:
-      name: python-docker
-      state: present
+      - name: "Install git, pip, python-docker, yum-utils"
+        yum:
+          name: "{{ item.package }}"
+          state: present
+          update_cache: yes
+        with_items:
+          - { package: git }
+          - { package: python-pip }
+          - { package: python-docker }
+          - { package: yum-utils }
 
-  - name: install certain python modules for docker
-    pip:
-      name: "{{ item.name }}"
-      version: "{{ item.version }}"
-    with_items:
-    - { name: docker-py, version: 1.10.6 }
+
+      - name: install PyYAML and install certain python modules for docker
+        pip:
+          name: "{{ item.name }}"
+          version: "{{ item.version }}"
+        with_items:
+          - { name: PyYAML, version: 5.4.1 }
+          - { name: docker-py, version: 1.10.6 }
+    
+    
+    when: docker_check.stderr.find('service could not be found') != -1
