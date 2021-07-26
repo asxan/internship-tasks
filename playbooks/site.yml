@@ -8,12 +8,12 @@
 #     - packages
 #     - docker_install
 
-# - name: "Provision Jenkins"
-#   hosts: jenkins_nginx
-#   gather_facts: yes
+- name: "Provision Jenkins"
+  hosts: jenkins_nginx
+  gather_facts: yes
 
-#   roles:
-#     - jenkins_nginx
+  roles:
+    - jenkins_nginx
 
 - name: "Provision slave"
   hosts: slave_server
