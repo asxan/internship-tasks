@@ -17,7 +17,7 @@
     loop:
       - { source: ../files/daemon.json, dest: /etc/docker, mood: preserve }
       - { source: ../files/override.conf, dest: /etc/systemd/system/docker.service.d, mood: preserve }
-      - { source: ~/.ssh/jenkins_task_key.pub, dest: ~/.ssh, mood: preserve }
+      - { source: ~/.ssh/deploy_key.pub, dest: ~/.ssh, mood: preserve }
 
 
   - name: "Reload docker daemon"
