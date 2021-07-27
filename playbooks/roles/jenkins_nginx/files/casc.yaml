@@ -104,7 +104,7 @@ unclassified:
   mailer:
     authentication:
       password: "${JENKINS_SMTP_PASSWORD}"
-      username: "klimov09032000@gmail.com"
+      username: "${JENKINS_SMTP_USERNAME}"
     charset: "UTF-8"
     defaultSuffix: "@gmail.com"
     smtpHost: "smtp.gmail.com"

@@ -45,11 +45,11 @@
       name: java-11-openjdk-devel
       state: latest
     when:
-      - java_check.msg.find('command not found') != -1
+      - java_check.msg.find("command not found") != -1
 
   - name: "Install Ansible"
     yum:
       name: ansible
       state: latest
     when:
-      - ansible_check.msg.find('command not found') != -1
+      - ansible_check.msg.find("command not found") != -1

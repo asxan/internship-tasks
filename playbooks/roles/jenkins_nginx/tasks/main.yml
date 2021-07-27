@@ -46,7 +46,7 @@
       shell: docker pull "asxan/jenkins_cus:0.0.5"
 
     - name: "Pull image Jenkins and nexus"
-      shell: docker pull "asxan/nginx_ssl:0.8"
+      shell: docker pull "asxan/nginx_ssl:0.11"
 
 
   - block:  # Block for Jenkins
@@ -79,21 +79,21 @@
     - name: "Restart Jenkins"
       shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
 
-    - name: "Copy casc.yaml"
-      copy:
-        src: ../files/casc.yaml
-        dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs
-        mode: preserve
-      notify: "Restart Jenkins"
+    # - name: "Copy casc.yaml"
+    #   copy:
+    #     src: ../files/casc.yaml
+    #     dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs
+    #     mode: preserve
+    #   notify: "Restart Jenkins"
 
 
   - block: # For nginx
 
-    - name: "Copy jenkins-nexus-petclinic  conf file"
-      copy:
-        src: ../files/jenkins-nexus-petclinic.conf
-        dest: /home/vklymov/jenkins_nginx/nginx_home
-        mode: preserve
+    # - name: "Copy jenkins-nexus-petclinic  conf file"
+    #   copy:
+    #     src: ../files/jenkins-nexus-petclinic.conf
+    #     dest: /home/vklymov/jenkins_nginx/nginx_home
+    #     mode: preserve
 
     - name: "Start compose Nginx"
       shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
