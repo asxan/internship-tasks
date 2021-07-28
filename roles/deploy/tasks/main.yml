@@ -13,7 +13,7 @@
       file:
         path: "/home/vklymov/petclinic/pet_home"
         state: directory
-        mode: "077"
+        mode: "0777"
 
     - name: "Create compose dir"
       file:
@@ -27,10 +27,10 @@
         src: "{{ item.path_to_file }}"
         dest: /home/vklymov/petclinic/docker_compose
         mode: preserve
-      loop:
-        - "{ path_to_file: ../files/petclinic-docker-compose.yaml }"
-        - "{ path_to_file: ../files/mysql.env }"
-        - "{ path_to_file: ../files/pet.env }"
+      with_items:
+        - { path_to_file: ../files/petclinic-docker-compose.yaml }
+        - { path_to_file: ../files/mysql.env }
+        - { path_to_file: ../files/pet.env }
 
 - block: #Compose up stack
 
