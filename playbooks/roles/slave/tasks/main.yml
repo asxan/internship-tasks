@@ -19,6 +19,10 @@
       - { source: ../files/override.conf, dest: /etc/systemd/system/docker.service.d, mood: preserve }
       - { source: ~/.ssh/deploy_key.pub, dest: ~/.ssh, mood: preserve }
 
+  - name: "Change mood of docker.sock"
+    file:
+      dest: /var/run/docker/sock
+      mode: 666
 
   - name: "Reload docker daemon"
     shell: systemctl daemon-reload
