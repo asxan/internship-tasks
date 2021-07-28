@@ -1,0 +1,4 @@
+# Allow files
+!./*.jar
+# Deny files
+./*
