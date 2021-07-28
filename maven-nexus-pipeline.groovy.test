@@ -45,6 +45,7 @@ def mail_notification(String toRecipient, String ccRecipient, String sSubject, S
 }
 
 String nodeName = "${NODE}"
+def  customImage
 node(nodeName) 
 {   try
     {
@@ -52,7 +53,8 @@ node(nodeName)
         {   
             sh 'echo "Executing..." '
             dir("workdir")
-            {   script
+            {   
+                script
                 {
                     git branch: 'main', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/spring-petclinic.git'
                 }
@@ -69,19 +71,6 @@ node(nodeName)
             """
         }
     }  
-
-    stage("Set Version")
-    {   
-        script
-        {
-            dir("workdir")
-            {
-                def version = sh(script: '''cat pom.xml | grep -o "<version>.*</version>" | head -n 1 | sed -e 's/<version>\\(.*\\)<\\/version>/\\1/' ''', returnStdout: true).trim()
-                println ("$version")
-                sh "mvn versions:set -DnewVersion=${version}"
-            }
-        }
-    }
     stage('Compile')
     {
         dir("workdir")
@@ -112,12 +101,29 @@ node(nodeName)
     // }
     stage('Build image')
     {
-        dir("workdir/target")
+        dir("workdir")
+        {
+            sh "cp ./target/*.jar  ."
+            sh "ls -la"
+            customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}", "-f ${DOCKERFILE_NAME}  .")
+        }
+    }
+    stage("Push image")
+    {
+        docker.withRegistry("", "docker-login") 
+        {
+            customImage.push()
+            customImage.push('latest')
+        }
+    }
+    stage("Deploy petclinic")
+    {
+        dir("deploy_workdir")
         {
             script
-                {
-                    git branch: 'pet-dockerfile', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/internship-tasks.git'
-                }
+            {
+                git branch: 'main', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/spring-petclinic.git'
+            }
         }
     }
     stage ('Sending status')
