@@ -17,7 +17,6 @@
       loop:
         - { path: "/home/vklymov/petclinic/pet_home", state: "directory", mode: "0777" }
         - { path: "/home/vklymov/petclinic/mysql_home", state: "directory", mode: "0777" }
-        - { path: "/home/vklymov/petclinic/nginx_home", state: "directory", mode: "0777" }
         - { path: "/home/vklymov/petclinic/pet_home", state: "directory", mode: "0755" }
 
 
@@ -33,10 +32,8 @@
         - { path_to_file: ../files/mysql.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
         - { path_to_file: ../files/pet.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
         - { path_to_file: ../files/nginx.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
-        - { path_to_file: ../files/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: preserve  }
 
     
-
 - block: #Compose up stack
 
     - name: "Start pet compose"
