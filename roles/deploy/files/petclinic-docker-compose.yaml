@@ -2,7 +2,7 @@ version: "3.9"
 services:
     petclinic:
         container_name: petclinic
-        image: asxan/petclinick:latest
+        image: asxan/petclinick
         restart: always
         ports:  
             - "3306"
@@ -23,5 +23,22 @@ services:
             - "$HOME/petclinic/mysql_home:/etc/mysql/conf.d:rw"
         networks:
             - pet-net
+    nginx:
+        container_name: nginx_pet
+        image: asxan/nginx_pet:0.1
+        restart: always
+        ports:
+            -   "8080"
+            -   "80:80"
+            -   "443:443"
+            -   "3306"
+        env_file:
+            -   ./nginx.env
+        volumes:
+            # -   "$HOME/petclinic/nginx_home/fullchain.pem:/fullchain.pem"
+            # -   "$HOME/petclinic/nginx_home/privkey.pem:/privkey.pem"
+            -   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
+        networks:
+            -   pet-net
 networks:
     pet-net:

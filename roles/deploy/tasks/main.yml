@@ -9,22 +9,17 @@
       loop:
         - { dir: petclinic }
     
-    - name: "Create pet home dir"
+    - name: "Create pet_home, mysql_home, nginx_home, dockercompose dirs"
       file:
-        path: "/home/vklymov/petclinic/pet_home"
-        state: directory
-        mode: "0777"
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: "/home/vklymov/petclinic/pet_home", state: "directory", mode: "0777" }
+        - { path: "/home/vklymov/petclinic/mysql_home", state: "directory", mode: "0777" }
+        - { path: "/home/vklymov/petclinic/nginx_home", state: "directory", mode: "0777" }
+        - { path: "/home/vklymov/petclinic/pet_home", state: "directory", mode: "0755" }
 
-    - name: "Create mysql_home"
-      file:
-        path: "/home/vklymov/petclinic/mysql_home"
-        state: directory
-        mode: "0777"
-
-    - name: "Create compose dir"
-      file:
-        path: "/home/vklymov/petclinic/docker_compose"
-        state: directory
 
 - block: # Copy files
     
