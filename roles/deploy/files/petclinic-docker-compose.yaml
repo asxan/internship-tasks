@@ -22,7 +22,7 @@ services:
         env_file:
             - ./mysql.env
         volumes:
-            - "./conf.d:/etc/mysql/conf.d:rw"
+            - "$HOME/petclinic/mysql_home:/etc/mysql/conf.d:rw"
         networks:
             - pet-net
 networks:

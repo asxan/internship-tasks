@@ -15,6 +15,12 @@
         state: directory
         mode: "0777"
 
+    - name: "Create mysql_home"
+      file:
+        path: "/home/vklymov/petclinic/mysql_home"
+        state: directory
+        mode: "0777"
+
     - name: "Create compose dir"
       file:
         path: "/home/vklymov/petclinic/docker_compose"
