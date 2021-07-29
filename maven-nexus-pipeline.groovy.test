@@ -122,8 +122,9 @@ node(nodeName)
         {
             script
             {
-                git branch: 'main', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/spring-petclinic.git'
+                git branch: 'deploy-pet-playbook', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/internship-tasks.git'
             }
+            
         }
     }
     stage ('Sending status')
