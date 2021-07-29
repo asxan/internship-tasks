@@ -105,15 +105,15 @@ node(nodeName)
         {
             sh "cp ./target/*.jar  ."
             sh "ls -la"
-            customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}", "-f ${DOCKERFILE_NAME}  .")
+            customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}", "-f ${DOCKERFILE_NAME}  .")
         }
     }
     stage("Push image")
     {
         docker.withRegistry("", "docker-login") 
         {
-            customImage.push()
-            customImage.push('latest')
+            customImage.push("${BUILD_NUMBER}")
+            customImage.push("latest")
         }
     }
     stage("Deploy petclinic")
@@ -124,7 +124,10 @@ node(nodeName)
             {
                 git branch: 'deploy-pet-playbook', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/internship-tasks.git'
             }
-            
+            script
+            {
+                ansiblePlaybook colorized: true, credentialsId: 'deploy_ssh', disableHostKeyChecking: true, installation: 'ansible1', inventory: 'ansible.cfg', playbook: 'site.yml'
+            }
         }
     }
     stage ('Sending status')
