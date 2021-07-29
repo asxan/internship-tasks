@@ -7,8 +7,6 @@ services:
         ports:  
             - "3306"
             - "8080:8080"
-        volumes:
-            - "$HOME/petclinic/pet_home:/tmp/petclinic:rw"
         env_file:
             - ./pet.env
         networks:
