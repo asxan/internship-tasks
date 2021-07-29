@@ -25,7 +25,7 @@ services:
             - pet-net
     nginx:
         container_name: nginx_pet
-        image: asxan/nginx_pet:0.2
+        image: asxan/nginx_pet:0.3
         restart: always
         ports:
             -   "8080"
