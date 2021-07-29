@@ -6,6 +6,9 @@
     copy:
       src: "{{ item.source }}"
       dest: "{{ item.dest }}"
-      mood: "{{ item.mood }}"
+      mode: "{{ item.mood }}"
     loop:
       - { source: ~/.ssh/deploy_key.pub, dest: ~/.ssh, mood: preserve }
+
+  - name: "Add ssh key to authorized_keys file"
+    shell: "cat ~/.ssh/deploy_key.pub >> ~/.ssh/authorized_keys"
