@@ -105,7 +105,7 @@ node(nodeName)
         {
             sh "cp ./target/*.jar  ."
             sh "ls -la"
-            customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}", "-f ${DOCKERFILE_NAME}  .")
+            customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}", "-f ${DOCKERFILE_NAME}  ./target")
         }
     }
     stage("Push image")
