@@ -1,0 +1,5 @@
+[prod_server]
+Prod_Server ansible_host=prod-instance.c.gd-gcp-gd-internship-kha.internal
+
+[servers_ALL:children]
+prod_server
