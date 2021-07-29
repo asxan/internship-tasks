@@ -71,22 +71,22 @@ node(nodeName)
             """
         }
     }  
-    stage('Compile')
-    {
-        dir("workdir")
-        {
-            withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
-                sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
-            }
-            sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
-            echo "------------------------------------------"
-            sh "mvn dependency:tree"
-            sh "ls -la target/"
-            // withCredentials([usernamePassword(credentialsId: 'nexus_admin_creds', passwordVariable: 'password', usernameVariable: 'username')]) {
-            //     sh 'echo " `echo $password > ~/password.txt`"'
-            // } 
-        }
-    }
+    // stage('Compile')
+    // {
+    //     dir("workdir")
+    //     {
+    //         withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
+    //             sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
+    //         }
+    //         sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
+    //         echo "------------------------------------------"
+    //         sh "mvn dependency:tree"
+    //         sh "ls -la target/"
+    //         // withCredentials([usernamePassword(credentialsId: 'nexus_admin_creds', passwordVariable: 'password', usernameVariable: 'username')]) {
+    //         //     sh 'echo " `echo $password > ~/password.txt`"'
+    //         // } 
+    //     }
+    // }
     // stage('Push to Nexus')
     // {
     //     dir("workdir")
@@ -99,23 +99,23 @@ node(nodeName)
     //         }
     //     }
     // }
-    stage('Build image')
-    {
-        dir("workdir")
-        {
-            sh "cp ./target/*.jar  ."
-            sh "ls -la"
-            customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}", "-f ${DOCKERFILE_NAME}  ./target")
-        }
-    }
-    stage("Push image")
-    {
-        docker.withRegistry("", "docker-login") 
-        {
-            customImage.push("${BUILD_NUMBER}")
-            customImage.push("latest")
-        }
-    }
+    // stage('Build image')
+    // {
+    //     dir("workdir")
+    //     {
+    //         sh "cp ./target/*.jar  ."
+    //         sh "ls -la"
+    //         customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}", "-f ${DOCKERFILE_NAME}  ./target")
+    //     }
+    // }
+    // stage("Push image")
+    // {
+    //     docker.withRegistry("", "docker-login") 
+    //     {
+    //         customImage.push("${BUILD_NUMBER}")
+    //         customImage.push("latest")
+    //     }
+    // }
     stage("Deploy petclinic")
     {
         dir("deploy_workdir")
