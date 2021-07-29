@@ -1,1 +1,2 @@
 playbooks/hosts.txt
+playbooks/roles/jenkins_nginx/files/jenkins.env
