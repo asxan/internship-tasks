@@ -1,0 +1,11 @@
+---
+# tasks file for deploy
+- block:
+
+  - name: "Copy ssh key for deploy connection"
+    copy:
+      src: "{{ item.source }}"
+      dest: "{{ item.dest }}"
+      mood: "{{ item.mood }}"
+    loop:
+      - { source: ~/.ssh/deploy_key.pub, dest: ~/.ssh, mood: preserve }

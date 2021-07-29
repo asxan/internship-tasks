@@ -9,7 +9,7 @@
       state: directory
 
 
-  - name: "Copy daemon.json, override.conf and ssh key"
+  - name: "Copy daemon.json, override.conf"
     copy:
       src:  "{{ item.source }}"
       dest: "{{ item.dest }}"
@@ -17,7 +17,6 @@
     loop:
       - { source: ../files/daemon.json, dest: /etc/docker, mood: preserve }
       - { source: ../files/override.conf, dest: /etc/systemd/system/docker.service.d, mood: preserve }
-      - { source: ~/.ssh/deploy_key.pub, dest: ~/.ssh, mood: preserve }
 
   - name: "Change mood of docker.sock"
     file:
