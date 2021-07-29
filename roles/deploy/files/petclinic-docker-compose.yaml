@@ -34,10 +34,10 @@ services:
             -   "3306"
         env_file:
             -   ./nginx.env
-        volumes:
-            # -   "$HOME/petclinic/nginx_home/fullchain.pem:/fullchain.pem"
-            # -   "$HOME/petclinic/nginx_home/privkey.pem:/privkey.pem"
-            #-   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
+        # volumes:
+        #     # -   "$HOME/petclinic/nginx_home/fullchain.pem:/fullchain.pem"
+        #     # -   "$HOME/petclinic/nginx_home/privkey.pem:/privkey.pem"
+        #     #-   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
         networks:
             -   pet-net
 networks:
