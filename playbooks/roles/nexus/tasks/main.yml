@@ -2,5 +2,41 @@
 # tasks file for nexus
 - block:
   
-  - name:
-    shell: "ls -l"
+  - name: "Create nexus_nginx dir"
+    file:
+      path: "/home/vklymov/nexus_nginx"
+      state: directory
+      mode: 0776
+      recurse: yes
+  
+  - name: "Create compose dir, nginx_home and nexus_home  dirs"
+    file:
+      path: "{{ item.path }}"
+      state: directory
+      mode: "{{ item.mode }}"
+    loop:
+      - { path: /home/vklymov/nexus_nginx/docker_compose, mode: "0775" }
+      - { path: /home/vklymov/nexus_nginx/nginx_home, mode: "0777" }
+      - { path: /home/vklymov/nexus_nginx/nexus_home, mode: "0777" }
+  
+- block: 
+  
+  - name: "Copy files"
+    copy: 
+      src: "{{ item.source }}"
+      dest: "{{ item.dest }}"
+      mode: "{{ item.mode }}"
+      owner: "{{ item.owner }}"
+      group: "{{ item.group }}"
+    loop:
+      - { source: ../files/nexus-docker-compose.yaml, dest: /home/vklymov/nexus_nginx/docker_compose, mode: preserve, owner: vklymov, group: vklymov }
+      - { source: ../files/nexus.env, dest: /home/vklymov/nexus_nginx/docker_compose, mode: preserve, owner: vklymov, group: vklymov }
+      - { source: ../files/nginx.env, dest: /home/vklymov/nexus_nginx/docker_compose, mode: preserve, owner: vklymov, group: vklymov }
+      - { source: ../files/nexus.conf, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: vklymov, group: vklymov }
+      - { source: ../files/fullchain.pem, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: root, group: root }
+      - { source: ../files/privkey.pem, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: root, group: root }
+
+  - name: "Start compose Nexus"
+    shell: "docker-compose -f /home/vklymov/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
+    args:
+      executable: /bin/bash
