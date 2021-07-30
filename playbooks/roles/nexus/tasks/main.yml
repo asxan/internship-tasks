@@ -15,9 +15,9 @@
       state: directory
       mode: "{{ item.mode }}"
     loop:
-      - { path: /home/vklymov/nexus_nginx/docker_compose, mode: "0775" }
-      - { path: /home/vklymov/nexus_nginx/nginx_home, mode: "0777" }
-      - { path: /home/vklymov/nexus_nginx/nexus_home, mode: "0777" }
+      - { path: $HOME/nexus_nginx/docker_compose, mode: "0775" }
+      - { path: $HOME/nexus_nginx/nginx_home, mode: "0777" }
+      - { path: $HOME/nexus_nginx/nexus_home, mode: "0777" }
   
 - block: 
   
@@ -39,6 +39,6 @@
 
 
   - name: "Start compose Nexus"
-    shell: "docker-compose -f /home/vklymov/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
+    shell: "docker-compose -f $HOME/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
     args:
       executable: /bin/bash

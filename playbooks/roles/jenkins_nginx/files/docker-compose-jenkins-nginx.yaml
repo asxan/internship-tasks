@@ -20,14 +20,16 @@ services:
             - task-net
     nginx:
         container_name: nginx
-        image: asxan/nginx_ssl:0.11
+        image: nginx:stable
         restart: always
         ports:
             - "80:80"
             - "443:443"
             - "8080"
-        # volumes:
-        #     - "$HOME/jenkins_nginx/nginx_home:/etc/nginx"
+        volumes:
+            - "/home/vklymov/jenkins_nginx/nginx_home/jenkins.conf:/etc/nginx/conf.d/jenkins.conf:rw"
+            - "/home/vklymov/jenkins_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
+            - "/home/vklymov/jenkins_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
         networks:
             - task-net
 networks:

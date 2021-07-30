@@ -2,3 +2,5 @@ playbooks/hosts.txt
 playbooks/roles/jenkins_nginx/files/jenkins.env
 playbooks/roles/nexus/files/fullchain.pem
 playbooks/roles/nexus/files/privkey.pem
+playbooks/roles/jenkins_nginx/files/privkey.pem
+playbooks/roles/jenkins_nginx/files/fullchain.pem

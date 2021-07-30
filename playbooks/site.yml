@@ -8,12 +8,12 @@
 #     - packages
 #     - docker_install
 
-# - name: "Provision Jenkins"
-#   hosts: jenkins_nginx
-#   gather_facts: yes
+- name: "Provision Jenkins"
+  hosts: jenkins_nginx
+  gather_facts: yes
 
-#   roles:
-#     - jenkins_nginx
+  roles:
+    - jenkins_nginx
 
 # - name: "Provision slave"
 #   hosts: slave_server
@@ -23,12 +23,12 @@
 #   roles:
 #     - slave
 
-  - name: "Provision nexus"
-    hosts: nexus_server
-    gather_facts: yes
+  # - name: "Provision nexus"
+  #   hosts: nexus_server
+  #   gather_facts: yes
 
-    roles:
-      - nexus
+  #   roles:
+  #     - nexus
 
   # - name: "Provision deploy instance"
   #   hosts: prod_server

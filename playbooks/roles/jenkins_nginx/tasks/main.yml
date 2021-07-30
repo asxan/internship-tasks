@@ -45,39 +45,36 @@
     - name: "Pull image Jenkins and nexus"
       shell: docker pull "asxan/jenkins_cus:0.0.5"
 
-    - name: "Pull image Jenkins and nexus"
-      shell: docker pull "asxan/nginx_ssl:0.11"
 
+  # - block:  # Block for Jenkins
 
-  - block:  # Block for Jenkins
+  #   - name: "Create casc_configs folder"
+  #     file:
+  #       path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+  #       state: directory
 
-    - name: "Create casc_configs folder"
-      file:
-        path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
-        state: directory
+  #   - name: "Copy jenkins.env jenkins yml file"
+  #     copy:
+  #       src: ../files/jenkins.env
+  #       dest: /home/vklymov/jenkins_nginx/docker_compose
+  #       mode: preserve
 
-    - name: "Copy jenkins.env jenkins yml file"
-      copy:
-        src: ../files/jenkins.env
-        dest: /home/vklymov/jenkins_nginx/docker_compose
-        mode: preserve
-
-    - name: "Copy plugins.txt"
-      copy:
-        src: ../files/plugins.txt
-        dest: /home/vklymov/jenkins_nginx/jenkins_home
-        mode: preserve
+  #   - name: "Copy plugins.txt"
+  #     copy:
+  #       src: ../files/plugins.txt
+  #       dest: /home/vklymov/jenkins_nginx/jenkins_home
+  #       mode: preserve
   
-    - name: "Start compose Jenkins"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
-      args:
-        executable: /bin/bash
+  #   - name: "Start compose Jenkins"
+  #     shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
+  #     args:
+  #       executable: /bin/bash
 
-    - name: "Install plugins"
-      shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
+  #   - name: "Install plugins"
+  #     shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
 
-    - name: "Restart Jenkins"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+  #   - name: "Restart Jenkins"
+  #     shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
 
     # - name: "Copy casc.yaml"
     #   copy:
@@ -89,11 +86,18 @@
 
   - block: # For nginx
 
-    # - name: "Copy jenkins-nexus-petclinic  conf file"
-    #   copy:
-    #     src: ../files/jenkins-nexus-petclinic.conf
-    #     dest: /home/vklymov/jenkins_nginx/nginx_home
-    #     mode: preserve
+    - name: "Copy files"
+      copy: 
+        src: "{{ item.source }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - { source: ../files/jenkins.conf, dest: /home/vklymov/jenkins_nginx/nginx_home, mode: "0777", owner: vklymov, group: vklymov }
+        - { source: ../files/fullchain.pem, dest: /home/vklymov/jenkins_nginx/nginx_home, mode: "0777", owner: root, group: root }
+        - { source: ../files/privkey.pem, dest: /home/vklymov/jenkins_nginx/nginx_home, mode: "0777", owner: root, group: root }
+      become: yes
 
     - name: "Start compose Nginx"
       shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
