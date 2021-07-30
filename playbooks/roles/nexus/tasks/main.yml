@@ -35,6 +35,8 @@
       - { source: ../files/nexus.conf, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: vklymov, group: vklymov }
       - { source: ../files/fullchain.pem, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: root, group: root }
       - { source: ../files/privkey.pem, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: root, group: root }
+    become: yes
+
 
   - name: "Start compose Nexus"
     shell: "docker-compose -f /home/vklymov/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
