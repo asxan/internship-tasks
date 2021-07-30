@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+    nexus:
+        container_name: nexus
+        image: sonatype/nexus3
+        restart: always
+        ports:
+            - "8081:8081"
+        volumes:
+            - "$HOME/nexus_nginx/nexus_home:/nexus-data"
+        env_file:
+            - "./nexus.env"
+        environment:
+            - "HELLO=hello"
+        networks:
+            - task-net
+    nginx:
+        container_name: nginx
+        image: nginx:stable
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8081"
+        volumes:
+            - "$HOME/nexus_nginx/nginx_home/nexus.conf:/etc/nginx/conf.d/nexus.conf:rw"
+            - "$HOME/nexus_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
+            - "$HOME/nexus_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
+        env_file:
+            - "./nginx.env"
+        networks:
+            - "task-net"
+networks:
+    task-net:

@@ -1,2 +1,6 @@
 ---
 # tasks file for nexus
+- block:
+  
+  - name:
+    shell: "ls -l"
