@@ -8,6 +8,7 @@ services:
             - "8081:8081"
         volumes:
             - "$HOME/nexus_nginx/nexus_home:/nexus-data"
+            - "$HOME/nexus_nginx/nexus_files/nexus-default.properties:/opt/sonatype/nexus/etc/nexus-default.properties:rw"
         env_file:
             - "./nexus.env"
         environment:
