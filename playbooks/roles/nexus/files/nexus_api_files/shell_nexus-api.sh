@@ -22,7 +22,7 @@ rm -rf /home/vklymov/nexus_nginx/nexus_home/admin.password
 
 # Add releases privileage
 
-jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/repository_view_privileage_releases.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/repository_view_privilege_releases.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/privileges/repository-view' --data @$jsonFile
