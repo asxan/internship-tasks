@@ -9,7 +9,7 @@
       mode: 0776
       recurse: yes
   
-  - name: "Create compose dir, nginx_home and nexus_home  dirs"
+  - name: "Create compose dir, nginx_home and nexus_home and nexus_api_dir dirs"
     file:
       path: "{{ item.path }}"
       state: directory
@@ -19,6 +19,7 @@
       - { path: $HOME/nexus_nginx/nginx_home, mode: "0777" }
       - { path: $HOME/nexus_nginx/nexus_home, mode: "0777" }
       - { path: $HOME/nexus_nginx/nexus_files, mode: "0777" }
+      - { path: $HOME/nexus_nginx/nexus_api_files, mode: "0777" }
   
 - block: 
   
@@ -36,11 +37,39 @@
       - { source: ../files/nexus.conf, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: vklymov, group: vklymov }
       - { source: ../files/fullchain.pem, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: root, group: root }
       - { source: ../files/privkey.pem, dest: /home/vklymov/nexus_nginx/nginx_home, mode: "0777", owner: root, group: root }
-      - { source: ../files/nexus-default.properties, dest: /home/vklymov/nexus_nginx/nexus_files, mode: "0777", owner: root, group: root }
+      - { source: ../files/nexus_api_files/nexus-default.properties, dest: /home/vklymov/nexus_nginx/nexus_files, mode: "0777", owner: root, group: root }
     become: yes
 
+  - name: "Copy nexus api dir with all files"
+    copy: 
+      src: ../files/nexus_api_files/
+      dest: /home/vklymov/nexus_nginx/nexus_api_files/
+      owner: vklymov
+      group: vklymov
+      mode: 0775
+    become: yes
 
   - name: "Start compose Nexus"
     shell: "docker-compose -f $HOME/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
     args:
       executable: /bin/bash
+  
+  - name: "Sleep for 70 seconds"
+    shell: "sleep 60"
+    args: 
+      executable: /bin/bash
+
+  
+  # - name: "Set env veriabl NEXUS_ADMIN_PASSWORD"
+  #   shell: "NEXUS_ADMIN_PASSWORD=$(cat /home/vklymov/nexus_nginx/nexus_home/admin.password)"
+  #   args: 
+  #     executable: /bin/bash
+  
+  - name: "Start nexus api script"
+    shell: "/home/vklymov/nexus_nginx/nexus_api_files/shell_nexus-api.sh"
+    args: 
+      executable: /bin/bash
+
+
+
+  

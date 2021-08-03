@@ -1,0 +1,9 @@
+{
+    "name": "maven-releases-editor",
+    "description": "Add permission for maven-releases views",
+    "actions": [
+        "add", "read", "browse", "delete", "edit"
+    ],
+    "format": "maven2",
+    "repository": "maven-releases"
+}
