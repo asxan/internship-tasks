@@ -1,0 +1,193 @@
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - file:
+          description: "It is settings xml file"
+          fileName: "settings.xml"
+          id: "settings_xml"
+          scope: GLOBAL
+          secretBytes: "${readFile:/var/jenkins_home/casc_configs/settings.xml}"
+      - basicSSHUserPrivateKey:
+          description: "GitHub key"
+          id: "jenkins_task_key"
+          privateKeySource:
+            directEntry:
+              privateKey: "${JENKINS_TASK_KEY}"
+          scope: GLOBAL
+          username: "asxan"
+      - basicSSHUserPrivateKey:
+          description: "It is deploy key"
+          id: "deploy_ssh"
+          privateKeySource:
+            directEntry:
+              privateKey: "${DEPLOY_SSH_KEY}"
+          scope: GLOBAL
+          username: "vklymov"
+      - usernamePassword:
+          description: "It is dockerhub login cred "
+          id: "docker-login"
+          password: "${DOCKERHUB_PASSWORD}"
+          scope: GLOBAL
+          username: "${DOCKERHUB_USERNAME}"
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  clouds:
+  - docker:
+      dockerApi:
+        connectTimeout: 60
+        dockerHost:
+          uri: "tcp://slave-instance.c.gd-gcp-gd-internship-kha.internal:2375"
+        readTimeout: 60
+      exposeDockerHost: true
+      name: "docker"
+      templates:
+      - connector:
+          jnlp:
+            jenkinsUrl: "http://jenkins-nginx-instance.c.gd-gcp-gd-internship-kha.internal:8080"
+            jnlpLauncher:
+              workDirSettings:
+                disabled: false
+                failIfWorkDirIsMissing: false
+                internalDir: "remoting"
+            user: "jenkins"
+        dockerTemplateBase:
+          cpuPeriod: 0
+          cpuQuota: 0
+          image: "asxan/java-jnlp-slave:0.12"
+          volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock"
+          volumesString: "/var/run/docker.sock:/var/run/docker.sock"
+        labelString: "java-jnlp-slave"
+        mode: EXCLUSIVE
+        name: "java-jnlp-slave"
+        pullStrategy: PULL_ALWAYS
+        pullTimeout: 300
+        remoteFs: "/home/jenkins/agent"      
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  disableRememberMe: false
+  labelAtoms:
+  - name: "master"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  myViewsTabBar: "standard"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  remotingSecurity:
+    enabled: true
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - description: "The admin user"
+        id: "${JENKINS_ADMIN_ID}"
+        password: "${JENKINS_ADMIN_PASSWORD}"
+        properties:
+        - preferredProvider:
+            providerId: "default"
+        - mailer:
+            emailAddress: "${JENKINS_ADMIN_MAIL}"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  sSHD:
+    port: -1
+unclassified:
+  appInsightsGlobalConfig:
+    appInsightsEnabled: true
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultBody: |-
+      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+
+      Check console output at $BUILD_URL to view the results.
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultTriggerIds:
+    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+    mailAccount:
+      smtpPassword: "${JENKINS_SMTP_PASSWORD}"
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: -1
+    precedenceBulk: false
+    watchingEnabled: false
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    hookUrl: "https://jenkins-nginx.asxan.ml/github-webhook/"
+  gitSCM:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "https://jenkins-nginx.asxan.ml/"
+  mailer:
+    authentication:
+      password: "${JENKINS_SMTP_PASSWORD}"
+      username: "${JENKINS_SMTP_USERNAME}"
+    charset: "UTF-8"
+    defaultSuffix: "@gmail.com"
+    replyToAddress: "asxan.devops@gmail.com"
+    smtpHost: "smtp.gmail.com"
+    smtpPort: "465"
+    useSsl: true
+    useTls: false
+  pollSCM:
+    pollingThreadCount: 10
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+tool:
+  ansibleInstallation:
+    installations:
+    - home: "/usr/bin"
+      name: "ansible1"
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"

@@ -8,11 +8,11 @@
 
   - block:
 
-      # - name: "Yum upgrade all packages"
-      #   yum:
-      #     name: '*'
-      #     state: latest
-      #     update_cache: yes
+      - name: "Yum upgrade all packages"
+        yum:
+          name: '*'
+          state: latest
+          update_cache: yes
 
 
       - name: "Enable Epel Repository"
@@ -33,6 +33,7 @@
           - { package: python-pip }
           - { package: python-docker }
           - { package: yum-utils }
+          - { package: dos2unix }
 
 
       - name: install PyYAML and install certain python modules for docker

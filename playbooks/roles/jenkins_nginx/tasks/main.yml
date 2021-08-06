@@ -2,12 +2,33 @@
 #tasks file for jenkins
   - block: #Block for All
 
+    - name: "Check jenkins_nginx dir"
+      stat:
+        path: /home/vklymov/jenkins_nginx
+      register: jenkins_nginx_folder
+    
+    - name: "echo if jenkins_nginx_folder direcory already existed"
+      debug:
+        msg: "The jenkins_nginx is already existed"
+      when: jenkins_nginx_folder.stat.exists
+
     - name: "Create jenkins_nginx dir"
       file:
         path: "/home/vklymov/jenkins_nginx"
         state: directory
         mode: 0776
         recurse: yes
+      when: jenkins_nginx_folder.stat.exists == false
+
+    - name: "Check compose dir"
+      stat:
+        path: /home/vklymov/jenkins_nginx/docker_compose
+      register: compose_folder
+    
+    - name: "echo if compose_folder direcory already existed"
+      debug:
+        msg: "The compose folder is already existed"
+      when: compose_folder.stat.exists
 
     - name: "Create compose dir"
       file:
@@ -15,6 +36,17 @@
         state: directory
         mode: 0776
         recurse: yes
+      when: compose_folder.stat.exists == false
+
+    - name: "Check jenkins_home dir"
+      stat:
+        path: /home/vklymov/jenkins_nginx/jenkins_home
+      register: jenkins_home
+    
+    - name: "echo if jenkins_home direcory already existed"
+      debug:
+        msg: "The jenkins_home folder is already existed"
+      when: jenkins_home.stat.exists
 
     - name: "Create jenkins_home dir"
       file:
@@ -22,13 +54,25 @@
         state: directory
         mode: 0777
         recurse: yes
+      when: jenkins_home.stat.exists == false
     
+    - name: "Check nginx_home dir"
+      stat:
+        path: /home/vklymov/jenkins_nginx/nginx_home
+      register: nginx_home
+    
+    - name: "echo if nginx_home direcory already existed"
+      debug:
+        msg: "The nginx_home folder is already existed"
+      when: nginx_home.stat.exists
+
     - name: "Create nginx_home dir"
       file:
         path: "/home/vklymov/jenkins_nginx/nginx_home"
         state: directory
         mode: 0777
         recurse: yes
+      when: nginx_home.stat.exists == false
   
     # - name: Delete compose file if exist
     #   file:
@@ -46,44 +90,46 @@
       shell: docker pull "asxan/jenkins_cus:0.0.5"
 
 
-  # - block:  # Block for Jenkins
+  - block:  # Block for Jenkins
 
-  #   - name: "Create casc_configs folder"
-  #     file:
-  #       path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
-  #       state: directory
+    - name: "Create casc_configs folder"
+      file:
+        path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+        state: directory
 
-  #   - name: "Copy jenkins.env jenkins yml file"
-  #     copy:
-  #       src: ../files/jenkins.env
-  #       dest: /home/vklymov/jenkins_nginx/docker_compose
-  #       mode: preserve
+    - name: "Copy jenkins.env jenkins yml file"
+      copy:
+        src: ../files/jenkins.env
+        dest: /home/vklymov/jenkins_nginx/docker_compose
+        mode: preserve
 
-  #   - name: "Copy plugins.txt"
-  #     copy:
-  #       src: ../files/plugins.txt
-  #       dest: /home/vklymov/jenkins_nginx/jenkins_home
-  #       mode: preserve
+    - name: "Copy plugins.txt"
+      copy:
+        src: ../files/plugins.txt
+        dest: /home/vklymov/jenkins_nginx/jenkins_home
+        mode: preserve
   
-  #   - name: "Start compose Jenkins"
-  #     shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
-  #     args:
-  #       executable: /bin/bash
+    - name: "Start compose Jenkins"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
+      args:
+        executable: /bin/bash
 
-  #   - name: "Install plugins"
-  #     shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
+    - name: "Install plugins"
+      shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
 
-  #   - name: "Restart Jenkins"
-  #     shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+    - name: "Restart Jenkins"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
 
-    # - name: "Copy casc.yaml"
-    #   copy:
-    #     src: ../files/casc.yaml
-    #     dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs
-    #     mode: preserve
-    #   notify: "Restart Jenkins"
-
-
+    - name: "Copy casc.yaml"
+      copy:
+        src: "{{ item. src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { src: ../files/jenkins_iac/casc.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs, mode: "777" }
+        - { src: ../files/jenkins_iac/settings.xml , dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs , mode: "777" }
+      notify: "Restart Jenkins"
+    
   - block: # For nginx
 
     - name: "Copy files"

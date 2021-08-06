@@ -2,7 +2,7 @@
     "name": "maven-snapshots-editor",
     "description": "Add permission for maven-snapshots views",
     "actions": [
-        "add", "read", "browse", "delete", "edit"
+        "all"
     ],
     "format": "maven2",
     "repository": "maven-snapshots"

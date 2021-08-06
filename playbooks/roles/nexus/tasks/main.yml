@@ -20,6 +20,7 @@
       - { path: $HOME/nexus_nginx/nexus_home, mode: "0777" }
       - { path: $HOME/nexus_nginx/nexus_files, mode: "0777" }
       - { path: $HOME/nexus_nginx/nexus_api_files, mode: "0777" }
+
   
 - block: 
   

@@ -48,3 +48,17 @@ jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/asxan_nexus_user.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/users' --data @$jsonFile
+
+# Update releases repo
+
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/update_releases_repo.json"
+
+curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X PUT --header "Content-Type: application/json; charset=UTF-8" \
+'http://localhost:8081/service/rest/v1/repositories/maven/hosted/maven-releases' --data @$jsonFile
+
+# Update snapshot repo
+
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/update_snapshot_repo.json"
+
+curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X PUT --header "Content-Type: application/json; charset=UTF-8" \
+'http://localhost:8081/service/rest/v1/repositories/maven/hosted/maven-releases' --data @$jsonFile
