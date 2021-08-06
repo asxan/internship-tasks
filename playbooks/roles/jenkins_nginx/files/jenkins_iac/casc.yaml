@@ -7,7 +7,7 @@ credentials:
           fileName: "settings.xml"
           id: "settings_xml"
           scope: GLOBAL
-          secretBytes: "${readFile:/var/jenkins_home/casc_configs/settings.xml}"
+          secretBytes: "${readFile:${SETTINGS_XML}}"
       - basicSSHUserPrivateKey:
           description: "GitHub key"
           id: "jenkins_task_key"
