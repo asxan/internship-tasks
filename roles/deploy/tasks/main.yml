@@ -17,7 +17,7 @@
       loop:
         - { path: "/home/vklymov/petclinic/pet_home", state: "directory", mode: "0777" }
         - { path: "/home/vklymov/petclinic/mysql_home", state: "directory", mode: "0777" }
-        - { path: "/home/vklymov/petclinic/pet_home", state: "directory", mode: "0755" }
+        - { path: "/home/vklymov/petclinic/docker_compose", state: "directory", mode: "0755" }
 
 
 - block: # Copy files
