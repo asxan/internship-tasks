@@ -1,0 +1,29 @@
+- job:
+    name: maven-petclinic-ci
+    description: "CI pipeline for maven petclinick"
+    project-type: pipeline
+    sandbox: true
+    defaults: global
+    parameters:
+        - string:
+          name: NODE
+          default:  "java-jnlp-slave"
+          description: "It is node for pipeline execution"
+        - string:
+          name: EMAIL_ADDRESS
+          default: "asxan.devops@gmail.com"
+          description: "This is an email address for sending resultation of job's execution"
+        - string: 
+          name: PROJECT_NAME
+          default: PETCLINICK
+          description: "The project name"
+        - string:
+          name: EMAIL_MESSAGE
+          default: "The execution of CI part has been completed succussfull"
+          description: "The email text"
+    pipeline-scm:
+      scm:
+        - hg:
+            url:
+            clean: true
+      script-path: petclinic-ci.groovy
