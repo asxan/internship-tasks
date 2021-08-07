@@ -52,44 +52,10 @@ node(nodeName)
         {   
             sh 'echo "Executing..." '
             dir("workdir")
-            {   script
+            {   
+                script
                 {
                     git branch: 'main', credentialsId: 'jenkins_task_key', url: 'git@github.com:asxan/spring-petclinic.git'
-                }
-            }
-        }
-    }
-    catch(Exception ex)
-    {
-        script{
-            sh """
-            rm -rf *
-            rm -rf .git
-            ls -la
-            """
-        }
-    }  
-    try
-    {
-        stage("Set Version")
-        {   
-            script
-            {
-                dir("workdir")
-                {
-                    def version = sh(script: '''cat pom.xml | grep -o "<version>.*</version>" | head -n 1 | sed -e 's/<version>\\(.*\\)<\\/version>/\\1/' ''', returnStdout: true).trim()
-                    
-                    if ("$REPOSITORY" == "releases"){
-                        println ("$version")
-
-                        sh "mvn versions:set -DnewVersion=${version}"
-                    }
-                    else if ("$REPOSITORY" == "snapshot"){
-                        version = "$version-SNAPSHOT"
-                        println ("$version")
-
-                        sh "mvn versions:set -DnewVersion=${version}"
-                    }
                 }
             }
         }
@@ -98,13 +64,12 @@ node(nodeName)
             dir("workdir")
             {
                 withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
-                    //sh 'echo "`cat $settings > /var/jenkins_home/.m2/wrapper/dists/apache-maven-3.6.3-bin/1iopthnavndlasol9gbrbg6bf2/apache-maven-3.6.3/conf/settings.xml`"'
-                    sh 'echo "`cat $settings > /var/jenkins_home/.m2/settings.xml`"'
+                    sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
                 }
-                // sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
-                // echo "------------------------------------------"
-                // sh "mvn dependency:tree"
-                // sh "ls -la target/"
+                sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
+                echo "------------------------------------------"
+                sh "mvn dependency:tree"
+                sh "ls -la target/"
                 // withCredentials([usernamePassword(credentialsId: 'nexus_admin_creds', passwordVariable: 'password', usernameVariable: 'username')]) {
                 //     sh 'echo " `echo $password > ~/password.txt`"'
                 // } 
@@ -122,6 +87,23 @@ node(nodeName)
                 }
             }
         }
+        stage('Build image')
+        {
+            dir("workdir")
+            {
+                sh "cp ./target/*.jar  ."
+                sh "ls -la"
+                customImage =  docker.build("${DOCKER_REPO}/${IMAGE_NAME}", "-f ${DOCKERFILE_NAME}  ./target")
+            }
+        }
+        stage("Push image")
+        {
+            docker.withRegistry("", "docker-login") 
+            {
+                customImage.push("${BUILD_NUMBER}")
+                customImage.push("latest")
+            }
+        }
         stage ('Sending status')
         {
             script
@@ -137,17 +119,6 @@ node(nodeName)
                 mail_notification(toRecipient, ccRecipient, sSubject, message)
             } 
         }
-        stage('Clear workdir')
-        {
-            script
-            {
-                sh """
-                rm -rf *
-                rm -rf .git
-                ls -la
-            """
-            }
-        }
     }
     catch(Exception ex)
     {
@@ -161,11 +132,6 @@ node(nodeName)
             println "${message}"
             sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
             mail_notification(toRecipient, ccRecipient, sSubject, message)
-            sh """
-            rm -rf *
-            rm -rf .git
-            ls -la
-            """
         }
     }  
 }

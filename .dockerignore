@@ -1,6 +1,0 @@
-
-# Allow files
-! *.jar
-# Deny files
-./*
->>>>>>> pet-dockerfile
