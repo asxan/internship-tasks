@@ -4,6 +4,8 @@
     project-type: pipeline
     sandbox: true
     defaults: "global"
+    triggers:
+        - github
     pipeline-scm:
       scm:
         - git:
@@ -43,3 +45,12 @@
             name: "DOCKERFILE_NAME"
             default: "PetDockerfile"
             description: "The dockerfile name"
+    scm:
+        name: github
+        scm:
+            - git:
+                url: https://github.com/asxan/spring-petclinic.git
+                branches:
+                    - main
+                browser: githubweb
+                clean: true
