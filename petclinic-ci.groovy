@@ -67,6 +67,7 @@ node(nodeName)
                 withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
                     sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
                 }
+                sh "sleep 999"
                 sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
                 echo "------------------------------------------"
                 sh "mvn dependency:tree"
