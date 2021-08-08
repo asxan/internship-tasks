@@ -58,7 +58,7 @@ node(nodeName)
                 }
                 script
                 {
-                    ansiblePlaybook colorized: true, credentialsId: 'deploy_ssh', disableHostKeyChecking: true, installation: 'ansible1', inventory: 'ansible.cfg', playbook: 'site.yml'
+                    ansiblePlaybook colorized: true, credentialsId: 'deploy_ssh', disableHostKeyChecking: true, installation: 'ansible1', inventory: 'hosts.txt', playbook: 'site.yml'
                 }
             }
         }

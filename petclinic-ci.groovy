@@ -63,6 +63,7 @@ node(nodeName)
         {
             dir("workdir")
             {
+                sh "mkdir ~/.m2"
                 withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
                     sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
                 }
