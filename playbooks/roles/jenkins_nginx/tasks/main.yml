@@ -150,8 +150,8 @@
         - { src: ../files/jenkins_jb/jobs/maven-petclinick-cd.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/jobs_configs, mode: "0777" }
       notify: "Restart Jenkins"
     
-    # - name: "Create jobs"
-    #   shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
+    - name: "Create jobs"
+      shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
 
   - block: # For nginx
 
