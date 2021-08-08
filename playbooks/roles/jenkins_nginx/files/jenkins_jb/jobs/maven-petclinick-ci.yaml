@@ -1,0 +1,45 @@
+- job:
+    name: maven_petclinick_ci
+    description: "CI pipeline for maven petclinick"
+    project-type: pipeline
+    sandbox: true
+    defaults: "global"
+    pipeline-scm:
+      scm:
+        - git:
+            url: "https://github.com/asxan/internship-tasks.git"
+            branches: 
+              - origin/pipelines
+            skip-tag: true
+            clean: true
+      script-path: "petclinic-ci.groovy"
+      lightweight-checkout: true
+    parameters:
+        - string:
+            name: "NODE"
+            default:  "java-jnlp-slave"
+            description: "It is node for pipeline execution"
+        - string:
+            name: "EMAIL_ADDRESS"
+            default: "asxan.devops@gmail.com"
+            description: "This is an email address for sending resultation of job's execution"
+        - string: 
+            name: "PROJECT_NAME"
+            default: "PETCLINICK"
+            description: "The project name"
+        - string:
+            name: "EMAIL_MESSAGE"
+            default: "The execution of CI pipeline has been completed succussfull"
+            description: "The email text"
+        - string:
+            name: "DOCKER_REPO"
+            default: "asxan"
+            description: "The docker repositoriy"
+        - string:
+            name: "IMAGE_NAME"
+            default: "petclinick"
+            description: "The image name"
+        - string: 
+            name: "DOCKERFILE_NAME"
+            default: "PetDockerfile"
+            description: "The dockerfile name"

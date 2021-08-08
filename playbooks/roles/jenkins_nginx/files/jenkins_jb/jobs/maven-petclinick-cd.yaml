@@ -1,0 +1,33 @@
+- job:
+    name: maven_petclinick_cd
+    description: "CD pipeline for deploying petclinick"
+    project-type: pipeline
+    sandbox: true
+    defaults: "global"
+    pipeline-scm:
+      scm:
+        - git:
+            url: "https://github.com/asxan/internship-tasks.git"
+            branches: 
+              - origin/pipelines
+            skip-tag: true
+            clean: true
+      script-path: "petclinic-cd.groovy"
+      lightweight-checkout: true
+    parameters:
+        - string:
+            name: "NODE"
+            default:  "java-jnlp-slave"
+            description: "It is node for pipeline execution"
+        - string:
+            name: "EMAIL_ADDRESS"
+            default: "asxan.devops@gmail.com"
+            description: "This is an email address for sending resultation of job's execution"
+        - string: 
+            name: "PROJECT_NAME"
+            default: "PETCLINICK"
+            description: "The project name"
+        - string:
+            name: "EMAIL_MESSAGE"
+            default: "The execution of CD pipeline has been completed succussfull"
+            description: "The email text"

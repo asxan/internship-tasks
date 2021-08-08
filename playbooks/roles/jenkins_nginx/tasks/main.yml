@@ -73,12 +73,24 @@
         mode: 0777
         recurse: yes
       when: nginx_home.stat.exists == false
-  
-    # - name: Delete compose file if exist
-    #   file:
-    #     path: /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml
-    #     state: absent
-    #   ignore_errors: yes
+
+    - name: "Create jenkins jb file directory"
+      stat: 
+        path: /home/vklymov/jenkins_nginx/job_files
+      register: job_files
+
+    - name: "echo if job_files directory is already existed"
+      debug:
+        msg: "The job_files folder is already exist"
+      when: job_files.stat.exists
+    
+    - name: "Create job_files"
+      file:
+        path: /home/vklymov/jenkins_nginx/job_files
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: job_files.stat.exists == false
 
     - name: "Copy docker-compose jenkins-nginx yml file"
       copy:
@@ -95,6 +107,11 @@
     - name: "Create casc_configs folder"
       file:
         path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+        state: directory
+    
+    - name: "Create jobs_config folder"
+      file:
+        path: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
         state: directory
 
     - name: "Copy jenkins.env jenkins yml file"
@@ -120,7 +137,7 @@
     - name: "Restart Jenkins"
       shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
 
-    - name: "Copy casc.yaml"
+    - name: "Copy casc and jjb files"
       copy:
         src: "{{ item. src }}"
         dest: "{{ item.dest }}"
@@ -128,8 +145,14 @@
       loop:
         - { src: ../files/jenkins_iac/casc.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs, mode: "777" }
         - { src: ../files/jenkins_iac/settings.xml , dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs , mode: "777" }
+        - { src: ../files/jenkins_jb/jenkins_jobs.ini, dest: /home/vklymov/jenkins_nginx/job_files, mode: "0777" }
+        - { src: ../files/jenkins_jb/jobs/maven-petclinick-ci.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/jobs_configs, mode: "0777" }
+        - { src: ../files/jenkins_jb/jobs/maven-petclinick-cd.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/jobs_configs, mode: "0777" }
       notify: "Restart Jenkins"
     
+    # - name: "Create jobs"
+    #   shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
+
   - block: # For nginx
 
     - name: "Copy files"

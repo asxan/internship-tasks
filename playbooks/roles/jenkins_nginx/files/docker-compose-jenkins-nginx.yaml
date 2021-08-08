@@ -12,6 +12,7 @@ services:
             - "50000:50000"
         volumes:
             - "$HOME/jenkins_nginx/jenkins_home:/var/jenkins_home"
+            - "$HOME/jenkins_nginx/job_files:/etc/jenkins_jobs"
         env_file:
             -  ./jenkins.env
         environment:
