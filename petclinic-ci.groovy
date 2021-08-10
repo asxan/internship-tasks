@@ -63,19 +63,13 @@ node(nodeName)
         {
             dir("workdir")
             {
-                sh "mkdir ~/.m2"
-                withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
-                    sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
-                    sh "sleep 999"
-                    sh " /bin/bash -c iconv -f ASCII -t UTF-8//TRANSLIT settings.xml -o settings.xml"
-                }
+                // withCredentials([file(credentialsId: 'settings_xml', variable: 'settings')]) {
+                //     sh 'echo "`cat $settings > /home/jenkins/.m2/settings.xml`"'
+                // }
                 sh """mvn -B -DskipTests -Dcheckstyle.skip clean package"""
                 echo "------------------------------------------"
                 sh "mvn dependency:tree"
                 sh "ls -la target/"
-                // withCredentials([usernamePassword(credentialsId: 'nexus_admin_creds', passwordVariable: 'password', usernameVariable: 'username')]) {
-                //     sh 'echo " `echo $password > ~/password.txt`"'
-                // } 
             }
         }
         stage('Push to Nexus')
