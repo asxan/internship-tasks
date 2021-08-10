@@ -1,2 +1,80 @@
 ---
 # vars file for nexus
+
+# Dirs
+
+nexus_nginx: 
+  - '/home/vklymov/nexus_nginx'
+  - 'directory'
+  - '0776'
+
+other_dirs_path:
+  - '$HOME/nexus_nginx/docker_compose'
+  - '$HOME/nexus_nginx/nginx_home'
+  - '$HOME/nexus_nginx/nexus_home'
+  - '$HOME/nexus_nginx/nexus_files'
+  - '$HOME/nexus_nginx/nexus_api_files'
+
+other_dirs_mood:
+  - '0775'
+  - '0777'
+  - '0777'
+  - '0777'
+  - '0777'
+
+file1:
+  src: '../files/nexus-docker-compose.yaml'
+  dest: '/home/vklymov/nexus_nginx/docker_compose'
+  mood: 'preserve'
+  owner:  'vklymov'
+  group:  'vklymov'
+
+file2:
+  src: '../files/nexus.env'
+  dest: '/home/vklymov/nexus_nginx/docker_compose'
+  mood: 'preserve'
+  owner:  'vklymov'
+  group:  'vklymov'
+
+file3:
+  src: '../files/nginx.env'
+  dest: '/home/vklymov/nexus_nginx/docker_compose'
+  mood: 'preserve'
+  owner:  'vklymov'
+  group:  'vklymov'
+
+file4:
+  src: '../files/nexus.conf'
+  dest: '/home/vklymov/nexus_nginx/nginx_home'
+  mood: '0777'
+  owner:  'vklymov'
+  group:  'vklymov'
+
+file5:
+  src: '../files/fullchain.pem'
+  dest: '/home/vklymov/nexus_nginx/nginx_home'
+  mood: '0777'
+  owner:  'root'
+  group:  'root'
+
+file6:
+  src: '../files/privkey.pem'
+  dest: '/home/vklymov/nexus_nginx/nginx_home'
+  mood: '0777'
+  owner:  'root'
+  group:  'root'
+
+
+file7:
+  src: '../files/nexus_api_files/nexus-default.properties'
+  dest: '/home/vklymov/nexus_nginx/nexus_files'
+  mood: '0777'
+  owner:  'root'
+  group:  'root'
+
+nexus_api_dir:
+  src: '../files/nexus_api_files/'
+  dest: '/home/vklymov/nexus_nginx/nexus_api_files/'
+  mood: '0775'
+  owner:  'vklymov'
+  group:  'vklymov'

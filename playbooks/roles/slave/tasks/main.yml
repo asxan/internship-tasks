@@ -1,11 +1,25 @@
 ---
 # tasks file for slave
 
-- block:
+- block: # Check java and  ansible installetion
+
+  - name: "Check if java is installed" 
+    command:  java -version
+    register: java_check
+    ignore_errors: yes
+
+
+  - name: "Check if ansible is installed" 
+    command:  ansible --version
+    register: ansible_check
+    ignore_errors: yes
+
+
+- block: # Block for opening docker socket 
 
   - name: "Make dir for override.conf"
     file:
-      path: '/etc/systemd/system/docker.service.d'
+      path: "{{ override_dir }}"
       state: directory
 
 
@@ -15,12 +29,12 @@
       dest: "{{ item.dest }}"
       mode: "{{ item.mood }}"
     loop:
-      - { source: ../files/daemon.json, dest: /etc/docker, mood: preserve }
-      - { source: ../files/override.conf, dest: /etc/systemd/system/docker.service.d, mood: preserve }
+      - { source: "{{ docker_files_src[0] }}", dest: "{{ docker_files_dest[0] }}", mood: "{{ docker_files_mood[0] }}" }
+      - { source: "{{ docker_files_src[1] }}", dest: "{{ docker_files_dest[1] }}", mood: "{{ docker_files_mood[1] }}" }
 
   - name: "Change mood of docker.sock"
     file:
-      dest: /var/run/docker/sock
+      dest: /var/run/docker.sock
       mode: 666
 
   - name: "Reload docker daemon"
@@ -33,26 +47,19 @@
       enabled: yes
       masked: no
 
-  - name: "Check if java is installed" 
-    command:  java -version
-    register: java_check
-    ignore_errors: yes
 
-  - name: "Check if ansible is installed" 
-    command:  ansible --version
-    register: ansible_check
-    ignore_errors: yes
+- block: # Install java and ansible
 
   - name: "Install java"
     yum:
-      name: java-11-openjdk-devel
-      state: latest
+      name: "{{ packages[0] }}"
+      state: "{{ packages_version[0] }}"
     when:
-      - java_check.msg.find("command not found") != -1
+      - java_check.stderr.find("command not found") != -1
 
   - name: "Install Ansible"
     yum:
-      name: ansible
-      state: latest
+      name: "{{ packages[1] }}"
+      state: "{{ packages_version[1] }}"
     when:
-      - ansible_check.msg.find("command not found") != -1
+      - ansible_check.stderr.find("command not found") != -1

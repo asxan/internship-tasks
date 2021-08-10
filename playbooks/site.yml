@@ -30,9 +30,9 @@
 #   roles:
 #     - nexus
 
-  # - name: "Provision deploy instance"
-  #   hosts: prod_server
-  #   gather_facts: yes
+# - name: "Provision deploy instance"
+#   hosts: prod_server
+#   gather_facts: yes
 
-  #   roles:
-  #     - deploy
+#   roles:
+#     - deploy

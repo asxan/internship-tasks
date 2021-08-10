@@ -2,12 +2,12 @@
 # handlers file for docker_install
   - name: "Hard link for root user"
     file:
-      src:  /usr/local/bin/docker-compose
-      dest: /usr/bin/docker-compose
+      src:  "{{ docker_compose_src_link }}"
+      dest: "{{ docker_compose_dest_link }}"
       state: link
 
   - name: "Remove the Docker installer file"
     file: 
       state: absent
-      path: /root/get-docker.sh
+      path: "{{ docker_installer_file }}"
     when: docker_check.stderr.find('service could not be found') != -1

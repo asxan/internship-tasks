@@ -22,14 +22,13 @@
 
     - name: "Download the Docker Installer"
       get_url:
-        url: https://get.docker.com
-        dest: /root/get-docker.sh
+        url: "{{ docker_download_url }}"
+        dest: "{{ docker_dest_download }}"
         mode: 0700
-      when: docker_check.stderr.find('service could not be found') != -1
+      
 
     - name: "Install Docker"
-      shell: /root/get-docker.sh
-      when: docker_check.stderr.find('service could not be found') != -1
+      shell: "{{ docker_installer_file }}"
       notify: "Remove the Docker installer file"
     
     - name: "Start Docker"
@@ -51,15 +50,20 @@
         groups: docker
         append: yes
       loop:
-        - { user: vklymov }
-        - { user: root  }
+        - { user: "{{ docker_user1 }}" }
+        - { user: "{{ docker_user2 }}" }
 
+    when: 
+      - docker_check.stderr.find('service could not be found') != -1
+
+  - block:
 
     - name: "Install Docker Compose"
       get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-        dest: /usr/local/bin/docker-compose
+        url: "{{ docker_compose_url }}"
+        dest: "{{ docker_compose_dest }}"
         mode: 0777
-      when:
-        - compose_check.msg.find("No such file or directory") != -1
       notify: "Hard link for root user"
+    
+    when:
+      - compose_check.stderr.find("No such file or directory") != -1

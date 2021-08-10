@@ -1,2 +1,24 @@
 ---
 # vars file for docker_install
+
+# handlers file
+docker_compose_src_link: /usr/local/bin/docker-compose
+docker_compose_dest_link: /usr/bin/docker-compose
+
+# general vars
+docker_installer_file: /root/get-docker.sh
+
+# main task file
+
+# download docker
+docker_download_url: 'https://get.docker.com'
+docker_dest_download: /root/get-docker.sh
+
+# docker users
+docker_user1: vklymov
+docker_user2: root
+
+# download docker-compose
+
+docker_compose_url: 'https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64'
+docker_compose_dest: /usr/local/bin/docker-compose

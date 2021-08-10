@@ -4,7 +4,7 @@
 
     - name: "Check jenkins_nginx dir"
       stat:
-        path: /home/vklymov/jenkins_nginx
+        path: "{{ folder1['path'] }}"
       register: jenkins_nginx_folder
     
     - name: "echo if jenkins_nginx_folder direcory already existed"
@@ -14,15 +14,17 @@
 
     - name: "Create jenkins_nginx dir"
       file:
-        path: "/home/vklymov/jenkins_nginx"
-        state: directory
-        mode: 0776
+        path: "{{ folder1['path'] }}"
+        state: "{{ folder1['state'] }}"
+        mode: "{{ folder1['mode'] }}"
         recurse: yes
       when: jenkins_nginx_folder.stat.exists == false
 
+#----------------------------------------------
+
     - name: "Check compose dir"
       stat:
-        path: /home/vklymov/jenkins_nginx/docker_compose
+        path: "{{ folder2['path'] }}"
       register: compose_folder
     
     - name: "echo if compose_folder direcory already existed"
@@ -32,15 +34,17 @@
 
     - name: "Create compose dir"
       file:
-        path: "/home/vklymov/jenkins_nginx/docker_compose"
-        state: directory
-        mode: 0776
+        path: "{{ folder2['path'] }}"
+        state: "{{ folder2['state'] }}"
+        mode: "{{ folder2['mode'] }}"
         recurse: yes
       when: compose_folder.stat.exists == false
 
+#---------------------------------------------------
+
     - name: "Check jenkins_home dir"
       stat:
-        path: /home/vklymov/jenkins_nginx/jenkins_home
+        path: "{{ folder3['path'] }}"
       register: jenkins_home
     
     - name: "echo if jenkins_home direcory already existed"
@@ -50,15 +54,17 @@
 
     - name: "Create jenkins_home dir"
       file:
-        path: "/home/vklymov/jenkins_nginx/jenkins_home"
-        state: directory
-        mode: 0777
+        path: "{{ folder3['path'] }}"
+        state: "{{ folder3['state'] }}"
+        mode: "{{ folder3['mode'] }}"
         recurse: yes
       when: jenkins_home.stat.exists == false
     
+#------------------------------------------------
+
     - name: "Check nginx_home dir"
       stat:
-        path: /home/vklymov/jenkins_nginx/nginx_home
+        path: "{{ folder4['path'] }}"
       register: nginx_home
     
     - name: "echo if nginx_home direcory already existed"
@@ -68,15 +74,17 @@
 
     - name: "Create nginx_home dir"
       file:
-        path: "/home/vklymov/jenkins_nginx/nginx_home"
-        state: directory
-        mode: 0777
+        path: "{{ folder4['path'] }}"
+        state: "{{ folder4['state'] }}"
+        mode: "{{ folder4['mode'] }}"
         recurse: yes
       when: nginx_home.stat.exists == false
 
+#--------------------------------------------------
+
     - name: "Create jenkins jb file directory"
       stat: 
-        path: /home/vklymov/jenkins_nginx/job_files
+        path: "{{ folder5['path'] }}"
       register: job_files
 
     - name: "echo if job_files directory is already existed"
@@ -86,45 +94,46 @@
     
     - name: "Create job_files"
       file:
-        path: /home/vklymov/jenkins_nginx/job_files
-        state: directory
-        mode: 0777
+        path: "{{ folder5['path'] }}"
+        state: "{{ folder5['state'] }}"
+        mode: "{{ folder5['mode'] }}"
         recurse: yes
       when: job_files.stat.exists == false
 
+#------------------------------------------------------
+
     - name: "Copy docker-compose jenkins-nginx yml file"
       copy:
-        src: ../files/docker-compose-jenkins-nginx.yaml
-        dest: /home/vklymov/jenkins_nginx/docker_compose
-        mode: preserve
-
-    - name: "Pull image Jenkins and nexus"
-      shell: docker pull "asxan/jenkins_cus:0.0.5"
+        src: "{{ docker_compose_file['path'] }}"
+        dest: "{{ docker_compose_file['dest'] }}"
+        mode: "{{ docker_compose_file['mode'] }}"
 
 
   - block:  # Block for Jenkins
 
     - name: "Create casc_configs folder"
       file:
-        path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
-        state: directory
+        path: "{{ casc_configs['path'] }}"
+        state: "{{ casc_configs['state'] }}"
     
     - name: "Create jobs_config folder"
       file:
-        path: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
-        state: directory
+        path: "{{ jobs_config['path'] }}"
+        state: "{{ jobs_config['state'] }}"
 
-    - name: "Copy jenkins.env jenkins yml file"
+# ---------------------------------
+
+    - name: "Copy jenkins.env file"
       copy:
-        src: ../files/jenkins.env
-        dest: /home/vklymov/jenkins_nginx/docker_compose
-        mode: preserve
+        src: "{{ jenkins_env['src'] }}"
+        dest: "{{ jenkins_env['dest'] }}"
+        mode: "{{ jenkins_env['mode'] }}"
 
     - name: "Copy plugins.txt"
       copy:
-        src: ../files/plugins.txt
-        dest: /home/vklymov/jenkins_nginx/jenkins_home
-        mode: preserve
+        src: "{{ plugins_txt['src'] }}"
+        dest: "{{ plugins_txt['dest'] }}"
+        mode: "{{ plugins_txt['mode'] }}"
   
     - name: "Start compose Jenkins"
       shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
@@ -143,15 +152,16 @@
         dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
       loop:
-        - { src: ../files/jenkins_iac/casc.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs, mode: "777" }
-        - { src: ../files/jenkins_iac/settings.xml , dest: /home/vklymov/jenkins_nginx/jenkins_home/casc_configs , mode: "777" }
-        - { src: ../files/jenkins_jb/jenkins_jobs.ini, dest: /home/vklymov/jenkins_nginx/job_files, mode: "0777" }
-        - { src: ../files/jenkins_jb/jobs/maven-petclinick-ci.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/jobs_configs, mode: "0777" }
-        - { src: ../files/jenkins_jb/jobs/maven-petclinick-cd.yaml, dest: /home/vklymov/jenkins_nginx/jenkins_home/jobs_configs, mode: "0777" }
+        - { src: "{{ file1['src'] }}", dest: "{{ file1['dest'] }}", mode: "{{ file1['mode'] }}" }
+        - { src: "{{ file2['src'] }}", dest: "{{ file2['dest'] }}", mode: "{{ file2['mode'] }}" }
+        - { src: "{{ file3['src'] }}", dest: "{{ file3['dest'] }}", mode: "{{ file3['mode'] }}" }
+        - { src: "{{ file4['src'] }}", dest: "{{ file4['dest'] }}", mode: "{{ file4['mode'] }}" }
+        - { src: "{{ file5['src'] }}", dest: "{{ file5['dest'] }}", mode: "{{ file5['mode'] }}" }
       notify: "Restart Jenkins"
     
     - name: "Create jobs"
       shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
+
 
   - block: # For nginx
 
@@ -163,9 +173,9 @@
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
-        - { source: ../files/jenkins.conf, dest: /home/vklymov/jenkins_nginx/nginx_home, mode: "0777", owner: vklymov, group: vklymov }
-        - { source: ../files/fullchain.pem, dest: /home/vklymov/jenkins_nginx/nginx_home, mode: "0777", owner: root, group: root }
-        - { source: ../files/privkey.pem, dest: /home/vklymov/jenkins_nginx/nginx_home, mode: "0777", owner: root, group: root }
+        - { source: "{{ file6['src'] }}", dest: "{{ file6['dest'] }}", mode: "{{ file6['mode'] }}", owner: "{{ file6['owner'] }}", group: "{{ file6['group'] }}" }
+        - { source: "{{ file7['src'] }}", dest: "{{ file7['dest'] }}", mode: "{{ file7['mode'] }}", owner: "{{ file7['owner'] }}", group: "{{ file7['group'] }}" }
+        - { source: "{{ file8['src'] }}", dest: "{{ file8['dest'] }}", mode: "{{ file8['mode'] }}", owner: "{{ file8['owner'] }}", group: "{{ file8['group'] }}" }
       become: yes
 
     - name: "Start compose Nginx"

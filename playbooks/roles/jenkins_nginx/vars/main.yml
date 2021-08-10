@@ -1,2 +1,102 @@
 ---
 # vars file for jenkins_nginx
+
+folder1:
+  path: '/home/vklymov/jenkins_nginx'
+  state:  'directory'
+  mode: '0776'
+
+folder2:
+  path: '/home/vklymov/jenkins_nginx/docker_compose'
+  state:  'directory'
+  mode: '0776'
+
+folder3:
+  path: '/home/vklymov/jenkins_nginx/jenkins_home'
+  state:  'directory'
+  mode: '0777'
+
+folder4:
+  path: '/home/vklymov/jenkins_nginx/nginx_home'
+  state:  'directory'
+  mode: '0777'
+
+folder5:
+  path: '/home/vklymov/jenkins_nginx/job_files'
+  state:  'directory'
+  mode: '0777'
+
+
+folder6:
+  path: '/home/vklymov/jenkins_nginx/nginx_home'
+  state:  'directory'
+  mode: '0777'
+
+docker_compose_file:
+  path: '../files/docker-compose-jenkins-nginx.yaml'
+  dest:  '/home/vklymov/jenkins_nginx/docker_compose'
+  mode: 'preserve'
+
+casc_configs:
+  path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+  state: 'directory'
+
+jobs_config:
+  path: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
+  state: 'directory'
+
+jenkins_env:
+  src:  '../files/jenkins.env'
+  dest: '/home/vklymov/jenkins_nginx/docker_compose'
+  mode: 'preserve'
+
+plugins_txt:
+  src:  '../files/plugins.txt'
+  dest: '/home/vklymov/jenkins_nginx/jenkins_home'
+  mode: 'preserve'
+
+file1:
+  src: '../files/jenkins_iac/casc.yaml'
+  dest: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+  mode: '777'
+
+file2:
+  src: '../files/jenkins_iac/settings.xml'
+  dest: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+  mode: '777'
+
+file3:
+  src:  '../files/jenkins_jb/jenkins_jobs.ini'
+  dest: '/home/vklymov/jenkins_nginx/job_files'
+  mode: '0777'
+
+file4:
+  src:  '../files/jenkins_jb/jobs/maven-petclinick-ci.yaml'
+  dest: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
+  mode: '0777'
+
+file5:
+  src:  '../files/jenkins_jb/jobs/maven-petclinick-cd.yaml'
+  dest: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
+  mode: '0777'
+
+file6:
+  src:  '../files/jenkins.conf'
+  dest: '/home/vklymov/jenkins_nginx/nginx_home'
+  mode: '0777'
+  owner: 'vklymov'
+  group: 'vklymov'
+
+file7:
+  src:  '../files/fullchain.pem'
+  dest: '/home/vklymov/jenkins_nginx/nginx_home'
+  mode: '0777'
+  owner: 'root'
+  group: 'root'
+
+file8:
+  src:  '../files/privkey.pem'
+  dest: '/home/vklymov/jenkins_nginx/nginx_home'
+  mode: '0777'
+  owner: 'root'
+  group: 'root'

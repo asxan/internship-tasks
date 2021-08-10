@@ -8,7 +8,9 @@
       dest: "{{ item.dest }}"
       mode: "{{ item.mood }}"
     loop:
-      - { source: ~/.ssh/deploy_key.pub, dest: ~/.ssh, mood: preserve }
+      - { source: "{{ source_file }}", dest: "{{ destinity_folder }}", mood: "{{ file_mood }}" }
 
   - name: "Add ssh key to authorized_keys file"
-    shell: "cat ~/.ssh/deploy_key.pub >> ~/.ssh/authorized_keys"
+    shell: 'cat "{{ instance_file }}" >> "{{ destinity_file }}"'
+    args:
+      executable: /bin/bash

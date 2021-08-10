@@ -1,2 +1,24 @@
 ---
 # vars file for slave
+
+override_dir: '/etc/systemd/system/docker.service.d'
+
+docker_files_src: 
+  - '../files/daemon.json'
+  - '../files/override.conf'
+
+docker_files_dest:
+  - '/etc/docker'
+  - '/etc/systemd/system/docker.service.d'
+
+docker_files_mood:
+  - preserve
+  - preserve
+
+packages:
+  - java-11-openjdk-devel
+  - ansible
+
+packages_version:
+  - latest
+  - latest

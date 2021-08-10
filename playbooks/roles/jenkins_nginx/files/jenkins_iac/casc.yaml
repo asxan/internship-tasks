@@ -2,12 +2,6 @@ credentials:
   system:
     domainCredentials:
     - credentials:
-      - file:
-          description: "It is settings xml file"
-          fileName: "settings.xml"
-          id: "settings_xml"
-          scope: GLOBAL
-          secretBytes: "${readFile:${SETTINGS_XML}}"
       - basicSSHUserPrivateKey:
           description: "GitHub key"
           id: "jenkins_task_key"
@@ -59,7 +53,7 @@ jenkins:
         dockerTemplateBase:
           cpuPeriod: 0
           cpuQuota: 0
-          image: "asxan/java-jnlp-slave:0.12"
+          image: "asxan/java-jnlp-slave:0.14"
           volumes:
           - "/var/run/docker.sock:/var/run/docker.sock"
           volumesString: "/var/run/docker.sock:/var/run/docker.sock"

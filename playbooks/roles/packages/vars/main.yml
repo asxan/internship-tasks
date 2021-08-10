@@ -1,2 +1,20 @@
 ---
 # vars file for packages
+
+# yum packages
+yum_packages:
+  - git 
+  - python-pip 
+  - python-docker 
+  - yum-utils 
+  - dos2unix 
+
+pip_packages:
+  - PyYAML
+  - docker
+  - jenkins-job-builder
+
+pip_versions: 
+  - '5.4.1' 
+  - '4.4.4' 
+  - 'latest'
