@@ -7,7 +7,8 @@ yum_packages:
   - python-pip 
   - python-docker 
   - yum-utils 
-  - dos2unix 
+  - dos2unix
+  - jq
 
 pip_packages:
   - PyYAML

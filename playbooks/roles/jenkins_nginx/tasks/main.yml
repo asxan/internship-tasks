@@ -120,6 +120,11 @@
       file:
         path: "{{ jobs_config['path'] }}"
         state: "{{ jobs_config['state'] }}"
+    
+    - name: "Create  github tokens folder"
+      file:
+        path: "{{ github_tokens['path'] }}"
+        state:  "{{ github_tokens['state'] }}"
 
 # ---------------------------------
 
@@ -157,10 +162,20 @@
         - { src: "{{ file3['src'] }}", dest: "{{ file3['dest'] }}", mode: "{{ file3['mode'] }}" }
         - { src: "{{ file4['src'] }}", dest: "{{ file4['dest'] }}", mode: "{{ file4['mode'] }}" }
         - { src: "{{ file5['src'] }}", dest: "{{ file5['dest'] }}", mode: "{{ file5['mode'] }}" }
+        - { src: "{{ file6['src'] }}", dest: "{{ file6['dest'] }}", mode: "{{ file6['mode'] }}" }
+        - { src: "{{ file7['src'] }}", dest: "{{ file7['dest'] }}", mode: "{{ file7['mode'] }}" }
       notify: "Restart Jenkins"
     
     - name: "Create jobs"
       shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
+      args:
+        executable: /bin/bash
+
+
+    - name: "Create webhook"
+      shell: docker container exec jenkins /bin/bash -c  "/var/jenkins_home/github_tokens/token_script.sh"
+      args:
+        executable: /bin/bash
 
 
   - block: # For nginx
@@ -173,9 +188,9 @@
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
-        - { source: "{{ file6['src'] }}", dest: "{{ file6['dest'] }}", mode: "{{ file6['mode'] }}", owner: "{{ file6['owner'] }}", group: "{{ file6['group'] }}" }
-        - { source: "{{ file7['src'] }}", dest: "{{ file7['dest'] }}", mode: "{{ file7['mode'] }}", owner: "{{ file7['owner'] }}", group: "{{ file7['group'] }}" }
         - { source: "{{ file8['src'] }}", dest: "{{ file8['dest'] }}", mode: "{{ file8['mode'] }}", owner: "{{ file8['owner'] }}", group: "{{ file8['group'] }}" }
+        - { source: "{{ file9['src'] }}", dest: "{{ file9['dest'] }}", mode: "{{ file9['mode'] }}", owner: "{{ file9['owner'] }}", group: "{{ file9['group'] }}" }
+        - { source: "{{ file10['src'] }}", dest: "{{ file10['dest'] }}", mode: "{{ file10['mode'] }}", owner: "{{ file10['owner'] }}", group: "{{ file10['group'] }}" }
       become: yes
 
     - name: "Start compose Nginx"

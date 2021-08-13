@@ -34,6 +34,7 @@
           - { package: "{{ yum_packages[2] }}" }
           - { package: "{{ yum_packages[3] }}" }
           - { package: "{{ yum_packages[4] }}" }
+          - { package: "{{ yum_packages[5] }}" }
 
 
       - name: install PyYAML and install certain python modules for docker

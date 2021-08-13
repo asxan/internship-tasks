@@ -1,12 +1,12 @@
 ---
-# - name: "Install packages, docker and docker-compose in all servers"
-#   hosts: all
-#   become: yes
-#   gather_facts: yes
+- name: "Install packages, docker and docker-compose in all servers"
+  hosts: all
+  become: yes
+  gather_facts: yes
 
-#   roles:
-#     - packages
-#     - docker_install
+  roles:
+    - packages
+    - docker_install
 
 - name: "Provision Jenkins"
   hosts: jenkins_nginx
@@ -15,24 +15,24 @@
   roles:
     - jenkins_nginx
 
-# - name: "Provision slave"
-#   hosts: slave_server
-#   become: yes
-#   gather_facts: yes
+- name: "Provision slave"
+  hosts: slave_server
+  become: yes
+  gather_facts: yes
 
-#   roles:
-#     - slave
+  roles:
+    - slave
 
-# - name: "Provision nexus"
-#   hosts: nexus_server
-#   gather_facts: yes
+- name: "Provision nexus"
+  hosts: nexus_server
+  gather_facts: yes
 
-#   roles:
-#     - nexus
+  roles:
+    - nexus
 
-# - name: "Provision deploy instance"
-#   hosts: prod_server
-#   gather_facts: yes
+- name: "Provision deploy instance"
+  hosts: prod_server
+  gather_facts: yes
 
-#   roles:
-#     - deploy
+  roles:
+    - deploy
