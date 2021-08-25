@@ -8,7 +8,7 @@ resource "google_compute_instance" "jenkins_nginx_instance" {
   hostname = var.HOSTNAME1
   machine_type = var.MACHINE_TYPE
   labels = {
-    name  = var.INSTANCE_NAME1
+    name = var.INSTANCE_NAME1
     owner = var.OWNER
     subnet = var.PUBLIC_SUBNET_NAME
     hostname = var.HOSTNAME1
@@ -28,23 +28,23 @@ resource "google_compute_instance" "jenkins_nginx_instance" {
 
 
   tags = [
-    var.FIREWALL_RULE_SSH_HTTP,
-    var.FIREWALL_RULE_FOR_JENKINS,
-    var.FIREWALL_RULE_FOR_DOCKER,
-    var.FIREWALL_RULE_SMTP
+    google_compute_firewall.firewall_rule_ssh_http.name,
+    google_compute_firewall.firewall_rule_jenkins.name,
+    google_compute_firewall.firewall_rule_docker.name,
+    google_compute_firewall.firewall_rule_smtp.name
   ]
 
 
   network_interface {
     network = google_compute_network.vpc_network.name
     subnetwork = google_compute_network.vpc_network.name
-    network_ip = var.RESERVE_INTERNAL_IP_NAME1
+    network_ip = google_compute_address.first_internal_ip.name
     access_config {
-      nat_ip = var.RESERVE_EXTERNAL_IP_NAME1
+      #var.RESERVE_INTERNAL_IP_NAME1
+      nat_ip = google_compute_address.first_external_ip.name
     }
   }
 }
-
 
 
 resource "google_compute_instance" "nexus_instance" {
@@ -68,28 +68,26 @@ resource "google_compute_instance" "nexus_instance" {
 
   zone = var.AVAILABILITY_ZONE_A
   tags = [
-    var.FIREWALL_RULE_SSH_HTTP,
-    var.FIREWALL_RULE_NEXUS,
-    var.FIREWALL_RULE_FOR_DOCKER
+    google_compute_firewall.firewall_rule_ssh_http.name,
+    google_compute_firewall.firewall_rule_nexus.name,
+    google_compute_firewall.firewall_rule_docker.name
   ]
 
 
   network_interface {
     network = google_compute_network.vpc_network.name
     subnetwork = google_compute_network.vpc_network.name
-    network_ip = var.RESERVE_INTERNAL_IP_NAME2
+    network_ip = google_compute_address.second_internal_ip.name
     access_config {
-      nat_ip = var.RESERVE_EXTERNAL_IP_NAME2
+      nat_ip = google_compute_address.second_external_ip.name
     }
   }
 }
 
 
-
-
 resource "google_compute_instance" "slave_instance" {
 
-  name =  var.INSTANCE_NAME3
+  name = var.INSTANCE_NAME3
   hostname = var.HOSTNAME3
   machine_type = var.MACHINE_TYPE
 
@@ -113,20 +111,20 @@ resource "google_compute_instance" "slave_instance" {
 
   zone = var.AVAILABILITY_ZONE_A
   tags = [
-    var.FIREWALL_RULE_SSH_HTTP,
-    var.FIREWALL_RULE_NEXUS,
-    var.FIREWALL_RULE_FOR_DOCKER,
-    var.FIREWALL_RULE_SMTP,
-    var.FIREWALL_RULE_FOR_JENKINS
+    google_compute_firewall.firewall_rule_ssh_http.name,
+    google_compute_firewall.firewall_rule_nexus.name,
+    google_compute_firewall.firewall_rule_docker.name,
+    google_compute_firewall.firewall_rule_smtp.name,
+    google_compute_firewall.firewall_rule_jenkins
   ]
 
 
   network_interface {
     network = google_compute_network.vpc_network.name
     subnetwork = google_compute_network.vpc_network.name
-    network_ip = var.RESERVE_INTERNAL_IP_NAME3
+    network_ip = google_compute_address.third_internal_ip.name
     access_config {
-      nat_ip = var.RESERVE_EXTERNAL_IP_NAME3
+      nat_ip = google_compute_address.third_external_ip.name
     }
   }
 }
@@ -158,15 +156,15 @@ resource "google_compute_instance" "prod_instance" {
 
   zone = var.AVAILABILITY_ZONE_A
   tags = [
-    var.FIREWALL_RULE_SSH_HTTP
+    google_compute_firewall.firewall_rule_ssh_http.name
   ]
 
   network_interface {
     network = google_compute_network.vpc_network.name
     subnetwork = google_compute_network.vpc_network.name
-    network_ip = var.RESERVE_INTERNAL_IP_NAME4
+    network_ip = google_compute_address.fourth_internal_ip.name
     access_config {
-      nat_ip = var.RESERVE_EXTERNAL_IP_NAME4
+      nat_ip = google_compute_address.fourth_external_ip.name
     }
   }
 }
