@@ -1,5 +1,4 @@
-locals
-{
+locals {
   image_name = "${var.IMAGE_PROJECT}/${var.IMAGE_TYPE}"
 }
 
@@ -115,7 +114,7 @@ resource "google_compute_instance" "slave_instance" {
     google_compute_firewall.firewall_rule_nexus.name,
     google_compute_firewall.firewall_rule_docker.name,
     google_compute_firewall.firewall_rule_smtp.name,
-    google_compute_firewall.firewall_rule_jenkins
+    google_compute_firewall.firewall_rule_jenkins.name
   ]
 
 

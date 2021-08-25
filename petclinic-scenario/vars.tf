@@ -257,8 +257,12 @@ variable "MACHINE_TYPE" {
   description = "compute engine machine type"
   default = "e2-medium"
 }
+variable "COUNT_1" {
+  type  =  number
+  description = "Count 1 of resources"
+  default = 1
+}
 
-COUNT=1
 
 variable "OWNER" {
   type = string
@@ -273,9 +277,9 @@ variable "BOOT_DISK_NAME" {
 }
 
 variable "BOOT_DISK_SIZE" {
-  type = string
+  type = number
   description = "boot disk size"
-  default = "32GB"
+  default = 32
 }
 
 variable "BOOT_DISK_TYPE" {
