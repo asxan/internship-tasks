@@ -1,7 +1,11 @@
 resource "google_dns_managed_zone" "asxan_zone" {
   name = var.ZONE_NAME
   dns_name = var.MANAGED_ZONE
+  visibility = "public"
   description = "The dns zone for project"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_dns_record_set" "jenkins_nginx_record_set" {

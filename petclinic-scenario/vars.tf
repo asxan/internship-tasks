@@ -291,7 +291,7 @@ variable "BOOT_DISK_TYPE" {
 variable "IMAGE_TYPE" {
   type = string
   description = "type of boot image"
-  default = "centos-7-v20200403"
+  default = "centos-7-v20210817" // centos-7-v20210817
 }
 
 variable "IMAGE_PROJECT" {
