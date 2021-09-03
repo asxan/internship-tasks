@@ -1,5 +1,5 @@
 petclinic-scenario/.terraform.lock.hcl
 petclinic-scenario/.terraform/providers/registry.terraform.io/hashicorp/google/3.81.0/darwin_amd64/terraform-provider-google_v3.81.0_x5
-petclinic-scenario/terraform.tfstate
-petclinic-scenario/terraform.tfstate.backup
+#petclinic-scenario/terraform.tfstate
+#petclinic-scenario/terraform.tfstate.backup
 .idea/

@@ -354,3 +354,4 @@ variable "DNS_NAME_4" {
   description = "4 dns name"
   default = "pet-clinick.asxan.ml."
 }
+
