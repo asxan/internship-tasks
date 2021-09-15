@@ -4,46 +4,46 @@ variable "project_id" {
   default = "gd-gcp-gd-internship-kha"
 }
 
-variable "CLOUDSDK_COMPUTE_REGION" {
+variable "cloudsdk_compute_region" {
   type = string
   description = "cloud region"
   default = "us-central1"
 }
 
-variable "AVAILABILITY_ZONE_A" {
+variable "availability_zone_a" {
   type = string
   description = "availability zone a"
   default = "us-central1-a"
 }
 
-variable "AVAILABILITY_ZONE_B" {
+variable "availability_zone_b" {
   type = string
   description = "availability zone b"
   default = "us-central1-b"
 }
 
-variable "AVAILABILITY_ZONE_C" {
+variable "availability_zone_c" {
   type = string
   description = "availability zone c"
   default = "us-central1-c"
 }
 
-variable "NETWORK_NAME" {
-  type = string
-  description = "VPC name"
-  default = "tasks-network"
+variable "network_names" {
+  type = list(string)
+  description = "VPC names"
+  default = ["tasks-network"]
 }
 
-variable "PUBLIC_SUBNET_NAME" {
-  type = string
+variable "public_subnets_names" {
+  type = list(string)
   description = "public subnet name"
-  default = "public-subnet"
+  default = ["public-subnet"]
 }
 
-variable "PRIVATE_SUBNET_NAME" {
-  type = string
+variable "private_subnet_name" {
+  type = list(string)
   description = "private subnet name"
-  default = "private-subnet"
+  default = ["private-subnet"]
 }
 
 variable "ROUTER_NAME" {
@@ -58,144 +58,139 @@ variable "NAT_GATEWAY_NAME" {
   default = "nat-tasks-gateway"
 }
 
-variable "PUBLIC_RANGE" {
+
+
+variable "routing_mode" {
   type = string
-  description = "cidr block for public subnet"
-  default = "10.10.20.0/24"
+  description = "The network routing mode"
+  default = "REGIONAL"
 }
 
-variable "PRIVATE_RANGE" {
-  type = string
-  description = "cidr block for private subnet"
-  default = "10.10.30.0/24"
-}
-variable "ALL_RANGE" {
-  type = string
-  description = "All range for firewall rules"
-  default = "0.0.0.0/0"
+variable "delete_default_routes_on_create" {
+  type = bool
+  description = "If set to true, default routes '0.0.0.0/0' will be deleted immediately after creation. Defaults to 'false'"
+  default = false
 }
 
-variable "MTU" {
+variable "auto_create_subnetworks" {
+  type = bool
+  description = "When set to true, the network is created in 'auto subnet mode' and it will create a subnet for each region automatically across the 10.128.0.0/9 address range."
+  default = false
+}
+
+variable "mtu" {
   type = number
   description = "The maximum transmission unit number"
   default = 1500
 }
 
-variable "RESERVE_EXTERNAL_IP_NAME1" {
-  type = string
-  description = "1 external ip address"
-  default = "external-ip-jenkins"
+# Names of external ips
+
+variable "external_ip_names" {
+  type = list(string)
+  description = "The list of external ip names"
+  default = [
+  "external-ip-jenkins",
+  "external-ip-nexus",
+  "external-ip-slave",
+  "external-ip-prod"
+  ]
 }
 
-variable "RESERVE_EXTERNAL_IP_NAME2" {
-  type = string
-  description = "2 external ip address"
-  default = "external-ip-nexus"
-}
+# Names of internal ips
 
-variable "RESERVE_EXTERNAL_IP_NAME3" {
-  type = string
-  description = "3 external ip address"
-  default = "external-ip-slave"
-}
-
-variable "RESERVE_EXTERNAL_IP_NAME4" {
-  type = string
-  description = "4 external ip address"
-  default = "external-ip-prod"
-}
-
-variable "RESERVE_INTERNAL_IP_NAME1" {
-  type = string
-  description = "1 external ip address"
-  default = "internal-ip-jenkins"
-}
-
-variable "RESERVE_INTERNAL_IP_NAME2" {
-  type = string
-  description = "2 external ip address"
-  default = "internal-ip-nexus"
-}
-
-variable "RESERVE_INTERNAL_IP_NAME3" {
-  type = string
-  description = "3 external ip address"
-  default = "internal-ip-slave"
-}
-
-variable "RESERVE_INTERNAL_IP_NAME4" {
-  type = string
-  description = "4 external ip address"
-  default = "internal-ip-prod"
+variable "internal_ip_names" {
+  type = list(string)
+  description = "The list of internal ip names"
+  default = [
+  "internal-ip-jenkins",
+  "internal-ip-nexus",
+  "internal-ip-slave",
+  "internal-ip-prod"
+  ]
 }
 
 # Name of firewall rules
-variable "FIREWALL_RULE_SSH_HTTP" {
-  type = string
-  description = "Name of firewall rule"
-  default = "ssh-http-rule"
-}
 
-variable "FIREWALL_RULE_NEXUS" {
-  type = string
-  description = "Name of firewall rule"
-  default = "nexus-rule"
-}
-
-variable "FIREWALL_RULE_SMTP" {
-  type  = string
-  description = "Name of smtp firewall rule"
-  default = "smtp-rule"
-}
-
-variable "FIREWALL_RULE_FROM_NETWORK" {
-  type = string
-  description = "Name of firewall rule"
-  default = "rule-anywhere"
-}
-
-variable "FIREWALL_RULE_FOR_JENKINS" {
-  type = string
-  description = "Name of firewall rule"
-  default = "jenkins-master-ports"
-}
-
-variable "FIREWALL_RULE_FOR_DOCKER" {
-  type = string
-  description = "Name of firewall rule"
-  default = "docker-port"
+variable "firewall_rule_names" {
+  type = list(string)
+  description = "List of firewall rule names"
+  default = [
+    "ssh-http-rule",
+    "smtp-rule",
+    "nexus-rule",
+    "jenkins-master-ports",
+    "docker-port-rule"
+  ]
 }
 
 # Ports for firewall rules
-variable "FIREWALL_RULE_SSH_HTTP_PORTS" {
-  type = list(string)
-  description = "Fire wall rule with ssh, http, https and smtp ports"
-  default = ["22", "80", "443"]
+variable "firewall_rules_ports" {
+  type = list(list(string))
+  description = "The list of list with firewall rule ports"
+  default = [
+  ["22", "80", "443"],  // ssh_http_ports
+  ["465"],              // smtp_ports
+  ["8081", "443"],      // nexus_ports
+  ["8080", "8081", "50000"], // jenkins_ports
+  ["2375"]                          // docker_ports
+  ]
 }
 
-variable "FIREWALL_RULE_SMTP_PORTS" {
+variable "firewall_rules_protocols" {
   type = list(string)
-  description = "Smtp ports"
-  default = ["465"]
+  description = "The list of firewall rules protocols"
+  default = [
+    "tcp",
+    "tcp",
+    "tcp",
+    "tcp",
+    "tcp"
+  ]
 }
 
-variable "FIREWALL_RULE_NEXUS_PORTS" {
-  type = list(string)
-  description = "Fire wall rule with ssh, http, https and smtp ports"
-  default = ["8081", "443"]
+variable "source_ranges" {
+  type = list(list(string))
+  description = "The list of list with source ranges for traffic"
+  default = [
+  ["0.0.0.0/0"], // all_ranges
+  ["0.0.0.0/0"], // all_ranges
+  ["0.0.0.0/0"], // all_ranges
+  ["10.10.20.0/24"], // public_ranges
+  ["10.10.20.0/24"]  // public_ranges
+  ]
 }
 
-variable "FIREWALL_RULE_FOR_JENKINS_PORTS" {
+variable "directions" {
   type = list(string)
-  description = "Fire wall rule with ssh, http, https and smtp ports"
-  default = ["8080", "8081", "465", "50000"]
+  description = "The list of directions"
+  default = [
+    "INGRESS",
+    "INGRESS",
+    "INGRESS",
+    "INGRESS",
+    "INGRESS"
+  ]
 }
 
-variable "FIREWALL_RULE_FOR_DOCKER_PORTS" {
+
+variable "public_ranges" {
   type = list(string)
-  description = "Fire wall rule with ssh, http, https and smtp ports"
-  default = ["2375"]
+  description = "cidr block for public subnet"
+  default = ["10.10.20.0/24"]
 }
+
+variable "private_ranges" {
+  type = list(string)
+  description = "cidr block for private subnet"
+  default = ["10.10.30.0/24"]
+}
+variable "all_range" {
+  type = string
+  description = "All range for firewall rules"
+  default = "0.0.0.0/0"
+}
+
 
 # Instance`s names
 variable "INSTANCE_NAME1" {
@@ -264,7 +259,7 @@ variable "COUNT_1" {
 }
 
 
-variable "OWNER" {
+variable "owner" {
   type = string
   description = "owner of the resources"
   default = "vitalii-klymov"
@@ -276,13 +271,13 @@ variable "BOOT_DISK_NAME" {
   default = "boot-asxan-disk"
 }
 
-variable "BOOT_DISK_SIZE" {
+variable "boot_disk_size" {
   type = number
   description = "boot disk size"
   default = 32
 }
 
-variable "BOOT_DISK_TYPE" {
+variable "boot_disk_type" {
   type = string
   description = "boot disk type"
   default = "pd-ssd"
@@ -291,10 +286,16 @@ variable "BOOT_DISK_TYPE" {
 variable "IMAGE_TYPE" {
   type = string
   description = "type of boot image"
-  default = "centos-7-v20210817" // centos-7-v20210817
+  default = "centos-7-v20210817" // centos-7-v20200403
 }
 
-variable "IMAGE_PROJECT" {
+variable "image_family" {
+  type = string
+  description = "Os family of images"
+  default = "centos-7"
+}
+
+variable "image_project" {
   type = string
   description = "project of images"
   default = "centos-cloud"
@@ -307,51 +308,44 @@ variable "SSH_KEY" {
 }
 
 # DNS zone
-variable "ZONE_NAME" {
+variable "zone_name" {
   type = string
   description = "dns zone name"
   default = "asxan"
 }
 
-variable "MANAGED_ZONE" {
+variable "managed_zone" {
   type = string
   description = "the managed zone domain"
   default = "asxan.ml."
 }
 
-variable "TTL" {
+variable "visibility" {
+  type = string
+  description = "The zone visibility: public zone are  exposed to the internet"
+  default = "public"
+}
+
+variable "ttl" {
   type = number
   description = "time to live number of request"
   default = 300
 }
 
-variable "RECORD_TYPE_A" {
+variable "record_type_a" {
   type = string
   description = "record type"
   default = "A"
 }
 
-variable "DNS_NAME_1" {
-  type = string
-  description = "1 dns name"
-  default = "jenkins-nginx.asxan.ml."
-}
 
-variable "DNS_NAME_2" {
-  type = string
-  description = "2 dns name"
-  default = "nexus.asxan.ml."
+variable "dns_names" {
+  type = list(string)
+  description = "The list of dns name"
+  default = [
+    "jenkins-nginx.asxan.ml.",
+    "nexus.asxan.ml.",
+    "slave.asxan.ml.",
+    "pet-clinick.asxan.ml."
+  ]
 }
-
-variable "DNS_NAME_3" {
-  type = string
-  description = "3 dns name"
-  default = "slave.asxan.ml."
-}
-
-variable "DNS_NAME_4" {
-  type = string
-  description = "4 dns name"
-  default = "pet-clinick.asxan.ml."
-}
-

@@ -3,3 +3,4 @@ petclinic-scenario/.terraform/providers/registry.terraform.io/hashicorp/google/3
 #petclinic-scenario/terraform.tfstate
 #petclinic-scenario/terraform.tfstate.backup
 .idea/
+petclinic-scenario/.terraform
