@@ -7,45 +7,32 @@ resource "google_compute_instance" "instance" {
   labels = {
     name = "${element(var.instance_names, count.index)}-instance"
     owner = var.owner
-    subnet = var.PUBLIC_SUBNET_NAME
   }
 
-
   boot_disk {
-    device_name = "boot-${var.owner}-disk"
+    device_name = "boot-${var.owner}-${tostring(element(var.instance_names, count.index))}-disk"
     initialize_params {
       type = var.boot_disk_type
       size = var.boot_disk_size
-      image = data.google_compute_image.centos_image.name
+      image = (var.machine_image != "" ? var.machine_image : data.google_compute_image.centos_image.name)
     }
   }
 
-  zone = var.availability_zone_a
+  zone = var.availability_zone
 
-
-  tags = [
-    google_compute_firewall.firewall_rule_ssh_http.name,
-    google_compute_firewall.firewall_rule_jenkins.name,
-    google_compute_firewall.firewall_rule_docker.name,
-    google_compute_firewall.firewall_rule_smtp.name
-  ]
-
+  tags = element(var.network_tags, count.index)
 
   network_interface {
-    network = google_compute_network.vpc_network.name
-    subnetwork = google_compute_subnetwork.public-subnet.name
-    network_ip = google_compute_address.first_internal_ip.address
+    network = var.vpc_name
+    subnetwork = var.subnet
+    network_ip = element(var.internal_ip, count.index)
     access_config {
-      #var.RESERVE_INTERNAL_IP_NAME1
-      nat_ip = google_compute_address.first_external_ip.address
+      nat_ip = element(var.external_ip, count.index)
     }
   }
 
   metadata = {
-    ssh-keys = file(var.SSH_KEY)
+    ssh-keys = file(var.path_to_ssh_key_file)
   }
 
-  depends_on = [
-  google_compute_project_metadata.pet_ssh_key,
-  ]
 }

@@ -5,8 +5,7 @@
 
 provider "google" {
   project = var.project_id
-  region = "us-central1"
-  zone = "us-central1-a"
+  region = var.cloudsdk_compute_region
 }
 
 terraform {
@@ -33,6 +32,8 @@ module "public_subnets" {
   public_ranges = var.public_ranges
   region = var.cloudsdk_compute_region
   vpc_name = module.vpcs.network_names[0]
+
+  depends_on = [module.vpcs]
 }
 
 
@@ -41,6 +42,10 @@ module "internal_ips" {
   address_names = var.internal_ip_names
   region = var.cloudsdk_compute_region
   subnetwork = module.public_subnets.subnet_id[0]
+
+  depends_on = [
+  module.public_subnets
+  ]
 }
 
 module "external_ips" {
@@ -57,13 +62,73 @@ module "firewalls" {
   ports = var.firewall_rules_ports
   direction = var.directions
   source_ranges = var.source_ranges
+
+  depends_on = [
+  module.vpcs
+  ]
+}
+
+module "ssh_key" {
+  source = "./modules/metadata"
+  ssh_key = var.ssh_key
 }
 
 
 
 
+module "instances" {
+  source = "./modules/instances"
+  instance_names = var.instance_names
+  hostnames = var.hostnames
+  machine_type = var.machine_type
+  owner = var.owner
 
+  boot_disk_type = var.boot_disk_type
+  boot_disk_size = var.boot_disk_size
+  machine_image = var.image_type
+  //machine_image = data.google_compute_image.centos_image.name
 
+  availability_zone = data.google_compute_zones.available.names[0]
+
+  network_tags = [
+    [
+      module.firewalls.firewall_names[0],
+      module.firewalls.firewall_names[1],
+      module.firewalls.firewall_names[3],
+      module.firewalls.firewall_names[4],
+    ],
+    [
+      module.firewalls.firewall_names[0],
+      module.firewalls.firewall_names[2],
+      module.firewalls.firewall_names[4],
+    ],
+    [
+      module.firewalls.firewall_names[0],
+      module.firewalls.firewall_names[1],
+      module.firewalls.firewall_names[2],
+      module.firewalls.firewall_names[3],
+      module.firewalls.firewall_names[4],
+    ],
+    [
+      module.firewalls.firewall_names[0],
+    ]
+  ]
+
+  vpc_name = module.vpcs.network_names[0]
+  subnet = module.public_subnets.subnets_names[0]
+  internal_ip = module.internal_ips.internal_addresses
+  external_ip = module.external_ips.external_addresses
+  path_to_ssh_key_file = var.ssh_key
+
+  depends_on = [
+    module.ssh_key,
+    module.vpcs,
+    module.public_subnets,
+    module.internal_ips,
+    module.external_ips,
+    module.firewalls
+  ]
+}
 
 
 module "dns_managed_zone" {

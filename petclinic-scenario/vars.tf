@@ -46,13 +46,13 @@ variable "private_subnet_name" {
   default = ["private-subnet"]
 }
 
-variable "ROUTER_NAME" {
+variable "router_name" {
   type = string
   description = "router name"
   default = "tasks-router"
 }
 
-variable "NAT_GATEWAY_NAME" {
+variable "nat_gateway_name" {
   type = string
   description = "nat-gateway name"
   default = "nat-tasks-gateway"
@@ -185,6 +185,7 @@ variable "private_ranges" {
   description = "cidr block for private subnet"
   default = ["10.10.30.0/24"]
 }
+
 variable "all_range" {
   type = string
   description = "All range for firewall rules"
@@ -193,69 +194,36 @@ variable "all_range" {
 
 
 # Instance`s names
-variable "INSTANCE_NAME1" {
-  type = string
-  description = "instance name"
-  default = "jenkins-nginx-instance"
-}
 
-variable "INSTANCE_NAME2" {
-  type = string
-  description = "instance name"
-  default = "nexus-instance"
-}
-
-variable "INSTANCE_NAME3" {
-  type = string
-  description = "instance name"
-  default = "slave-instance"
-}
-
-
-variable "INSTANCE_NAME4" {
-  type = string
-  description = "instance name"
-  default = "prod-instance"
+variable "instance_names" {
+  type = list(string)
+  description = "The list of instances names"
+  default = [
+  "jenkins-nginx-instance",
+  "nexus-instance",
+  "slave-instance",
+  "prod-instance"
+  ]
 }
 
 # Instance`s hostnames
 
-variable "HOSTNAME1" {
-  type = string
-  description = "instance`s hostname"
-  default = "jenkins-nginx.asxan.ml"
-}
-
-variable "HOSTNAME2" {
-  type = string
-  description = "instance`s hostname"
-  default = "nexus.asxan.ml"
-}
-
-
-variable "HOSTNAME3" {
-  type = string
-  description = "instance`s hostname"
-  default = "slave.asxan.ml"
+variable "hostnames" {
+  type = list(string)
+  description = "The list of instances hostnames"
+  default = [
+  "jenkins-nginx.asxan.ml",
+  "nexus.asxan.ml",
+  "slave.asxan.ml",
+  "pet-clinick.asxan.ml"
+  ]
 }
 
 
-variable "HOSTNAME4" {
-  type = string
-  description = "instance`s hostname"
-  default = "pet-clinick.asxan.ml"
-}
-
-
-variable "MACHINE_TYPE" {
+variable "machine_type" {
   type = string
   description = "compute engine machine type"
   default = "e2-medium"
-}
-variable "COUNT_1" {
-  type  =  number
-  description = "Count 1 of resources"
-  default = 1
 }
 
 
@@ -265,11 +233,6 @@ variable "owner" {
   default = "vitalii-klymov"
 }
 
-variable "BOOT_DISK_NAME" {
-  type = string
-  description = "name of boot disk"
-  default = "boot-asxan-disk"
-}
 
 variable "boot_disk_size" {
   type = number
@@ -283,7 +246,7 @@ variable "boot_disk_type" {
   default = "pd-ssd"
 }
 
-variable "IMAGE_TYPE" {
+variable "image_type" {
   type = string
   description = "type of boot image"
   default = "centos-7-v20210817" // centos-7-v20200403
@@ -301,7 +264,7 @@ variable "image_project" {
   default = "centos-cloud"
 }
 
-variable "SSH_KEY" {
+variable "ssh_key" {
   type =  string
   description = "The path to ssh key"
   default = "/Users/vklymov/.ssh/gcloud_gridkey.pub"

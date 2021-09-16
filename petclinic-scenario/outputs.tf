@@ -33,3 +33,8 @@ output "vpc_name" {
 output "vpcs_ids" {
   value = module.vpcs.network_id
 }
+
+
+output "available_zones" {
+  value = data.google_compute_zones.available[*].names
+}

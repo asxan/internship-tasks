@@ -44,9 +44,45 @@ variable "boot_disk_size" {
   default = 32
 }
 
-variable "availability_zone_a" {
+variable "availability_zone" {
   type = string
-  description = "availability zone a"
+  description = "availability zone"
 }
 
-variable "" {}
+variable "machine_image" {
+  type = string
+  description = "The machine boot image"
+  default = ""
+}
+
+variable "network_tags" {
+  type  = list(list(string))
+  description = "The list of network firewall rules"
+}
+
+variable "vpc_name" {
+  type = string
+  description = "The vpc name in which instance will be located"
+  default = "default"
+}
+
+variable "subnet" {
+  type = string
+  description = "The subnet name in which instance will be created"
+  default = "default"
+}
+
+variable "internal_ip" {
+  type = list(string)
+  description = "The internal ip address for instance"
+}
+
+variable "external_ip" {
+  type = list(string)
+  description = "The external ip address for instance"
+}
+
+variable "path_to_ssh_key_file" {
+  type = string
+  description = "The path to ssh key file for metadata"
+}
