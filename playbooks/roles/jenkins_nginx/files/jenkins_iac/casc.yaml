@@ -62,13 +62,16 @@ jenkins:
         name: "java-jnlp-slave"
         pullStrategy: PULL_ALWAYS
         pullTimeout: 300
-        remoteFs: "/home/jenkins/agent"      
+        remoteFs: "/home/jenkins/agent"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
   disableRememberMe: false
   labelAtoms:
   - name: "master"
+  - name: "built-in"
+  - name: "java-jnlp-slave"
+  - name: "java-jnlp-slave-00002wi90vvk5"
   markupFormatter: "plainText"
   mode: NORMAL
   myViewsTabBar: "standard"
@@ -93,7 +96,7 @@ jenkins:
         - preferredProvider:
             providerId: "default"
         - mailer:
-            emailAddress: "${JENKINS_ADMIN_MAIL}"
+            emailAddress: "${JENKINS_SMTP_USERNAME}"
   slaveAgentPort: 50000
   updateCenter:
     sites:
@@ -118,24 +121,23 @@ unclassified:
     - "jobBuildDiscarder"
   buildStepOperation:
     enabled: false
-  email-ext:
-    adminRequiredForTemplateTesting: false
-    allowUnregisteredEnabled: false
-    charset: "UTF-8"
-    debugMode: false
-    defaultBody: |-
-      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
-
-      Check console output at $BUILD_URL to view the results.
-    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
-    defaultTriggerIds:
-    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
-    mailAccount:
-      smtpPassword: "${JENKINS_SMTP_PASSWORD}"
-    maxAttachmentSize: -1
-    maxAttachmentSizeMb: -1
-    precedenceBulk: false
-    watchingEnabled: false
+  # email-ext:
+  #   adminRequiredForTemplateTesting: false
+  #   allowUnregisteredEnabled: false
+  #   charset: "UTF-8"
+  #   debugMode: false
+  #   defaultBody: |-
+  #     $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+  #     Check console output at $BUILD_URL to view the results.
+  #   defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+  #   defaultTriggerIds:
+  #   - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+  #   mailAccount:
+  #     smtpPassword: "${JENKINS_SMTP_PASSWORD}"
+  #   maxAttachmentSize: -1
+  #   maxAttachmentSizeMb: -1
+  #   precedenceBulk: false
+  #   watchingEnabled: false
   fingerprints:
     fingerprintCleanupDisabled: false
     storage: "file"
@@ -151,8 +153,6 @@ unclassified:
     hideCredentials: false
     showEntireCommitSummaryInChanges: false
     useExistingAccountWithSameEmail: false
-  junitTestResultStorage:
-    storage: "file"
   location:
     adminAddress: "address not configured yet <nobody@nowhere>"
     url: "https://jenkins-nginx.asxan.ml/"

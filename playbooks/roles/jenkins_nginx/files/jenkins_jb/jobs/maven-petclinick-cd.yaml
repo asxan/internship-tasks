@@ -11,7 +11,8 @@
             branches: 
               - origin/pipelines
             skip-tag: true
-            clean: true
+            clean: 
+                after: true
       script-path: "petclinic-cd.groovy"
       lightweight-checkout: true
     parameters:

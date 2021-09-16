@@ -3,11 +3,13 @@
     "repo": "spring-petclinic",
     "name": "web",
     "config": 
-    { 
+    {
         "url": "https://jenkins-nginx.asxan.ml/github-webhook/", 
         "content_type": "application/x-www-form-urlencoded", 
         "secret": "$api_token" 
     }, 
-    "events": ["push"],
+    "events": [
+        "push"
+    ],
     "active": true
 }

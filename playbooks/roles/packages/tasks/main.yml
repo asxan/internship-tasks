@@ -8,11 +8,11 @@
 
   - block:
 
-      - name: "Yum upgrade all packages"
-        yum:
-          name: '*'
-          state: latest
-          update_cache: yes
+      # - name: "Yum upgrade all packages"
+      #   yum:
+      #     name: '*'
+      #     state: latest
+      #     update_cache: yes
 
 
       - name: "Enable Epel Repository"
@@ -44,7 +44,7 @@
         with_items:
           - { name: "{{ pip_packages[0] }}", version: "{{ pip_versions[0] }}" }
           - { name: "{{ pip_packages[1] }}", version: "{{ pip_versions[1] }}" }
-          - { name: "{{ pip_packages[2] }}", version: "{{ pip_versions[2] }}" }
+          # - { name: "{{ pip_packages[2] }}", version: "{{ pip_versions[2] }}" }
 #          - { name: docker-py, version: 1.10.6 }
     
     when: docker_check.stderr.find('service could not be found') != -1

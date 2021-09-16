@@ -127,58 +127,13 @@
         state:  "{{ github_tokens['state'] }}"
 
 # ---------------------------------
+  - block: # For nginx
 
     - name: "Copy jenkins.env file"
       copy:
         src: "{{ jenkins_env['src'] }}"
         dest: "{{ jenkins_env['dest'] }}"
         mode: "{{ jenkins_env['mode'] }}"
-
-    - name: "Copy plugins.txt"
-      copy:
-        src: "{{ plugins_txt['src'] }}"
-        dest: "{{ plugins_txt['dest'] }}"
-        mode: "{{ plugins_txt['mode'] }}"
-  
-    - name: "Start compose Jenkins"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
-      args:
-        executable: /bin/bash
-
-    - name: "Install plugins"
-      shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
-
-    - name: "Restart Jenkins"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
-
-    - name: "Copy casc and jjb files"
-      copy:
-        src: "{{ item. src }}"
-        dest: "{{ item.dest }}"
-        mode: "{{ item.mode }}"
-      loop:
-        - { src: "{{ file1['src'] }}", dest: "{{ file1['dest'] }}", mode: "{{ file1['mode'] }}" }
-        - { src: "{{ file2['src'] }}", dest: "{{ file2['dest'] }}", mode: "{{ file2['mode'] }}" }
-        - { src: "{{ file3['src'] }}", dest: "{{ file3['dest'] }}", mode: "{{ file3['mode'] }}" }
-        - { src: "{{ file4['src'] }}", dest: "{{ file4['dest'] }}", mode: "{{ file4['mode'] }}" }
-        - { src: "{{ file5['src'] }}", dest: "{{ file5['dest'] }}", mode: "{{ file5['mode'] }}" }
-        - { src: "{{ file6['src'] }}", dest: "{{ file6['dest'] }}", mode: "{{ file6['mode'] }}" }
-        - { src: "{{ file7['src'] }}", dest: "{{ file7['dest'] }}", mode: "{{ file7['mode'] }}" }
-      notify: "Restart Jenkins"
-    
-    - name: "Create jobs"
-      shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
-      args:
-        executable: /bin/bash
-
-
-    - name: "Create webhook"
-      shell: docker container exec jenkins /bin/bash -c  "/var/jenkins_home/github_tokens/token_script.sh"
-      args:
-        executable: /bin/bash
-
-
-  - block: # For nginx
 
     - name: "Copy files"
       copy: 
@@ -197,4 +152,59 @@
       shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
       args:
         executable: /bin/bash
+
+#---------------------------------
+
+  - block:  
+    
+    - name: "Copy plugins.txt"
+      copy:
+        src: "{{ plugins_txt['src'] }}"
+        dest: "{{ plugins_txt['dest'] }}"
+        mode: "{{ plugins_txt['mode'] }}"
+      tags:
+        - copy_plugins
+  
+    - name: "Start compose Jenkins"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
+      args:
+        executable: /bin/bash
+
+    - name: "Install plugins"
+      shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
+      tags:
+        - install_plugins
+
+    - name: "Restart Jenkins"
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+      tags:
+        - restart-jenkins
+
+    - name: "Copy casc and jjb files"
+      copy:
+        src: "{{ item. src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { src: "{{ file1['src'] }}", dest: "{{ file1['dest'] }}", mode: "{{ file1['mode'] }}" }
+        - { src: "{{ file2['src'] }}", dest: "{{ file2['dest'] }}", mode: "{{ file2['mode'] }}" }
+        - { src: "{{ file3['src'] }}", dest: "{{ file3['dest'] }}", mode: "{{ file3['mode'] }}" }
+        - { src: "{{ file4['src'] }}", dest: "{{ file4['dest'] }}", mode: "{{ file4['mode'] }}" }
+        - { src: "{{ file5['src'] }}", dest: "{{ file5['dest'] }}", mode: "{{ file5['mode'] }}" }
+        - { src: "{{ file6['src'] }}", dest: "{{ file6['dest'] }}", mode: "{{ file6['mode'] }}" }
+        - { src: "{{ file7['src'] }}", dest: "{{ file7['dest'] }}", mode: "{{ file7['mode'] }}" }
+      notify: "Restart Jenkins"
+
+    
+    - name: "Create jobs"
+      shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
+      args:
+        executable: /bin/bash
+
+
+    - name: "Create webhook"
+      shell: docker container exec jenkins /bin/bash -c  "/var/jenkins_home/github_tokens/token_script.sh"
+      args:
+        executable: /bin/bash
+      tags: create-webhook
   
