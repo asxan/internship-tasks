@@ -8,13 +8,13 @@ services:
             -   "8080"
             -   "8081"
             -   "443:443"
-            # -   "80:80"
+            -   "80:80"
         env_file:
             -   ./nginx.env
         # volumes:
         #     # -   "$HOME/petclinic/nginx_home/fullchain.pem:/fullchain.pem"
         #     # -   "$HOME/petclinic/nginx_home/privkey.pem:/privkey.pem"
-        #     # -   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
+            -   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
         links: 
             - "myadmin:admin"
             - "petclinic:application"
