@@ -28,11 +28,11 @@
         dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
       with_items:
-        - { path_to_file: ../files/petclinic-docker-compose.yaml, dest: /home/vklymov/petclinic/docker_compose, mode: preserve }
-        - { path_to_file: ../files/mysql.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
-        - { path_to_file: ../files/pet.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
-        - { path_to_file: ../files/nginx.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
-        - { path_to_file: ../files/myadmin.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve }
+        - { path_to_file: ../files/docker_compose/petclinic-docker-compose.yaml, dest: /home/vklymov/petclinic/docker_compose, mode: preserve }
+        - { path_to_file: ../files/docker_compose/mysql.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
+        - { path_to_file: ../files/docker_compose/pet.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
+        - { path_to_file: ../files/docker_compose/nginx.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
+        - { path_to_file: ../files/docker_compose/myadmin.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve }
 
     
 - block: #Compose up stack
