@@ -14,7 +14,7 @@ services:
         # volumes:
         #     # -   "$HOME/petclinic/nginx_home/fullchain.pem:/fullchain.pem"
         #     # -   "$HOME/petclinic/nginx_home/privkey.pem:/privkey.pem"
-            # -   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
+            -   "$HOME/petclinic/nginx_home/petclinic.conf:/etc/nginx/conf.d/petclinic.conf"
         links: 
             - "myadmin:admin"
             - "petclinic:application"
