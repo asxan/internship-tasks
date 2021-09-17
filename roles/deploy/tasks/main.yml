@@ -43,7 +43,7 @@
         owner: "{{ item.mode }}"
         group: "{{ item.mode }}"
       with_items:
-        - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: "0777", owner: "vklymov", group: "vklymov" }
+        - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: "0777", owner: "root", group: "root" }
 
     
 - block: #Compose up stack
