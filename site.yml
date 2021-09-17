@@ -1,7 +1,7 @@
 ---
 - name: "Deploy petclinic"
   hosts: prod_server
-  # become: yes
+  become: yes
   gather_facts: yes
 
   roles:
