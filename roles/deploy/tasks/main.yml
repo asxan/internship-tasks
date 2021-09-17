@@ -40,8 +40,10 @@
         src: "{{ item.path_to_file }}"
         dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
+        owner: "{{ item.mode }}"
+        group: "{{ item.mode }}"
       with_items:
-        - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: "0777" }
+        - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: "0777", owner: "vklymov", group: "vklymov" }
 
     
 - block: #Compose up stack
