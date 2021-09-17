@@ -41,7 +41,7 @@
         dest: "{{ item.dest }}"
         mode: "{{ item.mode }}"
       with_items:
-        - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: preserve }
+        - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: "0777" }
 
     
 - block: #Compose up stack
