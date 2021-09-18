@@ -1,0 +1,4 @@
+---
+
+  - name: "Restart Nginx"
+    shell: "docker-compose -f /home/vklymov/petclinic/docker_compose/petclinic-docker-compose.yaml restart"

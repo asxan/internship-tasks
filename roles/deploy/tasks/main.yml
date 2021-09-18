@@ -34,6 +34,7 @@
         - { path_to_file: ../files/docker_compose/pet.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
         - { path_to_file: ../files/docker_compose/nginx.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve  }
         - { path_to_file: ../files/docker_compose/myadmin.env, dest: /home/vklymov/petclinic/docker_compose, mode: preserve }
+      notify: "Restart Nginx"
 
     - name: "Copy nginx conf files"
       copy:
@@ -44,9 +45,9 @@
         group: "{{ item.group }}"
       with_items:
         - { path_to_file: ../files/nginx/petclinic.conf, dest: /home/vklymov/petclinic/nginx_home, mode: "0777", owner: "root", group: "root" }
+      notify: "Restart Nginx"
 
     
 - block: #Compose up stack
-
     - name: "Start pet compose"
       shell: docker-compose -f /home/vklymov/petclinic/docker_compose/petclinic-docker-compose.yaml up -d
