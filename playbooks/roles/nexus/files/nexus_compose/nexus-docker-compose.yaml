@@ -7,8 +7,8 @@ services:
         ports:
             - "8081:8081"
         volumes:
-            - "$HOME/nexus_nginx/nexus_home:/nexus-data"
-            - "$HOME/nexus_nginx/nexus_files/nexus-default.properties:/opt/sonatype/nexus/etc/nexus-default.properties:rw"
+            - "/home/vklymov/nexus_nginx/nexus_home:/nexus-data"
+            - "/home/vklymov/nexus_nginx/nexus_files/nexus-default.properties:/opt/sonatype/nexus/etc/nexus-default.properties:rw"
         env_file:
             - "./nexus.env"
         environment:
@@ -24,9 +24,9 @@ services:
             - "443:443"
             - "8081"
         volumes:
-            - "$HOME/nexus_nginx/nginx_home/nexus.conf:/etc/nginx/conf.d/nexus.conf:rw"
-            - "$HOME/nexus_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
-            - "$HOME/nexus_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
+            - "/home/vklymov/nexus_nginx/nginx_home/nexus.conf:/etc/nginx/conf.d/nexus.conf:rw"
+            - "/home/vklymov/nexus_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
+            - "/home/vklymov/nexus_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
         env_file:
             - "./nginx.env"
         networks:

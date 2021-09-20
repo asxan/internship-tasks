@@ -23,31 +23,50 @@
 
   
 - block: 
-  
-  - name: "Copy files"
+
+
+  - name: "Copy docker compose files"
     copy: 
-      src: "{{ item.source }}"
-      dest: "{{ item.dest }}"
-      mode: "{{ item.mode }}"
-      owner: "{{ item.owner }}"
-      group: "{{ item.group }}"
-    loop:
-      - { source: "{{ file1['src'] }}", dest: "{{ file1['dest'] }}" , mode: "{{ file1['mood'] }}", owner: "{{ file1['owner'] }}", group: "{{ file1['group'] }}" }
-      - { source: "{{ file2['src'] }}", dest: "{{ file2['dest'] }}" , mode: "{{ file2['mood'] }}", owner: "{{ file2['owner'] }}", group: "{{ file2['group'] }}" }
-      - { source: "{{ file3['src'] }}", dest: "{{ file3['dest'] }}" , mode: "{{ file3['mood'] }}", owner: "{{ file3['owner'] }}", group: "{{ file3['group'] }}" }
-      - { source: "{{ file4['src'] }}", dest: "{{ file4['dest'] }}" , mode: "{{ file4['mood'] }}", owner: "{{ file4['owner'] }}", group: "{{ file4['group'] }}" }
-      - { source: "{{ file5['src'] }}", dest: "{{ file5['dest'] }}" , mode: "{{ file5['mood'] }}", owner: "{{ file5['owner'] }}", group: "{{ file5['group'] }}" }
-      - { source: "{{ file6['src'] }}", dest: "{{ file6['dest'] }}" , mode: "{{ file6['mood'] }}", owner: "{{ file6['owner'] }}", group: "{{ file6['group'] }}" }
-      - { source: "{{ file7['src'] }}", dest: "{{ file7['dest'] }}" , mode: "{{ file7['mood'] }}", owner: "{{ file7['owner'] }}", group: "{{ file7['group'] }}" }
+      src: "{{ item }}"
+      dest: "{{ compose['dest'] }}"
+      mood: "{{ compose['mood'] }}"
+      owner:  "{{ compose['owner'] }}"
+      group:  "{{ compose['group'] }}"
+    with_fileglob:
+      - "{{ compose['src'] }}/*.*"
     become: yes
 
-  - name: "Copy nexus api dir with all files"
+  - name: "Copy nginx files"
+    copy:
+      src: "{{ item }}"
+      dest: "{{ nginx['dest'] }}"
+      mood: "{{ nginx['mood'] }}"
+      owner: "{{ nginx['owner'] }}"
+      group: "{{ nginx['group'] }}"
+    with_fileglob:
+      - "{{ nginx['src'] }}/*.*"
+    become: yes
+
+  - name: "Copy nexus properties"
     copy: 
-      src: "{{ nexus_api_dir['src'] }}"
+      src:  "{{ item }}"
+      dest: "{{ nexus_properties['dest'] }}"
+      mood: "{{ nexus_properties['mood'] }}"
+      owner:  "{{ nexus_properties['owner'] }}"
+      group:  "{{ nexus_properties['group'] }}"
+    with_fileglob:
+      - "{{ nexus_properties['src'] }}/*.*"
+    become: yes
+
+  - name: "Copy nexus api files"
+    copy: 
+      src:  "{{ item }}"
       dest: "{{ nexus_api_dir['dest'] }}"
-      mode: "{{ nexus_api_dir['mood'] }}"
-      owner: "{{ nexus_api_dir['owner'] }}"
-      group: "{{ nexus_api_dir['group'] }}"
+      mood: "{{ nexus_api_dir['mood'] }}"
+      owner:  "{{ nexus_api_dir['owner'] }}"
+      group:  "{{ nexus_api_dir['group'] }}"
+    with_fileglob:
+      - "{{ nexus_api_dir['src'] }}/*.*"
     become: yes
 
   - name: "Start compose Nexus"
@@ -59,7 +78,6 @@
     shell: "sleep 60"
     args: 
       executable: /bin/bash
-
 
   - name: "Start nexus api script"
     shell: "/home/vklymov/nexus_nginx/nexus_api_files/shell_nexus-api.sh"

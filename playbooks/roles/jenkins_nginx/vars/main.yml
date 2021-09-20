@@ -26,92 +26,48 @@ folder5:
   state:  'directory'
   mode: '0777'
 
+jenkins_folders:
+  casc_configs: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
+  jobs_config:  '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
+  github_tokens:  '/home/vklymov/jenkins_nginx/jenkins_home/github_tokens'
+  state: 'directory'
 
-folder6:
-  path: '/home/vklymov/jenkins_nginx/nginx_home'
-  state:  'directory'
-  mode: '0777'
-
-docker_compose_file:
-  path: '../files/docker-compose-jenkins-nginx.yaml'
+docker_compose_files:
+  path: '../files/docker_compose'
   dest:  '/home/vklymov/jenkins_nginx/docker_compose'
   mode: 'preserve'
 
-casc_configs:
-  path: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
-  state: 'directory'
-
-jobs_config:
-  path: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
-  state: 'directory'
-
-github_tokens:
-  path: '/home/vklymov/jenkins_nginx/jenkins_home/github_tokens'
-  state: 'directory'
-
-jenkins_env:
-  src:  '../files/jenkins.env'
-  dest: '/home/vklymov/jenkins_nginx/docker_compose'
-  mode: 'preserve'
-
 plugins_txt:
-  src:  '../files/plugins.txt'
+  src:  '../files/plugins'
   dest: '/home/vklymov/jenkins_nginx/jenkins_home'
   mode: 'preserve'
 
-file1:
-  src: '../files/jenkins_iac/casc.yaml'
+
+nginx_files:
+  src: '../files/nginx_files'
+  dest: '/home/vklymov/jenkins_nginx/nginx_home'
+  mode: '0777'
+  owner: 'root'
+  group: 'root'
+
+jenkins_casc:
+  src: '../files/jenkins_iac'
   dest: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
   mode: '777'
 
-file2:
-  src: '../files/jenkins_iac/settings.xml'
-  dest: '/home/vklymov/jenkins_nginx/jenkins_home/casc_configs'
-  mode: '777'
-
-file3:
+jenkins_jobs_ini:
   src:  '../files/jenkins_jb/jenkins_jobs.ini'
   dest: '/home/vklymov/jenkins_nginx/job_files'
   mode: '0777'
 
-file4:
-  src:  '../files/jenkins_jb/jobs/maven-petclinick-ci.yaml'
+jenkins_jobs:
+  src:  '../files/jenkins_jb/jobs'
   dest: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
   mode: '0777'
 
-file5:
-  src:  '../files/jenkins_jb/jobs/maven-petclinick-cd.yaml'
-  dest: '/home/vklymov/jenkins_nginx/jenkins_home/jobs_configs'
-  mode: '0777'
 
-file6:
-  src: '../files/github/token_script.sh'
+github_tokens:
+  src: '../files/github'
   dest: '/home/vklymov/jenkins_nginx/jenkins_home/github_tokens'
   mode: '0777'
-
-file7:
-  src:  '../files/github/github.json'
-  dest: '/home/vklymov/jenkins_nginx/jenkins_home/github_tokens'
-  mode: '0777'
-
-file8:
-  src:  '../files/jenkins.conf'
-  dest: '/home/vklymov/jenkins_nginx/nginx_home'
-  mode: '0777'
-  owner: 'vklymov'
-  group: 'vklymov'
-
-file9:
-  src:  '../files/fullchain.pem'
-  dest: '/home/vklymov/jenkins_nginx/nginx_home'
-  mode: '0777'
-  owner: 'root'
-  group: 'root'
-
-file10:
-  src:  '../files/privkey.pem'
-  dest: '/home/vklymov/jenkins_nginx/nginx_home'
-  mode: '0777'
-  owner: 'root'
-  group: 'root'
 

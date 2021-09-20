@@ -53,18 +53,6 @@
         - { user: "{{ docker_user1 }}" }
         - { user: "{{ docker_user2 }}" }
 
-    # - name: Install docker
-    #   shell: curl https://get.docker.com | sh
-
-    # - name: Modify priviliege
-    #   shell: usermod -aG docker "{ item.user }"
-    #   become: yes
-    #   loop:
-    #     - { user: "{{ docker_user1 }}" }
-    #     - { user: "{{ docker_user2 }}" }
-
-    # - name: Change priviliege of docker 
-
     when: 
       - docker_check.stderr.find('service could not be found') != -1
 

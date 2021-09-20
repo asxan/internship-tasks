@@ -32,11 +32,7 @@
       - { source: "{{ docker_files_src[0] }}", dest: "{{ docker_files_dest[0] }}", mood: "{{ docker_files_mood[0] }}" }
       - { source: "{{ docker_files_src[1] }}", dest: "{{ docker_files_dest[1] }}", mood: "{{ docker_files_mood[1] }}" }
 
-  # - name: "Change mood of docker.sock"
-  #   file:
-  #     dest: /var/run/docker.sock
-  #     mode: 666
-  #   become: yes
+
   - name: "Change mood of docker.sock"
     shell: chmod 666 /var/run/docker.sock
     tags: docker
