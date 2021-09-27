@@ -1,2 +1,1 @@
-# internship-tasks
-Internship
+# Packer manifest for building google machine images
