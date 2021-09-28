@@ -1,6 +1,20 @@
 ---
 # vars file for packages
 
+
+group:
+  name: vklymov
+  state: present
+  gid: 1001
+
+user:
+  name: vklymov
+  state: present
+  shell: /bin/bash
+  uid: 1000
+  group: vklymov
+
+
 # yum packages
 yum_packages:
   - git 

@@ -4,16 +4,16 @@
 # Dirs
 
 nexus_nginx: 
-  - '/home/vklymov/nexus_nginx'
+  - '/opt/nexus_nginx'
   - 'directory'
   - '0776'
 
 other_dirs_path:
-  - '/home/vklymov/nexus_nginx/docker_compose'
-  - '/home/vklymov/nexus_nginx/nginx_home'
-  - '/home/vklymov/nexus_nginx/nexus_home'
-  - '/home/vklymov/nexus_nginx/nexus_files'
-  - '/home/vklymov/nexus_nginx/nexus_api_files'
+  - '/opt/nexus_nginx/docker_compose'
+  - '/opt/nexus_nginx/nginx_home'
+  - '/opt/nexus_nginx/nexus_home'
+  - '/opt/nexus_nginx/nexus_files'
+  - '/opt/nexus_nginx/nexus_api_files'
 
 other_dirs_mood:
   - '0775'
@@ -25,7 +25,7 @@ other_dirs_mood:
 
 compose:
   src: '../files/nexus_compose'
-  dest: '/home/vklymov/nexus_nginx/docker_compose'
+  dest: '/opt/nexus_nginx/docker_compose'
   mood: 'preserve'
   owner:  'vklymov'
   group:  'vklymov'
@@ -33,7 +33,7 @@ compose:
 
 nginx:
   src: '../files/nginx_files'
-  dest: '/home/vklymov/nexus_nginx/nginx_home'
+  dest: '/opt/nexus_nginx/nginx_home'
   mood: '0777'
   owner:  'root'
   group:  'root'
@@ -43,14 +43,14 @@ nginx:
 
 nexus_properties:
   src: '../files/nexus_properties'
-  dest: '/home/vklymov/nexus_nginx/nexus_files'
+  dest: '/opt/nexus_nginx/nexus_files'
   mood: '0777'
   owner:  'root'
   group:  'root'
 
 nexus_api_dir:
   src: '../files/nexus_api_files'
-  dest: '/home/vklymov/nexus_nginx/nexus_api_files/'
+  dest: '/opt/nexus_nginx/nexus_api_files/'
   mood: '0775'
   owner:  'vklymov'
   group:  'vklymov'

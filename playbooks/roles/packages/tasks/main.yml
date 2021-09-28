@@ -14,6 +14,21 @@
       #     state: latest
       #     update_cache: yes
 
+      - name: "Create group"
+        group:
+          name: "{{ group['name'] }}"
+          state: "{{ group['state'] }}"
+          gid: "{{ group['gid'] }}"
+
+      
+      - name: "Create user"
+        user:
+          name: "{{ user['name'] }}"
+          state: "{{ user['state'] }}"
+          shell: "{{ user['shell'] }}"
+          uid: "{{ user['uid'] }}"
+          group: "{{ user['group'] }}"
+
 
       - name: "Enable Epel Repository"
         yum:

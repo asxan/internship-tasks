@@ -66,7 +66,7 @@
       become: yes
 
     - name: "Start compose Nginx"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
+      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
       args:
         executable: /bin/bash
 
@@ -97,7 +97,7 @@
 #---------------------------------------
 
     - name: "Start compose Jenkins"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
+      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
       args:
         executable: /bin/bash
 
@@ -107,7 +107,7 @@
         - install_plugins
 
     - name: "Restart Jenkins"
-      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
       tags:
         - restart-jenkins
 

@@ -2,7 +2,7 @@
 # handlers file for jenkins
 
   - name: "Restart Jenkins"
-    shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+    shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
 
   - name: "Restart Nginx"
-    shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 nginx
+    shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 nginx

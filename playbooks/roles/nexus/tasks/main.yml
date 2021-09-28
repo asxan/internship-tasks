@@ -70,7 +70,7 @@
     become: yes
 
   - name: "Start compose Nexus"
-    shell: "docker-compose -f $HOME/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
+    shell: "docker-compose -f /opt/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
     args:
       executable: /bin/bash
   
@@ -80,7 +80,7 @@
       executable: /bin/bash
 
   - name: "Start nexus api script"
-    shell: "/home/vklymov/nexus_nginx/nexus_api_files/shell_nexus-api.sh"
+    shell: "/opt/nexus_nginx/nexus_api_files/shell_nexus-api.sh"
     args: 
       executable: /bin/bash
 
