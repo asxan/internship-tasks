@@ -148,7 +148,7 @@
         src: "{{ item }}"
         dest: "{{ github_tokens['dest'] }}"
         mode: "{{ github_tokens['mode'] }}"
-      with_filrglob:
+      with_fileglob:
         - "{{ github_tokens['src'] }}/*.*"
       become: yes
       notify: "Restart Jenkins"
