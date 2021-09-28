@@ -41,7 +41,7 @@ variable "images" {
   type = list(string)
   description = "List of images names"
   default = [
-  "jenkins", "nexus", "slave", "production"
+  "jenkins-pet-packer-image", "nexus-pet-packer-image", "slave-pet-packer-image", "production-pet-packer-image"
   ]
 }
 
@@ -51,48 +51,29 @@ variable "ssh_user" {
   default = "packer"
 }
 
-source "googlecompute" "centos" {
+source "googlecompute" "jenkins" {
   project_id = "${var.project_id}"
   source_image = "${var.source_image}"
   source_image_family = "${var.image_family}"
   ssh_username = "${var.ssh_user}"
   zone = "${var.availability_zone}"
+  image_name = "${var.images[0]}-${var.image_family}"
+  image_description = "VM image provisioned with ansible, and containing docker containers of jenkins and nginx"
+
 }
 
 build {
-  name = "jenkins-image"
-  sources = ["sources.googlecompute.centos"]
+  sources = ["sources.googlecompute.jenkins"]
 
-  provisioner "file"{
-    source = "provision.sh"
-    destination = "/tmp/provision.sh"
-  }
-
-
-  provisioner "shell" {
-    only = ["googlecompute.centos"]
-    inline = [
-      "sudo chmod 777 /tmp/provision.sh",
-      "/tmp/provision.sh"]
+  provisioner "ansible" {
+    playbook_file = "/Users/vklymov/Codes/internship-tasks/playbooks/site.yml"
+    extra_arguments = ["--vault-password-file=/Users/vklymov/Codes/internship-tasks/playbooks/password.txt", "--tags='soft,jenkins_nginx'"]
   }
 
   post-processors {
-
     post-processor "checksum"{
       checksum_types = ["sha1", "sha256"]
       output = "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
-    }
-
-    post-processor "compress" {
-      output = "/tmp/${var.images[0]}-${var.image_family}.tar.gz"
-    }
-
-    post-processor "googlecompute-import" {
-      project_id = "${var.project_id}"
-      bucket = "${var.bucket}"
-      image_name = "${var.images[0]}-${var.image_family}"
-      image_description = "Centos jenkins image"
-      image_family = "${var.image_family}"
     }
   }
 }
