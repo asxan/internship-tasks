@@ -1,0 +1,168 @@
+---
+#tasks file for jenkins
+  - block: #Block for All
+
+#----------------------------------------------
+
+    - name: "Create jenkins_nginx dir"
+      file:
+        path: "{{ folder1['path'] }}"
+        state: "{{ folder1['state'] }}"
+        mode: "{{ folder1['mode'] }}"
+        recurse: yes
+
+    - name: "Create compose dir"
+      file:
+        path: "{{ folder2['path'] }}"
+        state: "{{ folder2['state'] }}"
+        mode: "{{ folder2['mode'] }}"
+        recurse: yes
+
+    - name: "Create jenkins_home dir"
+      file:
+        path: "{{ folder3['path'] }}"
+        state: "{{ folder3['state'] }}"
+        mode: "{{ folder3['mode'] }}"
+        recurse: yes
+
+    - name: "Create nginx_home dir"
+      file:
+        path: "{{ folder4['path'] }}"
+        state: "{{ folder4['state'] }}"
+        mode: "{{ folder4['mode'] }}"
+        recurse: yes
+
+    - name: "Create job_files"
+      file:
+        path: "{{ folder5['path'] }}"
+        state: "{{ folder5['state'] }}"
+        mode: "{{ folder5['mode'] }}"
+        recurse: yes
+      
+#------------------------------------------------------
+
+    - name: "Copy docker-compose jenkins-nginx yml file"
+      copy:
+        src: "{{ docker_compose_file['path'] }}"
+        dest: "{{ docker_compose_file['dest'] }}"
+        mode: "{{ docker_compose_file['mode'] }}"
+      with_fileglob:
+        - "{{ docker_compose_files['path'] }}/*.*"
+      become: yes
+
+# ---------------------------------
+
+  - block: # For nginx
+
+    - name: "Copy nginx files"
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ nginx_files['dest'] }}"
+        mode: "{{ nginx_files['mode'] }}"
+        owner:  "{{ nginx_files['owner'] }}"
+        group: "{{ nginx_files['group'] }}"
+      with_fileglob:
+        - "{{ nginx_files['src'] }}/*.*"
+      become: yes
+
+    - name: "Start compose Nginx"
+      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
+      args:
+        executable: /bin/bash
+
+#---------------------------------------
+
+  - block:  # Block for Jenkins
+
+    - name: "Create jenkins folders: (casc_configs, jobs_config, github_tokens)"
+      file: 
+        path: "{{ item.path }}"
+        state: "{{ jenkins_folders['state'] }}"
+      loop:
+        - { path: "{{ jenkins_folders['casc_configs'] }}" }
+        - { path: "{{ jenkins_folders['jobs_config'] }}" }
+        - { path: "{{ jenkins_folders['github_tokens'] }}" }
+
+    - name: "Copy plugins.txt"
+      copy:
+        src: "{{ item }}"
+        dest: "{{ plugins_txt['dest'] }}"
+        mode: "{{ plugins_txt['mode'] }}"
+      with_fileglob:
+        - { src:  "{{ plugins_txt['src'] }}/*.*" }
+      become: yes
+      tags:
+        - copy_plugins
+  
+#---------------------------------------
+
+    - name: "Start compose Jenkins"
+      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
+      args:
+        executable: /bin/bash
+
+    - name: "Install plugins"
+      shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
+      tags:
+        - install_plugins
+
+    - name: "Restart Jenkins"
+      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+      tags:
+        - restart-jenkins
+
+#---------------------------------------
+
+    - name: "Copy casc files"
+      copy:
+        src: "{{ item }}"
+        dest: "{{ jenkins_casc['dest'] }}"
+        mode: "{{ jenkins_casc['mode'] }}"
+      with_fileglob:
+        - { src: "{{ jenkins_casc['src'] }}/*.*"}
+      become: yes
+      notify: "Restart Jenkins"
+
+    - name:  "Copy jenkins jobs ini files"
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+      loop: 
+        - { src: "{{ jenkins_jobs_ini['src'] }}", dest: "{{ jenkins_jobs_ini['dest'] }}", mode: "{{ jenkins_jobs_ini['mode'] }}" }
+      become: yes
+      notify: "Restart Jenkins"
+
+    - name: "Copy jenkins job congigs"
+      copy: 
+        src: "{{ item }}"
+        dest: "{{ jenkins_jobs['dest'] }}"
+        mode: "{{ jenkins_jobs['mode'] }}"
+      with_fileglob:
+       - "{{ jenkins_jobs['src'] }}/*.*"
+      become: yes
+      notify: "Restart Jenkins"
+
+    - name: "Copy github api files"
+      copy:
+        src: "{{ item }}"
+        dest: "{{ github_tokens['dest'] }}"
+        mode: "{{ github_tokens['mode'] }}"
+      with_filrglob:
+        - "{{ github_tokens['src'] }}/*.*"
+      become: yes
+      notify: "Restart Jenkins"
+
+
+    - name: "Create jobs"
+      shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
+      args:
+        executable: /bin/bash
+
+
+    - name: "Create webhook"
+      shell: docker container exec jenkins /bin/bash -c  "/var/jenkins_home/github_tokens/token_script.sh"
+      args:
+        executable: /bin/bash
+      tags: create-webhook
+  

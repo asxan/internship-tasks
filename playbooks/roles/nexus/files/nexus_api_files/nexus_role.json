@@ -1,0 +1,10 @@
+{
+  "id": "asxan-maven-role",
+  "name": "asxan-maven-role",
+  "description": "Role for user asxan for access to maven snapshot and release repos",
+  "privileges": [
+    "maven-snapshots-editor",
+    "maven-releases-editor"
+  ],
+  "roles": []
+}

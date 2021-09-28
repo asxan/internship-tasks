@@ -1,0 +1,9 @@
+{
+    "name": "maven-snapshots-editor",
+    "description": "Add permission for maven-snapshots views",
+    "actions": [
+        "all"
+    ],
+    "format": "maven2",
+    "repository": "maven-snapshots"
+}

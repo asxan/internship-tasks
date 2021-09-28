@@ -1,0 +1,66 @@
+---
+# tasks file for docker_install
+
+  - block: # Check if docker and docker-compose are installed
+
+      - name: "Check if Docker is installed"
+        command:  systemctl status docker
+        register: docker_check
+        ignore_errors: yes
+
+      - name: "Check if docker-compose is installed"
+        command:  docker-compose --version
+        register: compose_check
+        ignore_errors: yes
+
+
+  - block: 
+
+    - name: "Clean yum cache"
+      shell: yum clean all
+      become: yes
+
+    - name: "Download the Docker Installer"
+      get_url:
+        url: "{{ docker_download_url }}"
+        dest: "{{ docker_dest_download }}"
+        mode: 0700
+      
+
+    - name: "Install Docker"
+      shell: "{{ docker_installer_file }}"
+      notify: "Remove the Docker installer file"
+    
+    - name: "Start Docker"
+      service:
+        name: docker
+        state: started
+        enabled: yes
+        masked: no
+
+    - name: "Enable the Docker daemond in systemd"
+      systemd:
+        name: docker
+        enabled: yes
+        masked: no
+
+    - name: "Add user to docker group"
+      user:
+        name: "{{ item.user }}"
+        groups: docker
+        append: yes
+      loop:
+        - { user: "{{ docker_user1 }}" }
+        - { user: "{{ docker_user2 }}" }
+
+    when: 
+      - docker_check.stderr.find('service could not be found') != -1
+
+  - block:
+
+    - name: "Install Docker Compose"
+      get_url:
+        url: "{{ docker_compose_url }}"
+        dest: "{{ docker_compose_dest }}"
+        mode: 0777
+      notify: "Hard link for root user"

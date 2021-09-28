@@ -1,0 +1,11 @@
+{
+    "userId": "admin",
+    "firstName": "Administrator",
+    "lastName": "User",
+    "emailAddress": "example.com",
+    "source": "default",
+    "status": "active",
+    "readOnly": "false",
+    "roles": ["nx-admin"],
+    "externalRoles": []
+}

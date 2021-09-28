@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+    jenkins:
+        container_name: jenkins
+        image: asxan/jenkins_cus:0.0.8
+        restart: always 
+        ports:
+            - "8081:8081"
+            - "8080:8080"
+            - "22"
+            - "465:465"
+            - "50000:50000"
+        volumes:
+            - "/opt/jenkins_nginx/jenkins_home:/var/jenkins_home"
+            - "/opt/jenkins_nginx/job_files:/etc/jenkins_jobs"
+        env_file:
+            -  ./jenkins.env
+        environment:
+            - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
+        networks:
+            - task-net
+    nginx:
+        container_name: nginx
+        image: nginx:stable
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080"
+        volumes:
+            - "/opt/jenkins_nginx/nginx_home/jenkins.conf:/etc/nginx/conf.d/jenkins.conf:rw"
+            - "/opt/jenkins_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
+            - "/opt/jenkins_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
+        networks:
+            - task-net
+networks:
+    task-net:

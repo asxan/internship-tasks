@@ -1,0 +1,68 @@
+---
+# tasks file for slave
+
+- block: # Check java and  ansible installetion
+
+  - name: "Check if java is installed" 
+    command:  java -version
+    register: java_check
+    ignore_errors: yes
+
+
+  - name: "Check if ansible is installed" 
+    command:  ansible --version
+    register: ansible_check
+    ignore_errors: yes
+
+
+- block: # Block for opening docker socket 
+
+  - name: "Make dir for override.conf"
+    file:
+      path: "{{ override_dir }}"
+      state: directory
+
+
+  - name: "Copy daemon.json, override.conf"
+    copy:
+      src:  "{{ item.source }}"
+      dest: "{{ item.dest }}"
+      mode: "{{ item.mood }}"
+    loop:
+      - { source: "{{ docker_files_src[0] }}", dest: "{{ docker_files_dest[0] }}", mood: "{{ docker_files_mood[0] }}" }
+      - { source: "{{ docker_files_src[1] }}", dest: "{{ docker_files_dest[1] }}", mood: "{{ docker_files_mood[1] }}" }
+
+
+  - name: "Change mood of docker.sock"
+    shell: chmod 666 /var/run/docker.sock
+    tags: docker
+    become: yes
+
+
+
+  - name: "Reload docker daemon"
+    shell: systemctl daemon-reload
+
+  - name: "Restart Docker service"
+    service:
+      name: docker
+      state: restarted
+      enabled: yes
+      masked: no
+
+
+- block: # Install java and ansible
+
+  - name: "Install java"
+    yum:
+      name: "{{ packages[0] }}"
+      state: "{{ packages_version[0] }}"
+    when:
+      - java_check.stderr.find("command not found") != -1
+
+  - name: "Install Ansible"
+    yum:
+      name: "{{ packages[1] }}"
+      state: "{{ packages_version[1] }}"
+    when:
+      - ansible_check.stderr.find("command not found") != -1

@@ -1,0 +1,73 @@
+---
+# vars file for jenkins_nginx
+
+folder1:
+  path: '/opt/jenkins_nginx'
+  state:  'directory'
+  mode: '0776'
+
+folder2:
+  path: '/opt/jenkins_nginx/docker_compose'
+  state:  'directory'
+  mode: '0776'
+
+folder3:
+  path: '/opt/jenkins_nginx/jenkins_home'
+  state:  'directory'
+  mode: '0777'
+
+folder4:
+  path: '/opt/jenkins_nginx/nginx_home'
+  state:  'directory'
+  mode: '0777'
+
+folder5:
+  path: '/opt/jenkins_nginx/job_files'
+  state:  'directory'
+  mode: '0777'
+
+jenkins_folders:
+  casc_configs: '/opt/jenkins_nginx/jenkins_home/casc_configs'
+  jobs_config:  '/opt/jenkins_nginx/jenkins_home/jobs_configs'
+  github_tokens:  '/opt/jenkins_nginx/jenkins_home/github_tokens'
+  state: 'directory'
+
+docker_compose_files:
+  path: '../files/docker_compose'
+  dest:  '/opt/jenkins_nginx/docker_compose'
+  mode: 'preserve'
+
+plugins_txt:
+  src:  '../files/plugins'
+  dest: '/opt/jenkins_nginx/jenkins_home'
+  mode: 'preserve'
+
+
+nginx_files:
+  src: '../files/nginx_files'
+  dest: '/opt/jenkins_nginx/nginx_home'
+  mode: '0777'
+  owner: 'root'
+  group: 'root'
+
+jenkins_casc:
+  src: '../files/jenkins_iac'
+  dest: '/opt/jenkins_nginx/jenkins_home/casc_configs'
+  mode: '777'
+
+jenkins_jobs_ini:
+  src:  '../files/jenkins_jb/jenkins_jobs.ini'
+  dest: '/opt/jenkins_nginx/job_files'
+  mode: '0777'
+
+jenkins_jobs:
+  src:  '../files/jenkins_jb/jobs'
+  dest: '/opt/jenkins_nginx/jenkins_home/jobs_configs'
+  mode: '0777'
+
+
+github_tokens:
+  src: '../files/github'
+  dest: '/opt/jenkins_nginx/jenkins_home/github_tokens'
+  mode: '0777'
+

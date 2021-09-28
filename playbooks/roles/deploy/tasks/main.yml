@@ -1,0 +1,16 @@
+---
+# tasks file for deploy
+- block:
+
+  - name: "Copy ssh key for deploy connection"
+    copy:
+      src: "{{ item.source }}"
+      dest: "{{ item.dest }}"
+      mode: "{{ item.mood }}"
+    loop:
+      - { source: "{{ source_file }}", dest: "{{ destinity_folder }}", mood: "{{ file_mood }}" }
+
+  - name: "Add ssh key to authorized_keys file"
+    shell: 'cat "{{ instance_file }}" >> "{{ destinity_file }}"'
+    args:
+      executable: /bin/bash

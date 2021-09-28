@@ -1,0 +1,89 @@
+---
+# tasks file for nexus
+- block:
+  
+  - name: "Create nexus_nginx dir"
+    file:
+      path: "{{ nexus_nginx[0] }}"
+      state: "{{ nexus_nginx[1] }}"
+      mode: "{{ nexus_nginx[2] }}"
+      recurse: yes
+  
+  - name: "Create compose dir, nginx_home and nexus_home and nexus_api_dir dirs"
+    file:
+      path: "{{ item.path }}"
+      state: directory
+      mode: "{{ item.mode }}"
+    loop:
+      - { path: "{{ other_dirs_path[0] }}", mode: "{{ other_dirs_mood[0] }}" }
+      - { path: "{{ other_dirs_path[1] }}", mode: "{{ other_dirs_mood[1] }}" }
+      - { path: "{{ other_dirs_path[2] }}", mode: "{{ other_dirs_mood[2] }}" }
+      - { path: "{{ other_dirs_path[3] }}", mode: "{{ other_dirs_mood[3] }}" }
+      - { path: "{{ other_dirs_path[4] }}", mode: "{{ other_dirs_mood[4] }}" }
+
+  
+- block: 
+
+
+  - name: "Copy docker compose files"
+    copy: 
+      src: "{{ item }}"
+      dest: "{{ compose['dest'] }}"
+      mood: "{{ compose['mood'] }}"
+      owner:  "{{ compose['owner'] }}"
+      group:  "{{ compose['group'] }}"
+    with_fileglob:
+      - "{{ compose['src'] }}/*.*"
+    become: yes
+
+  - name: "Copy nginx files"
+    copy:
+      src: "{{ item }}"
+      dest: "{{ nginx['dest'] }}"
+      mood: "{{ nginx['mood'] }}"
+      owner: "{{ nginx['owner'] }}"
+      group: "{{ nginx['group'] }}"
+    with_fileglob:
+      - "{{ nginx['src'] }}/*.*"
+    become: yes
+
+  - name: "Copy nexus properties"
+    copy: 
+      src:  "{{ item }}"
+      dest: "{{ nexus_properties['dest'] }}"
+      mood: "{{ nexus_properties['mood'] }}"
+      owner:  "{{ nexus_properties['owner'] }}"
+      group:  "{{ nexus_properties['group'] }}"
+    with_fileglob:
+      - "{{ nexus_properties['src'] }}/*.*"
+    become: yes
+
+  - name: "Copy nexus api files"
+    copy: 
+      src:  "{{ item }}"
+      dest: "{{ nexus_api_dir['dest'] }}"
+      mood: "{{ nexus_api_dir['mood'] }}"
+      owner:  "{{ nexus_api_dir['owner'] }}"
+      group:  "{{ nexus_api_dir['group'] }}"
+    with_fileglob:
+      - "{{ nexus_api_dir['src'] }}/*.*"
+    become: yes
+
+  - name: "Start compose Nexus"
+    shell: "docker-compose -f /opt/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
+    args:
+      executable: /bin/bash
+  
+  - name: "Sleep for 70 seconds"
+    shell: "sleep 60"
+    args: 
+      executable: /bin/bash
+
+  - name: "Start nexus api script"
+    shell: "/opt/nexus_nginx/nexus_api_files/shell_nexus-api.sh"
+    args: 
+      executable: /bin/bash
+
+
+
+  

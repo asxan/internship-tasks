@@ -1,0 +1,56 @@
+---
+# vars file for nexus
+
+# Dirs
+
+nexus_nginx: 
+  - '/opt/nexus_nginx'
+  - 'directory'
+  - '0776'
+
+other_dirs_path:
+  - '/opt/nexus_nginx/docker_compose'
+  - '/opt/nexus_nginx/nginx_home'
+  - '/opt/nexus_nginx/nexus_home'
+  - '/opt/nexus_nginx/nexus_files'
+  - '/opt/nexus_nginx/nexus_api_files'
+
+other_dirs_mood:
+  - '0775'
+  - '0777'
+  - '0777'
+  - '0777'
+  - '0777'
+
+
+compose:
+  src: '../files/nexus_compose'
+  dest: '/opt/nexus_nginx/docker_compose'
+  mood: 'preserve'
+  owner:  'vklymov'
+  group:  'vklymov'
+
+
+nginx:
+  src: '../files/nginx_files'
+  dest: '/opt/nexus_nginx/nginx_home'
+  mood: '0777'
+  owner:  'root'
+  group:  'root'
+
+
+#####
+
+nexus_properties:
+  src: '../files/nexus_properties'
+  dest: '/opt/nexus_nginx/nexus_files'
+  mood: '0777'
+  owner:  'root'
+  group:  'root'
+
+nexus_api_dir:
+  src: '../files/nexus_api_files'
+  dest: '/opt/nexus_nginx/nexus_api_files/'
+  mood: '0775'
+  owner:  'vklymov'
+  group:  'vklymov'

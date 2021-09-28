@@ -1,0 +1,19 @@
+{
+    "name": "maven-snapshots",
+    "online": true,
+    "storage": {
+      "blobStoreName": "default",
+      "strictContentTypeValidation": false,
+      "writePolicy": "ALLOW"
+    },
+    "cleanup": {
+      "policyNames": []
+    },
+    "component": {
+      "proprietaryComponents": false
+    },
+    "maven": {
+      "versionPolicy": "Release",
+      "layoutPolicy": "STRICT"
+    }
+  }
