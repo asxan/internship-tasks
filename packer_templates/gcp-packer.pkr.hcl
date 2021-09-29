@@ -48,7 +48,7 @@ variable "images" {
 variable "ssh_user" {
   type = string
   description = "SSH user"
-  default = "packer"
+  default = "vklymov"
 }
 
 source "googlecompute" "jenkins" {
@@ -62,12 +62,60 @@ source "googlecompute" "jenkins" {
 
 }
 
+source "googlecompute" "nexus" {
+  project_id = "${var.project_id}"
+  source_image = "${var.source_image}"
+  source_image_family = "${var.image_family}"
+  ssh_username = "${var.ssh_user}"
+  zone = "${var.availability_zone}"
+  image_name = "${var.images[1]}-${var.image_family}"
+  image_description = "VM image provisioned with ansible, and containing docker containers of nexus and nginx"
+}
+
+source "googlecompute" "slave" {
+  project_id = "${var.project_id}"
+  source_image = "${var.source_image}"
+  source_image_family = "${var.image_family}"
+  ssh_username = "${var.ssh_user}"
+  zone = "${var.availability_zone}"
+  image_name = "${var.images[2]}-${var.image_family}"
+  image_description = "VM image provisioned with ansible, for installing docker and configuring docker tcp socket"
+}
+
+source "googlecompute" "production" {
+  project_id = "${var.project_id}"
+  source_image = "${var.source_image}"
+  source_image_family = "${var.image_family}"
+  ssh_username = "${var.ssh_user}"
+  zone = "${var.availability_zone}"
+  image_name = "${var.images[3]}-${var.image_family}"
+  image_description = "VM image provisioned with ansible, and containing docker containers of petclinic, phpmyadmin, mysql and nginx"
+}
+
 build {
   sources = ["sources.googlecompute.jenkins"]
 
-  provisioner "ansible" {
-    playbook_file = "/Users/vklymov/Codes/internship-tasks/playbooks/site.yml"
-    extra_arguments = ["--vault-password-file=/Users/vklymov/Codes/internship-tasks/playbooks/password.txt", "--tags='soft,jenkins_nginx'"]
+  provisioner "shell" {
+    script = "scripts/ansible_install.sh"
+  }
+
+  provisioner "file" {
+    source = "../playbooks/password.txt"
+    destination = "/tmp/password.txt"
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "../playbooks/site.yml"
+    group_vars    = "../playbooks/group_vars"
+    extra_arguments = ["--vault-password-file=/tmp/password.txt", "--tags='soft,jenkins_nginx'"]
+    role_paths = [
+      "../playbooks/roles/deploy", 
+      "../playbooks/roles/docker_install",
+      "../playbooks/roles/jenkins_nginx", 
+      "../playbooks/roles/nexus", 
+      "../playbooks/roles/packages", 
+      "../playbooks/roles/slave"
+      ]
   }
 
   post-processors {
@@ -78,20 +126,114 @@ build {
   }
 }
 
-//build {
-//  name = "nexus-image"
-//  sources = ["sources.googlecompute.centos"]
-//}
-//
-//build {
-//  name = "slave-image"
-//  sources = ["sources.googlecompute.centos"]
-//}
-//
-//build {
-//  name = "prod-image"
-//  sources = ["sources.googlecompute.centos"]
-//}
+# Nexus image
+
+build {
+  name = "nexus-image"
+  sources = ["sources.googlecompute.nexus"]
+
+  provisioner "shell" {
+    script = "scripts/ansible_install.sh"
+  }
+
+  provisioner "file" {
+    source = "../playbooks/password.txt"
+    destination = "/tmp/password.txt"
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "../playbooks/site.yml"
+    group_vars    = "../playbooks/group_vars"
+    extra_arguments = ["--vault-password-file=/tmp/password.txt", "--tags=' soft,nexus'"]
+    role_paths = [
+      "../playbooks/roles/deploy", 
+      "../playbooks/roles/docker_install",
+      "../playbooks/roles/jenkins_nginx", 
+      "../playbooks/roles/nexus", 
+      "../playbooks/roles/packages", 
+      "../playbooks/roles/slave"
+      ]
+  }
+
+  post-processors {
+    post-processor "checksum"{
+      checksum_types = ["sha1", "sha256"]
+      output = "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
+    }
+  }
+}
 
 
+# Slave image
 
+build {
+  name = "slave-image"
+  sources = ["sources.googlecompute.slave"]
+
+  provisioner "shell" {
+    script = "scripts/ansible_install.sh"
+  }
+
+  provisioner "file" {
+    source = "../playbooks/password.txt"
+    destination = "/tmp/password.txt"
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "../playbooks/site.yml"
+    group_vars    = "../playbooks/group_vars"
+    extra_arguments = ["--vault-password-file=/tmp/password.txt", "--tags=' soft,slave'"]
+    role_paths = [
+      "../playbooks/roles/deploy", 
+      "../playbooks/roles/docker_install",
+      "../playbooks/roles/jenkins_nginx", 
+      "../playbooks/roles/nexus", 
+      "../playbooks/roles/packages", 
+      "../playbooks/roles/slave"
+      ]
+  }
+
+  post-processors {
+    post-processor "checksum"{
+      checksum_types = ["sha1", "sha256"]
+      output = "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
+    }
+  }
+}
+
+# Production image
+
+build {
+  name = "prod-image"
+  sources = ["sources.googlecompute.production"]
+
+provisioner "shell" {
+    script = "scripts/ansible_install.sh"
+  }
+
+  provisioner "file" {
+    source = "../playbooks/password.txt"
+    destination = "/tmp/password.txt"
+  }
+
+  provisioner "ansible-local" {
+    playbook_file = "../playbooks/site.yml"
+    group_vars    = "../playbooks/group_vars"
+    extra_arguments = ["--vault-password-file=/tmp/password.txt", "--tags=' soft,deploy'"]
+    role_paths = [
+      "../playbooks/roles/deploy", 
+      "../playbooks/roles/docker_install",
+      "../playbooks/roles/jenkins_nginx", 
+      "../playbooks/roles/nexus", 
+      "../playbooks/roles/packages", 
+      "../playbooks/roles/slave"
+      ]
+  }
+
+  post-processors {
+    post-processor "checksum"{
+      checksum_types = ["sha1", "sha256"]
+      output = "packer_{{.BuildName}}_{{.ChecksumType}}.checksum"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 ---
 # vars file for deploy
-source_file: ~/.ssh/deploy_key.pub
+source_file: ../files/deploy_key.pub
 destinity_folder: /home/vklymov/.ssh
 file_mood: preserve
 instance_file: /home/vklymov/.ssh/deploy_key.pub

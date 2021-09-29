@@ -2,17 +2,17 @@
 # User flag -v for viewing more information about processes
 
 
-NEXUS_ADMIN_PASSWORD=$(cat /opt/nexus_nginx/nexus_home/admin.password)
+NEXUS_ADMIN_PASSWORD=$(cat /home/vklymov/nexus_nginx/nexus_home/admin.password)
 
 # Update admin user
-jsonFile="/opt/nexus_nginx/nexus_api_files/update_admi_info.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/update_admi_info.json"
 
 curl -u "admin:$NEXUS_ADMIN_PASSWORD" -X PUT --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/users/admin' --data @$jsonFile
 
 # Set new admin password
 
-NEW_NEXUS_ADMIN_PASSWORD=$(cat /opt/nexus_nginx/nexus_api_files/new_nexus_admin_password.txt)
+NEW_NEXUS_ADMIN_PASSWORD=$(cat /home/vklymov/nexus_nginx/nexus_api_files/new_nexus_admin_password.txt)
 
 curl -u "admin:$NEXUS_ADMIN_PASSWORD" -X PUT --header 'Content-Type: text/plain' \
 'http://localhost:8081/service/rest/v1/security/users/admin/change-password' \
@@ -22,7 +22,7 @@ rm -rf /opt/nexus_nginx/nexus_home/admin.password
 
 # Add releases privileage
 
-jsonFile="/opt/nexus_nginx/nexus_api_files/repository_view_privilege_releases.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/repository_view_privilege_releases.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/privileges/repository-view' --data @$jsonFile
@@ -30,35 +30,35 @@ curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: applic
 
 # Add snapshot privileage
 
-jsonFile="/opt/nexus_nginx/nexus_api_files/repository_view_privilege_snapshot.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/repository_view_privilege_snapshot.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/privileges/repository-view' --data @$jsonFile
 
 # Create asxan role
 
-jsonFile="/opt/nexus_nginx/nexus_api_files/nexus_role.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/nexus_role.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/roles' --data @$jsonFile
 
 # Create new user
 
-jsonFile="/opt/nexus_nginx/nexus_api_files/asxan_nexus_user.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/asxan_nexus_user.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X POST --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/security/users' --data @$jsonFile
 
 # Update releases repo
 
-jsonFile="/opt/nexus_nginx/nexus_api_files/update_releases_repo.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/update_releases_repo.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X PUT --header "Content-Type: application/json; charset=UTF-8" \
 'http://localhost:8081/service/rest/v1/repositories/maven/hosted/maven-releases' --data @$jsonFile
 
 # Update snapshot repo
 
-jsonFile="/opt/nexus_nginx/nexus_api_files/update_snapshot_repo.json"
+jsonFile="/home/vklymov/nexus_nginx/nexus_api_files/update_snapshot_repo.json"
 
 curl -u "admin:$NEW_NEXUS_ADMIN_PASSWORD" -X PUT --header "Content-Type: application/json; charset=UTF-8" \
-'http://localhost:8081/service/rest/v1/repositories/maven/hosted/maven-releases' --data @$jsonFile
+'http://localhost:8081/service/rest/v1/repositories/maven/hosted/maven-snapshots' --data @$jsonFile

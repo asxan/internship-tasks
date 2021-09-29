@@ -1,10 +1,10 @@
 ---
 # tasks file for packages
 
-  - name: "Check if Docker is installed"
-    command: systemctl status docker
-    register: docker_check
-    ignore_errors: yes
+  # - name: "Check if Docker is installed"
+  #   command: systemctl status docker
+  #   register: docker_check
+  #   ignore_errors: yes
 
   - block:
 
@@ -14,20 +14,21 @@
       #     state: latest
       #     update_cache: yes
 
-      - name: "Create group"
-        group:
-          name: "{{ group['name'] }}"
-          state: "{{ group['state'] }}"
-          gid: "{{ group['gid'] }}"
+      # - name: "Create group"
+      #   group:
+      #     name: "{{ group['name'] }}"
+      #     state: "{{ group['state'] }}"
+      #     gid: "{{ group['gid'] }}"
 
       
-      - name: "Create user"
-        user:
-          name: "{{ user['name'] }}"
-          state: "{{ user['state'] }}"
-          shell: "{{ user['shell'] }}"
-          uid: "{{ user['uid'] }}"
-          group: "{{ user['group'] }}"
+      # - name: "Create user"
+      #   user:
+      #     name: "{{ user['name'] }}"
+      #     state: "{{ user['state'] }}"
+      #     shell: "{{ user['shell'] }}"
+      #     uid: "{{ user['uid'] }}"
+      #     group: "{{ user['group'] }}"
+
 
 
       - name: "Enable Epel Repository"
@@ -60,4 +61,4 @@
           - { name: "{{ pip_packages[0] }}", version: "{{ pip_versions[0] }}" }
           - { name: "{{ pip_packages[1] }}", version: "{{ pip_versions[1] }}" }
     
-    when: docker_check.stderr.find('service could not be found') != -1
+    # when: docker_check.stderr.find('service could not be found') != -1

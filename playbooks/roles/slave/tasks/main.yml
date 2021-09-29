@@ -57,12 +57,8 @@
     yum:
       name: "{{ packages[0] }}"
       state: "{{ packages_version[0] }}"
-    when:
-      - java_check.stderr.find("command not found") != -1
 
   - name: "Install Ansible"
     yum:
       name: "{{ packages[1] }}"
       state: "{{ packages_version[1] }}"
-    when:
-      - ansible_check.stderr.find("command not found") != -1

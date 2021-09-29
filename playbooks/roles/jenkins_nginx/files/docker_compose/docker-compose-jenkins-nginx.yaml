@@ -11,8 +11,8 @@ services:
             - "465:465"
             - "50000:50000"
         volumes:
-            - "/opt/jenkins_nginx/jenkins_home:/var/jenkins_home"
-            - "/opt/jenkins_nginx/job_files:/etc/jenkins_jobs"
+            - "/home/vklymov/jenkins_nginx/jenkins_home:/var/jenkins_home"
+            - "/home/vklymov/jenkins_nginx/job_files:/etc/jenkins_jobs"
         env_file:
             -  ./jenkins.env
         environment:
@@ -28,9 +28,9 @@ services:
             - "443:443"
             - "8080"
         volumes:
-            - "/opt/jenkins_nginx/nginx_home/jenkins.conf:/etc/nginx/conf.d/jenkins.conf:rw"
-            - "/opt/jenkins_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
-            - "/opt/jenkins_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
+            - "/home/vklymov/jenkins_nginx/nginx_home/jenkins.conf:/etc/nginx/conf.d/jenkins.conf:rw"
+            - "/home/vklymov/jenkins_nginx/nginx_home/fullchain.pem:/fullchain.pem:rw"
+            - "/home/vklymov/jenkins_nginx/nginx_home/privkey.pem:/privkey.pem:rw"
         networks:
             - task-net
 networks:

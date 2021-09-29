@@ -4,12 +4,23 @@
 
 #----------------------------------------------
 
+    - name: "Whoami"
+      shell: whoami
+      register: htoia
+
+    - name: "Output htoia"
+      debug: 
+        var: htoia
+
+
+
     - name: "Create jenkins_nginx dir"
       file:
         path: "{{ folder1['path'] }}"
         state: "{{ folder1['state'] }}"
         mode: "{{ folder1['mode'] }}"
         recurse: yes
+
 
     - name: "Create compose dir"
       file:
@@ -18,12 +29,14 @@
         mode: "{{ folder2['mode'] }}"
         recurse: yes
 
+
     - name: "Create jenkins_home dir"
       file:
         path: "{{ folder3['path'] }}"
         state: "{{ folder3['state'] }}"
         mode: "{{ folder3['mode'] }}"
         recurse: yes
+
 
     - name: "Create nginx_home dir"
       file:
@@ -32,43 +45,55 @@
         mode: "{{ folder4['mode'] }}"
         recurse: yes
 
+
     - name: "Create job_files"
       file:
         path: "{{ folder5['path'] }}"
         state: "{{ folder5['state'] }}"
         mode: "{{ folder5['mode'] }}"
         recurse: yes
+
       
 #------------------------------------------------------
 
     - name: "Copy docker-compose jenkins-nginx yml file"
       copy:
-        src: "{{ docker_compose_file['path'] }}"
-        dest: "{{ docker_compose_file['dest'] }}"
-        mode: "{{ docker_compose_file['mode'] }}"
+        src: "{{ item }}"
+        dest: "{{ docker_compose_files['dest'] }}"
+        mode: "{{ docker_compose_files['mode'] }}"
       with_fileglob:
         - "{{ docker_compose_files['path'] }}/*.*"
-      become: yes
 
 # ---------------------------------
 
   - block: # For nginx
 
-    - name: "Copy nginx files"
+    - name: "Copy nginx conf"
       copy: 
-        src: "{{ item }}"
-        dest: "{{ nginx_files['dest'] }}"
-        mode: "{{ nginx_files['mode'] }}"
-        owner:  "{{ nginx_files['owner'] }}"
-        group: "{{ nginx_files['group'] }}"
-      with_fileglob:
-        - "{{ nginx_files['src'] }}/*.*"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        owner:  "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - { src: "{{ nginx_conf['src'] }}", dest: "{{ nginx_conf['dest'] }}", mode: "{{ nginx_conf['mode'] }}", owner: "{{ nginx_conf['owner'] }}", group: "{{ nginx_conf['group'] }}" }
+        - { src: "{{ nginx_ssl_fullchain['src'] }}", dest: "{{ nginx_ssl_fullchain['dest'] }}", mode: "{{ nginx_ssl_fullchain['mode'] }}", owner: "{{ nginx_ssl_fullchain['owner'] }}", group: "{{ nginx_ssl_fullchain['group'] }}" }
+        - { src: "{{ nginx_ssl_privkey['src'] }}", dest: "{{ nginx_ssl_privkey['dest'] }}", mode: "{{ nginx_ssl_privkey['mode'] }}", owner: "{{ nginx_ssl_privkey['owner'] }}", group: "{{ nginx_ssl_privkey['group'] }}" }  
       become: yes
 
+    # - name: "Sleep for 70 seconds"
+    #   shell: "sleep 600"
+    #   args: 
+    #     executable: /bin/bash
+
+
     - name: "Start compose Nginx"
-      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d nginx
       args:
         executable: /bin/bash
+      become: yes
+    
+
 
 #---------------------------------------
 
@@ -83,13 +108,14 @@
         - { path: "{{ jenkins_folders['jobs_config'] }}" }
         - { path: "{{ jenkins_folders['github_tokens'] }}" }
 
+
     - name: "Copy plugins.txt"
       copy:
         src: "{{ item }}"
         dest: "{{ plugins_txt['dest'] }}"
         mode: "{{ plugins_txt['mode'] }}"
       with_fileglob:
-        - { src:  "{{ plugins_txt['src'] }}/*.*" }
+        - "{{ plugins_txt['src'] }}/*.*"
       become: yes
       tags:
         - copy_plugins
@@ -97,19 +123,31 @@
 #---------------------------------------
 
     - name: "Start compose Jenkins"
-      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml up -d jenkins
       args:
         executable: /bin/bash
+      become: yes
+
+
+    # - name: "Sleep for 70 seconds"
+    #   shell: "sleep 30"
+    #   args: 
+    #     executable: /bin/bash
+
 
     - name: "Install plugins"
       shell: docker container exec jenkins /bin/bash -c "/usr/local/bin/install-plugins.sh < /var/jenkins_home/plugins.txt"
       tags:
         - install_plugins
+      become: yes
+
 
     - name: "Restart Jenkins"
-      shell: docker-compose -f /opt/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
+      shell: docker-compose -f /home/vklymov/jenkins_nginx/docker_compose/docker-compose-jenkins-nginx.yaml restart -t 20 jenkins
       tags:
         - restart-jenkins
+      become: yes
+
 
 #---------------------------------------
 
@@ -119,7 +157,7 @@
         dest: "{{ jenkins_casc['dest'] }}"
         mode: "{{ jenkins_casc['mode'] }}"
       with_fileglob:
-        - { src: "{{ jenkins_casc['src'] }}/*.*"}
+        - "{{ jenkins_casc['src'] }}/*.*"
       become: yes
       notify: "Restart Jenkins"
 
@@ -153,16 +191,22 @@
       become: yes
       notify: "Restart Jenkins"
 
+    - name: "Sleep for 70 seconds"
+      shell: "sleep 60"
+      args: 
+        executable: /bin/bash
+
 
     - name: "Create jobs"
       shell: docker container exec jenkins /bin/bash -c "jenkins-jobs update /var/jenkins_home/jobs_configs"
       args:
         executable: /bin/bash
-
+      become: yes
 
     - name: "Create webhook"
       shell: docker container exec jenkins /bin/bash -c  "/var/jenkins_home/github_tokens/token_script.sh"
       args:
         executable: /bin/bash
+      become: yes
       tags: create-webhook
   

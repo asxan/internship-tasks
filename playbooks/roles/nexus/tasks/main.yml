@@ -21,15 +21,14 @@
       - { path: "{{ other_dirs_path[3] }}", mode: "{{ other_dirs_mood[3] }}" }
       - { path: "{{ other_dirs_path[4] }}", mode: "{{ other_dirs_mood[4] }}" }
 
-  
-- block: 
 
+- block: 
 
   - name: "Copy docker compose files"
     copy: 
       src: "{{ item }}"
       dest: "{{ compose['dest'] }}"
-      mood: "{{ compose['mood'] }}"
+      mode: "{{ compose['mood'] }}"
       owner:  "{{ compose['owner'] }}"
       group:  "{{ compose['group'] }}"
     with_fileglob:
@@ -40,7 +39,7 @@
     copy:
       src: "{{ item }}"
       dest: "{{ nginx['dest'] }}"
-      mood: "{{ nginx['mood'] }}"
+      mode: "{{ nginx['mood'] }}"
       owner: "{{ nginx['owner'] }}"
       group: "{{ nginx['group'] }}"
     with_fileglob:
@@ -51,7 +50,7 @@
     copy: 
       src:  "{{ item }}"
       dest: "{{ nexus_properties['dest'] }}"
-      mood: "{{ nexus_properties['mood'] }}"
+      mode: "{{ nexus_properties['mood'] }}"
       owner:  "{{ nexus_properties['owner'] }}"
       group:  "{{ nexus_properties['group'] }}"
     with_fileglob:
@@ -62,7 +61,7 @@
     copy: 
       src:  "{{ item }}"
       dest: "{{ nexus_api_dir['dest'] }}"
-      mood: "{{ nexus_api_dir['mood'] }}"
+      mode: "{{ nexus_api_dir['mood'] }}"
       owner:  "{{ nexus_api_dir['owner'] }}"
       group:  "{{ nexus_api_dir['group'] }}"
     with_fileglob:
@@ -70,19 +69,21 @@
     become: yes
 
   - name: "Start compose Nexus"
-    shell: "docker-compose -f /opt/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
+    shell: "docker-compose -f /home/vklymov/nexus_nginx/docker_compose/nexus-docker-compose.yaml up -d"
     args:
       executable: /bin/bash
+    become: yes
   
-  - name: "Sleep for 70 seconds"
-    shell: "sleep 60"
+  - name: "Sleep for 90 seconds"
+    shell: "sleep 90"
     args: 
       executable: /bin/bash
 
   - name: "Start nexus api script"
-    shell: "/opt/nexus_nginx/nexus_api_files/shell_nexus-api.sh"
+    shell: "/home/vklymov/nexus_nginx/nexus_api_files/shell_nexus-api.sh"
     args: 
       executable: /bin/bash
+    become: yes
 
 
 

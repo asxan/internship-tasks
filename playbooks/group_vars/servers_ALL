@@ -1,3 +1,0 @@
----
-ansible_user                 :  vklymov
-ansible_ssh_private_key_file : /Users/vklymov/.ssh/gcloud_gridkey

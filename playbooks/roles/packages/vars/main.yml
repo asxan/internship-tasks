@@ -23,6 +23,8 @@ yum_packages:
   - yum-utils 
   - dos2unix
   - jq
+  - nano
+  - nmap
 
 pip_packages:
   - PyYAML
