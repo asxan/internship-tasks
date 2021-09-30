@@ -252,6 +252,17 @@ variable "image_type" {
   default = "centos-7-v20210817" // centos-7-v20200403
 }
 
+variable "image_names" {
+  type = list(string)
+  description = "The List of machine images"
+  default = [
+    "jenkins-pet-packer-image-centos-7",
+    "nexus-pet-packer-image-centos-7",
+    "slave-pet-packer-image-centos-7",
+    "production-pet-packer-image-centos-7"
+  ]
+}
+
 variable "image_family" {
   type = string
   description = "Os family of images"

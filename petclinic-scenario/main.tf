@@ -85,7 +85,7 @@ module "instances" {
 
   boot_disk_type = var.boot_disk_type
   boot_disk_size = var.boot_disk_size
-  machine_image = var.image_type
+  machine_image = var.image_names
   //machine_image = data.google_compute_image.centos_image.name
 
   availability_zone = data.google_compute_zones.available.names[0]

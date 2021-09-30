@@ -50,9 +50,8 @@ variable "availability_zone" {
 }
 
 variable "machine_image" {
-  type = string
-  description = "The machine boot image"
-  default = ""
+  type = list(string)
+  description = "The List machine boot image"
 }
 
 variable "network_tags" {

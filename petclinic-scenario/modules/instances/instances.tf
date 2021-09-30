@@ -14,7 +14,7 @@ resource "google_compute_instance" "instance" {
     initialize_params {
       type = var.boot_disk_type
       size = var.boot_disk_size
-      image = (var.machine_image != "" ? var.machine_image : data.google_compute_image.centos_image.name)
+      image = element(var.machine_image, count.index)
     }
   }
 
