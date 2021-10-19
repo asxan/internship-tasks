@@ -22,7 +22,7 @@ services:
             -   pet-net
     petclinic:
         container_name: petclinic
-        image: asxan/petclinick
+        image: asxan/petclinick:latest
         restart: always
         ports:  
             - "3306"
