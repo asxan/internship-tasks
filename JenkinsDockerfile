@@ -1,7 +1,7 @@
 FROM jenkins/jenkins
 
 LABEL   "name"="jenkins maven image on Debian" \
-        "maintainer"="Vitalii Klymov" \ 
+        "maintainer"="Vitalii Klymov" \
         "summary"="A Jenkins maven image on Debian"
 
 # Set version of maven
@@ -9,7 +9,10 @@ ARG MAVEN_VERSION=3.6.3
 
 USER root
 
-# install sudo  
+# Copy file with plugin
+COPY plugins.txt /var/jenkins_home/plugins.txt
+
+# install sudo
 RUN apt-get update && \
     apt-get install -y sudo && \
     apt-get -y install jq && \
@@ -22,7 +25,9 @@ RUN curl -fsSL https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/bina
     && mv /usr/share/apache-maven-$MAVEN_VERSION /usr/share/maven \
     && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
-# Set environment veriables for maven      
+RUN jenkins-plugin-cli --plugins -f /var/jenkins_home/plugins.txt
+
+# Set environment veriables for maven
 ENV MAVEN_VERSION=${MAVEN_VERSION}
 ENV M2_HOME /usr/share/maven
 ENV maven.home $M2_HOME
